@@ -48,6 +48,7 @@
         <!-- Define the version of the JBoss BOMs we want to import to specify tested stacks. -->
         <version.jboss.bom.eap>6.2.3.GA</version.jboss.bom.eap>
         <version.jboss.bom.wfk>2.6.0-redhat-1</version.jboss.bom.wfk>
+        <version.resteasy-bom>3.0.9.Final</version.resteasy-bom>
 
         <!-- other plugin versions -->
         <version.surefire.plugin>2.10</version.surefire.plugin>
@@ -91,6 +92,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.resteasy</groupId>
+                <artifactId>resteasy-bom</artifactId>
+                <version>${version.resteasy-bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -115,11 +123,6 @@
         </dependency>
 
         <!-- Import the JAX-RS API, we use provided scope as the API is included in JBoss EAP -->
-        <dependency>
-            <groupId>org.jboss.spec.javax.ws.rs</groupId>
-            <artifactId>jboss-jaxrs-api_1.1_spec</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
         <!-- Import the JPA API, we use provided scope as the API is included in JBoss EAP -->
         <dependency>
@@ -252,6 +255,11 @@
         	<groupId>net.sf.supercsv</groupId>
         	<artifactId>super-csv</artifactId>
         	<version>2.2.0</version>
+        </dependency>
+        <dependency>
+        	<groupId>org.jboss.resteasy</groupId>
+        	<artifactId>jaxrs-api</artifactId>
+        	<scope>provided</scope>
         </dependency>
     </dependencies>
 
