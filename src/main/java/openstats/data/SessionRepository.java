@@ -34,43 +34,6 @@ public class SessionRepository {
         return em.find(Session.class, id);
     }
 
-    public Session loadById(Long id) {
-    	System.out.println("XXXXXXXXXXXXXXXX");
-/*    	
-    	CriteriaBuilder builder = em.getCriteriaBuilder();
-    	CriteriaQuery<Session> sessionQuery = builder.createQuery(Session.class);
-    	Root<Session> sessionRoot = sessionQuery.from(Session.class);
-    	sessionQuery.select(sessionRoot);
-    	sessionQuery.where( builder.equal( sessionRoot.get( "id" ), id ) );
-    	Session session = em.createQuery(sessionQuery).getSingleResult();
-*/
-    	TypedQuery<Session> query = em.createQuery(""
-    			+ "select s from Session as s "
-    			+ "left join fetch s.districts as d "
-    			+ "join fetch d.districtList as dl "
-    			+ "join fetch dl.legislators as legs "
-    			+ "join fetch d.userData as ud "
-    			+ "join fetch ud.aggregates as aggs "
-    			+ "join fetch aggs.groups as agroups "
-    			+ "join fetch ud.computations as comps "
-    			+ "join fetch comps.groups as cgroups "
-    			+ "where s.id = :id", Session.class);
-    	
-    	query.setParameter("id", id);
-    	Session session = query.getSingleResult();
-    	Aggregates aggregates = session.getDistricts().getUserData().getAggregates();
-    	aggregates.setDescriptions(new LinkedHashMap<String, ArrayList<String>>());
-    	aggregates.setAggregateMap(new LinkedHashMap<String, Aggregate>());
-    	
-    	Computations computations = session.getDistricts().getUserData().getComputations();
-    	computations.setDescriptions(new LinkedHashMap<String, ArrayList<String>>());
-    	computations.setComputationMap(new LinkedHashMap<String, Computation>());
-
-    	System.out.println("ZZZZZZZZZZZZZZZZZZZ");
-    	return session;
-    	
-    }
-
     public List<Session> listAllSessions() {
 		return em.createNamedQuery("Session.listSessions", Session.class).getResultList();
     }

@@ -57,7 +57,8 @@ public class SessionResourceRESTService {
     @Path("/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
     public Session lookupSessionById(@PathParam("id") long id) {
-        Session session = repository.loadById(id);
+        Session session = repository.findById(id);
+    	session = session.prune(Prunable.PRUNE.GROUPS_ONLY);
         if (session == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
