@@ -27,6 +27,7 @@ import javax.ws.rs.core.*;
 
 import openstats.data.*;
 import openstats.model.*;
+import openstats.model.Prunable.PRUNE;
 
 /**
  * JAX-RS Example
@@ -54,11 +55,23 @@ public class SessionResourceRESTService {
     }
 
     @GET
-    @Path("/{id:[0-9][0-9]*}")
+    @Path("/summary/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Session lookupSessionById(@PathParam("id") long id) {
+    public Session getSummary(@PathParam("id") long id) {
         Session session = repository.findById(id);
-    	session = session.prune(Prunable.PRUNE.GROUPS_ONLY);
+    	session = session.prune(PRUNE.SUMMARY);
+        if (session == null) {
+            throw new WebApplicationException(Response.Status.NOT_FOUND);
+        }
+        return session;
+    }
+
+    @GET
+    @Path("/full/{id:[0-9][0-9]*}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Session getFull(@PathParam("id") long id) {
+        Session session = repository.findById(id);
+    	session = session.prune(PRUNE.FULL);
         if (session == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }

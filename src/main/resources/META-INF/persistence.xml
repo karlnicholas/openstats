@@ -19,7 +19,7 @@
       <class>openstats.model.Districts</class>
       <class>openstats.model.Legislator</class>
       <class>openstats.model.Session</class>
-      <class>openstats.model.ModelKey</class>
+      <class>openstats.model.MapKey</class>
       <class>openstats.model.UserData</class>
       <properties>
          <!-- Properties for Hibernate -->

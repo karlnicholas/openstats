@@ -15,7 +15,7 @@
              <h:panelGroup rendered="#{empty sessions}">
                 <em>No registered sessions.</em>
              </h:panelGroup>
-             <rich:dataTable id="memberTable" var="_session" value="#{sessions}" rendered="#{not empty sessions}" style="width : 100%">
+             <rich:dataTable id="sessionTable" var="_session" value="#{sessions}" rendered="#{not empty sessions}" style="width : 100%">
                    <rich:column id="session_id">
                       <f:facet name="header">Id</f:facet>
                       #{_session.id}
@@ -30,7 +30,11 @@
                    </rich:column>
                    <rich:column id="session_rest_url">
                       <f:facet name="header">REST URL</f:facet>
-                      <a href="#{request.contextPath}/rest/sessions/#{_member.id}" target="_rest_session">/rest/sessions/#{_session.id}</a>
+                      <a href="#{request.contextPath}/rest/sessions/summary/#{_session.id}" target="_rest_session">/rest/sessions/summary/#{_session.id}</a>
+                   </rich:column>
+                   <rich:column id="session_rest_url">
+                      <f:facet name="header">REST URL</f:facet>
+                      <a href="#{request.contextPath}/rest/sessions/full/#{_session.id}" target="_rest_session">/rest/sessions/full/#{_session.id}</a>
                    </rich:column>
                 </rich:dataTable>
           </rich:panel>
