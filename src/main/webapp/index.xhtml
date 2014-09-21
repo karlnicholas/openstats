@@ -1,42 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui:composition template="/WEB-INF/templates/default.xhtml"
-                xmlns="http://www.w3.org/1999/xhtml"
-                xmlns:ui="http://java.sun.com/jsf/facelets"
-                xmlns:f="http://java.sun.com/jsf/core"
-                xmlns:h="http://java.sun.com/jsf/html"
-                xmlns:a4j="http://richfaces.org/a4j"
-                xmlns:rich="http://richfaces.org/rich"
-                xmlns:my="http://java.sun.com/jsf/composite/components">
-    <ui:define name="content">
-        <h:outputStylesheet name="app.css" library="css"/>
-        <h:outputScript target="head" name="showMessage.js" library="js"/>
-
-          <rich:panel id="sessionList" header="Sessions" headerClass="header" title="Click to expand/collapse">
-             <h:panelGroup rendered="#{empty sessions}">
-                <em>No registered sessions.</em>
-             </h:panelGroup>
-             <rich:dataTable id="sessionTable" var="_session" value="#{sessions}" rendered="#{not empty sessions}" style="width : 100%">
-                   <rich:column id="session_id">
-                      <f:facet name="header">Id</f:facet>
-                      #{_session.id}
-                   </rich:column>
-                   <rich:column id="session_state">
-                      <f:facet name="header">State</f:facet>
-                      #{_session.state}
-                   </rich:column>
-                   <rich:column id="session_session">
-                      <f:facet name="header">Session</f:facet>
-                      #{_session.session}
-                   </rich:column>
-                   <rich:column id="session_rest_url">
-                      <f:facet name="header">REST URL</f:facet>
-                      <a href="#{request.contextPath}/rest/sessions/summary/#{_session.id}" target="_rest_session">/rest/sessions/summary/#{_session.id}</a>
-                   </rich:column>
-                   <rich:column id="session_rest_url">
-                      <f:facet name="header">REST URL</f:facet>
-                      <a href="#{request.contextPath}/rest/sessions/full/#{_session.id}" target="_rest_session">/rest/sessions/full/#{_session.id}</a>
-                   </rich:column>
-                </rich:dataTable>
-          </rich:panel>
-    </ui:define>
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+	<ui:define name="content">
+		<h:outputStylesheet name="table-style.css" library="css" />
+		<h:outputScript target="head" name="showMessage.js" library="js" />
+		<h:dataTable value="#{sessions}" var="_session"
+			styleClass="order-table" headerClass="order-table-header"
+			rowClasses="order-table-odd-row,order-table-even-row">
+			<h:column>
+				<!-- column header -->
+				<f:facet name="header">State</f:facet>
+				<!-- row record -->
+    				#{_session.state}
+    			</h:column>
+			<h:column>
+				<f:facet name="header">Session</f:facet>
+    				#{_session.session}
+    			</h:column>
+			<h:column>
+				<f:facet name="header">Summary Url</f:facet>
+				<a href="#{request.contextPath}/rest/sessions/summary/#{_session.id}" >/rest/sessions/summary/#{_session.id}</a>
+    			</h:column>
+			<h:column>
+				<f:facet name="header">Full Url</f:facet>
+				<a href="#{request.contextPath}/rest/sessions/summary/#{_session.id}" >/rest/sessions/summary/#{_session.id}</a>
+    			</h:column>
+		</h:dataTable>
+	</ui:define>
 </ui:composition>

@@ -18,7 +18,6 @@
       <class>openstats.model.GroupInfo</class>
       <properties>
          <!-- Properties for Hibernate -->
-         <property name="hibernate.hbm2ddl.auto" value="validate" />
          <property name="hibernate.show_sql" value="false" />
          <property name="hibernate.enable_lazy_load_no_trans" value="true" />
       </properties>
