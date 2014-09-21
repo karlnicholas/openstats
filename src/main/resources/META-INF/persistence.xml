@@ -11,16 +11,11 @@
       <!-- The datasource is deployed as WEB-INF/kitchensinkrf-quickstart-ds.xml, you
          can find it in the source at src/main/webapp/WEB-INF/kitchensinkrf-quickstart-ds.xml -->
       <jta-data-source>java:jboss/datasources/OpenStatsDS</jta-data-source>
-      <class>openstats.model.Aggregate</class>
-      <class>openstats.model.Aggregates</class>
-      <class>openstats.model.Computation</class>
-      <class>openstats.model.Computations</class>
       <class>openstats.model.District</class>
       <class>openstats.model.Districts</class>
       <class>openstats.model.Legislator</class>
       <class>openstats.model.Session</class>
-      <class>openstats.model.MapKey</class>
-      <class>openstats.model.UserData</class>
+      <class>openstats.model.GroupInfo</class>
       <properties>
          <!-- Properties for Hibernate -->
          <property name="hibernate.hbm2ddl.auto" value="validate" />
