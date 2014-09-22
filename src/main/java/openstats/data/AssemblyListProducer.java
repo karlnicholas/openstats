@@ -8,32 +8,32 @@ import javax.enterprise.inject.Produces;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import openstats.model.Session;
+import openstats.model.Assembly;
 
 import java.util.List;
 
 @RequestScoped
-public class SessionListProducer {
+public class AssemblyListProducer {
 
     @Inject
-    private SessionRepository sessionRepository;
+    private AssemblyRepository assemblyRepository;
 
-    private List<Session> sessions;
+    private List<Assembly> assemblies;
 
     // @Named provides access the return value via the EL variable name "members" in the UI (e.g.
     // Facelets or JSP view)
     @Produces
     @Named
-    public List<Session> getSessions() {
-        return sessions;
+    public List<Assembly> getAssemblies() {
+        return assemblies;
     }
 
-    public void onSessionListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Session session) {
-        listAllSessions();
+    public void onAssemblyListChanged(@Observes(notifyObserver = Reception.IF_EXISTS) final Assembly assembly) {
+        listAllAssemblies();
     }
 
     @PostConstruct
-    public void listAllSessions() {
-        sessions = sessionRepository.listAllSessions();
+    public void listAllAssemblies() {
+        assemblies = assemblyRepository.listAllAssemblies();
     }
 }

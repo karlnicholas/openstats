@@ -25,7 +25,7 @@ import javax.inject.Inject;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;
 
-import openstats.service.SessionUpdate;
+import openstats.service.AssemblyUpdate;
 import openstats.util.Resources;
 
 import org.jboss.shrinkwrap.api.Archive;

@@ -14,28 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package openstats.data;
+package openstats.controller;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.persistence.*;
+import javax.enterprise.inject.Model;
 
-import openstats.model.*;
-
-import java.util.*;
-
-@ApplicationScoped
-public class SessionRepository {
-
-    @Inject
-    private EntityManager em;
-
-    public Session findById(Long id) {
-        return em.find(Session.class, id);
-    }
-
-    public List<Session> listAllSessions() {
-		return em.createNamedQuery("Session.listSessions", Session.class).getResultList();
-    }
+// The @Model stereotype is a convenience mechanism to make this a request-scoped bean that has an
+// EL name
+// Read more about the @Model stereotype in this FAQ:
+// http://www.cdi-spec.org/faq/#accordion6
+@Model
+public class AssemblyController {
 
 }

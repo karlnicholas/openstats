@@ -14,7 +14,7 @@
       <class>openstats.model.District</class>
       <class>openstats.model.Districts</class>
       <class>openstats.model.Legislator</class>
-      <class>openstats.model.Session</class>
+      <class>openstats.model.Assembly</class>
       <class>openstats.model.GroupInfo</class>
       <properties>
          <!-- Properties for Hibernate -->

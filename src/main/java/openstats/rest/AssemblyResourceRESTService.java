@@ -17,84 +17,75 @@
 package openstats.rest;
 
 import java.util.List;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.validation.Validator;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
 import openstats.data.*;
 import openstats.model.*;
-import openstats.model.Prunable.PRUNE;
+import openstats.model.DtoInterface.DTOTYPE;
 
 /**
  * JAX-RS Example
  * <p/>
- * This class produces a RESTful service to read/write the contents of the sessions table.
+ * This class produces a RESTful service to read/write the contents of the assemblies table.
  */
-@Path("/sessions")
+@Path("/assemblies")
 @RequestScoped
-public class SessionResourceRESTService {
+public class AssemblyResourceRESTService {
 
     @Inject
-    private SessionRepository repository;
-
-    @Inject
-    private Logger log;
-
-    @Inject
-    private Validator validator;
-
+    private AssemblyRepository repository;
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Session> listAllSessions() {
-        return repository.listAllSessions();
+    public List<Assembly> listAllAssemblies() {
+        return repository.listAllAssemblies();
     }
 
     @GET
     @Path("/summary/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Session getSummary(@PathParam("id") long id) {
-        Session session = repository.findById(id);
-    	session = session.prune(PRUNE.SUMMARY);
-        if (session == null) {
+    public Assembly getSummary(@PathParam("id") long id) {
+        Assembly assembly = repository.findById(id);
+    	assembly = assembly.createDto(DTOTYPE.SUMMARY);
+        if (assembly == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        return session;
+        return assembly;
     }
 
     @GET
     @Path("/full/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Session getFull(@PathParam("id") long id) {
-        Session session = repository.findById(id);
-    	session = session.prune(PRUNE.FULL);
-        if (session == null) {
+    public Assembly getFull(@PathParam("id") long id) {
+        Assembly assembly = repository.findById(id);
+    	assembly = assembly.createDto(DTOTYPE.FULL);
+        if (assembly == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
         }
-        return session;
+        return assembly;
     }
 
     /**
-     * Creates a new session from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
+     * Creates a new assembly from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
      * or with a map of fields, and related errors.
      */
 /*    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createSession(Session session) {
+    public Response createAssembly(Assembly assembly) {
 
         Response.ResponseBuilder builder = null;
 
         try {
-            // Validates session using bean validation
-            validateSession(session);
+            // Validates assembly using bean validation
+            validateAssembly(assembly);
 
-            registration.register(session);
+            registration.register(assembly);
 
             // Create an "ok" response
             builder = Response.ok();
@@ -118,29 +109,29 @@ public class SessionResourceRESTService {
 */
     /**
      * <p>
-     * Validates the given Session variable and throws validation exceptions based on the type of error. If the error is standard
+     * Validates the given Assembly variable and throws validation exceptions based on the type of error. If the error is standard
      * bean validation errors then it will throw a ConstraintValidationException with the set of the constraints violated.
      * </p>
      * <p>
-     * If the error is caused because an existing session with the same email is registered it throws a regular validation
+     * If the error is caused because an existing assembly with the same email is registered it throws a regular validation
      * exception so that it can be interpreted separately.
      * </p>
      *
-     * @param session Session to be validated
+     * @param assembly Assembly to be validated
      * @throws ConstraintViolationException If Bean Validation errors exist
-     * @throws ValidationException If session with the same email already exists
+     * @throws ValidationException If assembly with the same email already exists
      */
 /*    
-    private void validateSession(Session session) throws ConstraintViolationException, ValidationException {
+    private void validateAssembly(Assembly assembly) throws ConstraintViolationException, ValidationException {
         // Create a bean validator and check for issues.
-        Set<ConstraintViolation<Session>> violations = validator.validate(session);
+        Set<ConstraintViolation<Assembly>> violations = validator.validate(assembly);
 
         if (!violations.isEmpty()) {
             throw new ConstraintViolationException(new HashSet<ConstraintViolation<?>>(violations));
         }
 
         // Check the uniqueness of the email address
-        if (emailAlreadyExists(session.getEmail())) {
+        if (emailAlreadyExists(assembly.getEmail())) {
             throw new ValidationException("Unique Email Violation");
         }
     }
@@ -166,21 +157,21 @@ public class SessionResourceRESTService {
     }
 */
     /**
-     * Checks if a session with the same email address is already registered. This is the only way to easily capture the
-     * "@UniqueConstraint(columnNames = "email")" constraint from the Session class.
+     * Checks if a assembly with the same email address is already registered. This is the only way to easily capture the
+     * "@UniqueConstraint(columnNames = "email")" constraint from the Assembly class.
      *
      * @param email The email to check
      * @return True if the email already exists, and false otherwise
      */
 /*
-    public boolean stateSessionAlreadyExists(String state, String session) {
-        Session session = null;
+    public boolean stateAssemblyAlreadyExists(String state, String assembly) {
+        Assembly assembly = null;
         try {
-            session = repository.findByEmail(email);
+            assembly = repository.findByEmail(email);
         } catch (NoResultException e) {
             // ignore
         }
-        return session != null;
+        return assembly != null;
     }
 */    
 }
