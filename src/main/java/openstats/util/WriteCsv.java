@@ -65,11 +65,41 @@ public class WriteCsv {
 	    	        csvWriter.writeRow(columns.toArray(sColumns));
     	        }
             }
-
+            columns.clear();
 	        for ( String group: groups ) {
-	            csvWriter.writeHeader(group);
-	            csvWriter.writeRow(assembly.getComputations().get(group).get(0).toString());
+	        	GroupInfo groupInfo = assembly.getAggregateGroupMap().get(group);
+	        	if ( groupInfo != null ) {
+			        for ( String label: groupInfo.getGroupLabels()) {
+			        	columns.add(label);
+			        }
+	        	}
+	        	groupInfo = assembly.getComputationGroupMap().get(group);
+	        	if ( groupInfo != null ) {
+			        for ( String label: groupInfo.getGroupLabels()) {
+			        	columns.add(label);
+			        }
+	        	}
 	        }
+	        sColumns = new String[columns.size()];
+	        sColumns = columns.toArray(sColumns);
+            csvWriter.writeHeader(sColumns);
+//            csvWriter.writeHeader(group);
+            columns.clear();
+	        for ( String group: groups ) {
+    	        List<Long> aggs = assembly.getAggregates().get(group);
+    	        if ( aggs != null ) {
+	    	        for ( Long agg: aggs ) {
+	    	        	columns.add(agg.toString());
+	    	        }
+    	        }
+    	        List<Double> comps = assembly.getComputations().get(group);
+    	        if ( comps != null ) {
+	    	        for ( Double comp: comps ) {
+	    	        	columns.add(comp.toString());
+	    	        }
+    	        }
+	        }
+            csvWriter.writeRow(columns.toArray(sColumns));
         }
         finally {
             if( csvWriter != null ) {
