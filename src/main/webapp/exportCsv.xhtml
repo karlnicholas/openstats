@@ -6,8 +6,9 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 	<ui:define name="content">
 	<h:form>
-	<h:outputText value="Export CSV" />
-	<h:commandButton action="#{exportCsvListener.exportCsv()}" value="Export" />
+	<h:commandButton action="#{exportCsvListener.exportCsv()}" value="Export Csv" />
+	<h:commandButton action="#{exportCsvListener.goToIndex()}" value="Go To Index" />
 	</h:form>
+	
 	</ui:define>
 </ui:composition>

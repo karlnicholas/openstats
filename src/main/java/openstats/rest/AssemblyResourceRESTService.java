@@ -26,6 +26,7 @@ import javax.ws.rs.core.*;
 import openstats.data.*;
 import openstats.model.*;
 import openstats.model.DtoInterface.DTOTYPE;
+import openstats.util.WriteCsv;
 
 /**
  * JAX-RS Example
@@ -69,10 +70,6 @@ public class AssemblyResourceRESTService {
         return assembly;
     }
 
-    /**
-     * Creates a new assembly from the values provided. Performs validation, and will return a JAX-RS response with either 200 ok,
-     * or with a map of fields, and related errors.
-     */
 /*    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)

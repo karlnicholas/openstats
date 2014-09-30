@@ -1,10 +1,11 @@
 package openstats.pagebeans;
 
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.*;
+import javax.faces.context.FacesContext;
 import javax.inject.*;
 
 import openstats.data.AssemblyRepository;
@@ -38,7 +39,7 @@ public class Assemblies implements Serializable {
 		Set<String> groups = new TreeSet<String>();
 		if ( currentAssembly != null && !currentAssembly.isEmpty()) {
 			String[] keys = currentAssembly.split("-"); 
-			Assembly assembly = assemblyRepository.listByStateAssembly(keys[0], keys[1]);
+			Assembly assembly = assemblyRepository.findByStateAssembly(keys[0], keys[1]);
 			for ( String key: assembly.getAggregateGroupMap().keySet() ) {
 				groups.add( key );
 			}
