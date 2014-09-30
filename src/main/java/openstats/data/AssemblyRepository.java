@@ -37,5 +37,12 @@ public class AssemblyRepository {
     public List<Assembly> listAllAssemblies() {
 		return em.createNamedQuery("Assembly.listAssemblies", Assembly.class).getResultList();
     }
+    
+    public Assembly listByStateAssembly(String state, String assembly) {
+    	return em.createNamedQuery("Assembly.listByStateAssembly", Assembly.class)
+			.setParameter("state", state)
+			.setParameter("assembly", assembly)
+			.getSingleResult();
+    }
 
 }

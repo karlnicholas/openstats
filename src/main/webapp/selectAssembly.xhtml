@@ -1,0 +1,22 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition template="/WEB-INF/templates/default.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<ui:define name="content">
+		<h:form rendered="#{empty assemblies.currentAssembly}">
+			<h:selectOneMenu value="#{assemblies.currentAssembly}">
+				<f:selectItems value="#{assemblies.assemblyTitles}" />
+			</h:selectOneMenu>
+			<h:commandButton id="submit" value="Submit" action="selectAssembly" />
+		</h:form>
+		<h:form rendered="#{!empty assemblies.currentAssembly}">
+			<h:message for="groupitems"/>
+			<h:selectManyCheckbox value="#{assemblies.assemblyGroupItems}" id="groupitems" required="true" requiredMessage="At least one group must be selected.">
+				<f:selectItems value="#{assemblies.assemblyGroups}" />
+			</h:selectManyCheckbox>
+			<h:commandButton id="submit" value="Submit" action="exportCsv" />
+		</h:form>
+	</ui:define>
+</ui:composition>

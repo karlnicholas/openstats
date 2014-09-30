@@ -1,33 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition template="/WEB-INF/templates/default.xhtml"
 	xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:h="http://java.sun.com/jsf/html">
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+<f:metadata>
+  <f:event type="preRenderView" listener="#{indexListener.clearSessionScope()}"/>
+</f:metadata>
 	<ui:define name="content">
-		<h:outputStylesheet name="table-style.css" library="css" />
-		<h:outputScript target="head" name="showMessage.js" library="js" />
-		<h:dataTable value="#{assemblies}" var="_assembly"
-			styleClass="order-table" headerClass="order-table-header"
-			rowClasses="order-table-odd-row,order-table-even-row">
-			<h:column>
-				<!-- column header -->
-				<f:facet name="header">State</f:facet>
-				<!-- row record -->
-    				#{_assembly.state}
-    			</h:column>
-			<h:column>
-				<f:facet name="header">Session</f:facet>
-    				#{_assembly.assembly}
-    			</h:column>
-			<h:column>
-				<f:facet name="header">Summary Url</f:facet>
-				<a href="#{request.contextPath}/rest/assemblies/summary/#{_assembly.id}" >/rest/assemblies/summary/#{_assembly.id}</a>
-    			</h:column>
-			<h:column>
-				<f:facet name="header">Full Url</f:facet>
-				<a href="#{request.contextPath}/rest/assemblies/full/#{_assembly.id}" >/rest/assemblies/full/#{_assembly.id}</a>
-    			</h:column>
-		</h:dataTable>
+<p>Welcome to the wonderful world of main pages.</p>
+<p><h:link outcome="selectAssembly">Select an Assembly for export</h:link>.</p>
 	</ui:define>
 </ui:composition>
