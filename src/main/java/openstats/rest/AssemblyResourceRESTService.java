@@ -26,7 +26,6 @@ import javax.ws.rs.core.*;
 import openstats.data.*;
 import openstats.model.*;
 import openstats.model.DtoInterface.DTOTYPE;
-import openstats.util.WriteCsv;
 
 /**
  * JAX-RS Example

@@ -1,10 +1,10 @@
-package openstats.listeners;
+package openstats.controllers;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;
 
-@ManagedBean(name="indexListener")
-public class IndexListener {
+@ManagedBean
+public class Index {
 	
 	public void clearSessionScope() {
 		System.out.println("clear");

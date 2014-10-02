@@ -1,19 +1,18 @@
-package openstats.pagebeans;
+package openstats.controllers;
 
 import java.io.*;
 import java.util.*;
 
 import javax.annotation.PostConstruct;
 import javax.faces.bean.*;
-import javax.faces.context.FacesContext;
 import javax.inject.*;
 
 import openstats.data.AssemblyRepository;
 import openstats.model.*;
 
-@ManagedBean(name="assemblies")
+@ManagedBean
 @SessionScoped
-public class Assemblies implements Serializable {
+public class SelectAssembly implements Serializable {
 	private static final long serialVersionUID = 482581809901780483L;
 	//
 	private Map<String,Object> assemblyTitles;
@@ -33,7 +32,7 @@ public class Assemblies implements Serializable {
 			assemblyTitles.put(assembly.getState() + " " + assembly.getAssembly(), assembly.getState() + "-" + assembly.getAssembly());
 		}
 	}
-    
+        
     private void loadGroups(String currentAssembly) {
 		this.currentAssembly = currentAssembly;		
 		Set<String> groups = new TreeSet<String>();

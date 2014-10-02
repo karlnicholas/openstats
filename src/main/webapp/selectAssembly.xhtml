@@ -5,16 +5,16 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:ui="http://java.sun.com/jsf/facelets">
 	<ui:define name="content">
-		<h:form rendered="#{empty assemblies.currentAssembly}">
-			<h:selectOneMenu value="#{assemblies.currentAssembly}">
-				<f:selectItems value="#{assemblies.assemblyTitles}" />
+		<h:form rendered="#{empty selectAssembly.currentAssembly}">
+			<h:selectOneMenu value="#{selectAssembly.currentAssembly}">
+				<f:selectItems value="#{selectAssembly.assemblyTitles}" />
 			</h:selectOneMenu>
 			<h:commandButton id="submit" value="Submit" action="selectAssembly" />
 		</h:form>
-		<h:form rendered="#{!empty assemblies.currentAssembly}">
+		<h:form rendered="#{!empty selectAssembly.currentAssembly}">
 			<h:message for="groupitems"/>
-			<h:selectManyCheckbox value="#{assemblies.assemblyGroupItems}" id="groupitems" required="true" requiredMessage="At least one group must be selected.">
-				<f:selectItems value="#{assemblies.assemblyGroups}" />
+			<h:selectManyCheckbox value="#{selectAssembly.assemblyGroupItems}" id="groupitems" required="true" requiredMessage="At least one group must be selected.">
+				<f:selectItems value="#{selectAssembly.assemblyGroups}" />
 			</h:selectManyCheckbox>
 			<h:commandButton id="submit" value="Submit" action="exportCsv" />
 		</h:form>
