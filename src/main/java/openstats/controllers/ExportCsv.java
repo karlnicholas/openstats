@@ -37,7 +37,7 @@ public class ExportCsv {
 //		System.out.println("Exporting for: " + assemblies.getCurrentAssembly() + ":" + Arrays.toString(assemblies.getAssemblyGroupItems()) );
     	AssemblyCsvHandler createCsv = new AssemblyCsvHandler();
     	String[] keys = assemblies.getCurrentAssembly().split("-");
-    	Assembly assembly = assemblyRepository.findByStateAssembly(keys[0], keys[1]);
+    	Assembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
 
 	    ExternalContext ec = facesContext.getExternalContext();
 
@@ -64,7 +64,7 @@ public class ExportCsv {
 		if ( csvBody == null ) {
 			SelectAssembly assemblies = (SelectAssembly) ec.getSessionMap().get("selectAssembly");
 	    	String[] keys = assemblies.getCurrentAssembly().split("-");
-	    	Assembly assembly = assemblyRepository.findByStateAssembly(keys[0], keys[1]);
+	    	Assembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
 			csvBody = new AssemblyCsvHandler().createBody(assembly, Arrays.asList(assemblies.getAssemblyGroupItems()));
 			sessionMap.put("csvBody", csvBody);
 		}
@@ -81,7 +81,7 @@ public class ExportCsv {
 		if ( csvHeader == null ) {
 			SelectAssembly assemblies = (SelectAssembly) ec.getSessionMap().get("selectAssembly");
 	    	String[] keys = assemblies.getCurrentAssembly().split("-");
-	    	Assembly assembly = assemblyRepository.findByStateAssembly(keys[0], keys[1]);
+	    	Assembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
 			csvHeader = new AssemblyCsvHandler().createHeader(assembly, Arrays.asList(assemblies.getAssemblyGroupItems()));
 			sessionMap.put("csvHeader", csvHeader);
 		}

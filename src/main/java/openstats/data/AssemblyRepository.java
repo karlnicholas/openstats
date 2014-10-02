@@ -19,6 +19,7 @@ package openstats.data;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.*;
+import javax.persistence.criteria.*;
 
 import openstats.model.*;
 
@@ -38,11 +39,18 @@ public class AssemblyRepository {
 		return em.createNamedQuery("Assembly.listAssemblies", Assembly.class).getResultList();
     }
     
-    public Assembly findByStateAssembly(String state, String assembly) {
-    	return em.createNamedQuery("Assembly.findByStateAssembly", Assembly.class)
-			.setParameter("state", state)
-			.setParameter("assembly", assembly)
-			.getSingleResult();
+    public Assembly findByStateSession(String state, String session) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Assembly> criteria = cb.createQuery(Assembly.class);
+        Root<Assembly> assembly = criteria.from(Assembly.class);
+        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
+        // feature in JPA 2.0
+        // criteria.select(member).where(cb.equal(member.get(Member_.email), email));
+        criteria.select(assembly).where(
+        		cb.equal(assembly.get("state"), state), 
+        		cb.equal(assembly.get("session"), session)
+        	);
+        return em.createQuery(criteria).getSingleResult();
     }
 
 }

@@ -29,7 +29,7 @@ public class SelectAssembly implements Serializable {
     	assemblyTitles = new TreeMap<String, Object>();
 		List<Assembly> assemblies = assemblyRepository.listAllAssemblies(); 
 		for ( Assembly assembly: assemblies ) {
-			assemblyTitles.put(assembly.getState() + " " + assembly.getAssembly(), assembly.getState() + "-" + assembly.getAssembly());
+			assemblyTitles.put(assembly.getState() + " " + assembly.getSession(), assembly.getState() + "-" + assembly.getSession());
 		}
 	}
         
@@ -38,7 +38,7 @@ public class SelectAssembly implements Serializable {
 		Set<String> groups = new TreeSet<String>();
 		if ( currentAssembly != null && !currentAssembly.isEmpty()) {
 			String[] keys = currentAssembly.split("-"); 
-			Assembly assembly = assemblyRepository.findByStateAssembly(keys[0], keys[1]);
+			Assembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
 			for ( String key: assembly.getAggregateGroupMap().keySet() ) {
 				groups.add( key );
 			}

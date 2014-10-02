@@ -40,7 +40,7 @@ import javax.persistence.PersistenceContext;
 public class Resources {
     // use @SuppressWarnings to tell IDE to ignore warnings about field not being referenced directly
     @Produces
-    @PersistenceContext
+    @PersistenceContext(unitName="openstats")
     private EntityManager em;
 
     @Produces
