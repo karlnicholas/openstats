@@ -18,27 +18,18 @@ import javax.xml.bind.annotation.*;
 	private String state;
 	private String session;
 	@OneToOne(cascade={CascadeType.ALL})
-	private Districts districts;
+	private Districts districts = new Districts();
 	@OneToMany(cascade={CascadeType.ALL})
 	@JoinTable(name="assembly_aggregategroupmap")
-	private Map<String, GroupInfo> aggregateGroupMap; 
+	private Map<GroupName, GroupInfo> aggregateGroupMap = new LinkedHashMap<GroupName, GroupInfo>(); 
 	@OneToMany(cascade={CascadeType.ALL})
 	@JoinTable(name="assembly_computationgroupmap")
-	private Map<String, GroupInfo> computationGroupMap; 
-	@ElementCollection
-	@OrderColumn
-	private Map<String, ArrayList<Long>> aggregates;
-	@ElementCollection
-	@OrderColumn
-	private Map<String, ArrayList<Double>> computations;	
+	private Map<GroupName, GroupInfo> computationGroupMap = new LinkedHashMap<GroupName, GroupInfo>(); 
+	@OneToMany(cascade = CascadeType.ALL)
+	private Map<GroupName, AggregateValues> aggregateMap = new LinkedHashMap<GroupName, AggregateValues>();
+	@OneToMany(cascade = CascadeType.ALL)
+	private Map<GroupName, ComputationValues> computationMap = new LinkedHashMap<GroupName, ComputationValues>();
 	
-	public Assembly() {
-		districts = new Districts();
-		aggregates = new TreeMap<String, ArrayList<Long>>();
-		computations = new TreeMap<String, ArrayList<Double>>();
-		aggregateGroupMap = new TreeMap<String, GroupInfo>(); 
-		computationGroupMap = new TreeMap<String, GroupInfo>(); 
-	}
 	@XmlTransient
 	public Long getId() {
 		return id;
@@ -61,31 +52,24 @@ import javax.xml.bind.annotation.*;
 	public void setDistricts(Districts districts) {
 		this.districts = districts;
 	}
-	public Map<String, GroupInfo> getComputationGroupMap() {
+	public Map<GroupName, GroupInfo> getComputationGroupMap() {
 		return computationGroupMap;
 	}
-	public void setComputationGroupMap(Map<String, GroupInfo> computationGroupMap) {
+	public void setComputationGroupMap(Map<GroupName, GroupInfo> computationGroupMap) {
 		this.computationGroupMap = computationGroupMap;
 	}
-	public Map<String, GroupInfo> getAggregateGroupMap() {
+	public Map<GroupName, GroupInfo> getAggregateGroupMap() {
 		return aggregateGroupMap;
 	}
-	public void setAggregateGroupMap(Map<String, GroupInfo> aggregateGroupMap) {
+	public void setAggregateGroupMap(Map<GroupName, GroupInfo> aggregateGroupMap) {
 		this.aggregateGroupMap = aggregateGroupMap;
+	}	
+	public Map<GroupName, AggregateValues> getAggregateMap() {
+		return aggregateMap;
 	}
-	public Map<String, ArrayList<Long>> getAggregates() {
-		return aggregates;
+	public Map<GroupName, ComputationValues> getComputationMap() {
+		return computationMap;
 	}
-	public void setAggregates(Map<String, ArrayList<Long>> aggregates) {
-		this.aggregates = aggregates;
-	}
-	public Map<String, ArrayList<Double>> getComputations() {
-		return computations;
-	}
-	public void setComputations(Map<String, ArrayList<Double>> computations) {
-		this.computations = computations;
-	}
-	
 	@Override
 	public int compareTo(Assembly assembly) {
 		int s = state.compareTo(assembly.state);
@@ -98,21 +82,21 @@ import javax.xml.bind.annotation.*;
 		assembly.setState(getState());
 		assembly.setSession(getSession());
 		assembly.setDistricts(getDistricts().createDto(dtoType));
-		for ( String key: getAggregateGroupMap().keySet() ) {
+		for ( GroupName key: getAggregateGroupMap().keySet() ) {
 			GroupInfo groupInfo = aggregateGroupMap.get(key);
 			assembly.getAggregateGroupMap().put(key, groupInfo.createDto(dtoType));
 		}
-		for ( String key: getComputationGroupMap().keySet() ) {
+		for ( GroupName key: getComputationGroupMap().keySet() ) {
 			GroupInfo groupInfo = computationGroupMap.get(key);
 			assembly.getComputationGroupMap().put(key, groupInfo.createDto(dtoType));
 		}
 		switch ( dtoType ) {
 		case FULL:
-			for ( String key: getAggregates().keySet()) {
-				assembly.getAggregates().put(key, aggregates.get(key) );
+			for ( GroupName key: getAggregateMap().keySet()) {
+				assembly.getAggregateMap().put(key, aggregateMap.get(key) );
 			}
-			for ( String key: getComputations().keySet()) {
-				assembly.getComputations().put(key, computations.get(key) );
+			for ( GroupName key: getComputationMap().keySet()) {
+				assembly.getComputationMap().put(key, computationMap.get(key) );
 			}
 			break;
 		case SUMMARY:

@@ -21,7 +21,7 @@ public class AssemblyCsvHandler {
 		}
 	}
 	
-	public List<String> createHeader(Assembly assembly, List<String> groups) throws Exception {
+	public List<String> createHeader(Assembly assembly, List<GroupName> groups) throws Exception {
 		List<String> csvHeader = new ArrayList<String>();
 
         Districts districts = assembly.getDistricts();
@@ -30,7 +30,7 @@ public class AssemblyCsvHandler {
         csvHeader.add("Chamber");
 //			Aggregate aggregate = districts.getAggregate(GROUPLABEL);
 
-        for ( String group: groups ) {
+        for ( GroupName group: groups ) {
 	        for ( String label: districts.getAggregateGroupMap().get(group).getGroupLabels()) {
 	        	csvHeader.add(label);
 	        }
@@ -39,7 +39,7 @@ public class AssemblyCsvHandler {
 	        }
         }
 
-        for ( String group: groups ) {
+        for ( GroupName group: groups ) {
         	GroupInfo groupInfo = assembly.getAggregateGroupMap().get(group);
         	if ( groupInfo != null ) {
 		        for ( String label: groupInfo.getGroupLabels()) {
@@ -57,7 +57,7 @@ public class AssemblyCsvHandler {
 	}
 
 
-	public List<List<String>> createBody(Assembly assembly, List<String> groups) throws Exception {
+	public List<List<String>> createBody(Assembly assembly, List<GroupName> groups) throws Exception {
 		List<List<String>> csvResult = new ArrayList<List<String>>();
 		int rowOffset = 0;
 
@@ -71,13 +71,13 @@ public class AssemblyCsvHandler {
         	row = new ArrayList<String>();
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber());
-	        for ( String group: groups ) {
-    	        List<Long> aggs = dist.getAggregates().get(group);
-    	        for ( Long agg: aggs ) {
+	        for ( GroupName group: groups ) {
+	        	AggregateValues aggs = dist.getAggregateMap().get(group);
+    	        for ( Long agg: aggs.getValueList() ) {
     	        	row.add(agg.toString());
     	        }
-    	        List<Double> comps = dist.getComputations().get(group);
-    	        for ( Double comp: comps ) {
+    	        ComputationValues comps = dist.getComputationMap().get(group);
+    	        for ( Double comp: comps.getValueList() ) {
     	        	row.add(comp.toString());
     	        }
     	        csvResult.add(row);
@@ -89,16 +89,16 @@ public class AssemblyCsvHandler {
     	for ( int i=0; i<rowOffset; ++i ) {
     		row.add("");
     	}
-        for ( String group: groups ) {
-	        List<Long> aggs = assembly.getAggregates().get(group);
+        for ( GroupName group: groups ) {
+	        AggregateValues aggs = assembly.getAggregateMap().get(group);
 	        if ( aggs != null ) {
-    	        for ( Long agg: aggs ) {
+    	        for ( Long agg: aggs.getValueList() ) {
     	        	row.add(agg.toString());
     	        }
 	        }
-	        List<Double> comps = assembly.getComputations().get(group);
+	        ComputationValues comps = assembly.getComputationMap().get(group);
 	        if ( comps != null ) {
-    	        for ( Double comp: comps ) {
+    	        for ( Double comp: comps.getValueList() ) {
     	        	row.add(comp.toString());
     	        }
 	        }
@@ -107,8 +107,7 @@ public class AssemblyCsvHandler {
         return csvResult;
 	}
 
-
-	public void writeCsv(OutputStream out, Assembly assembly, List<String> groups) throws Exception {
+	public void writeCsv(OutputStream out, Assembly assembly, List<GroupName> groups) throws Exception {
         
 		OutputStreamWriter writer = new OutputStreamWriter(out);
 		List<String> csvHeader = createHeader(assembly, groups);

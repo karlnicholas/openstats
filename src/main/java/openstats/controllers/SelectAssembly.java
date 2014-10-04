@@ -18,8 +18,8 @@ public class SelectAssembly implements Serializable {
 	private Map<String,Object> assemblyTitles;
 	private String currentAssembly;
 	//
-	private String[] assemblyGroups;
-	private String[] assemblyGroupItems;
+	private GroupName[] assemblyGroups;
+	private GroupName[] assemblyGroupItems;
 	
     @Inject
     private AssemblyRepository assemblyRepository;
@@ -35,24 +35,24 @@ public class SelectAssembly implements Serializable {
         
     private void loadGroups(String currentAssembly) {
 		this.currentAssembly = currentAssembly;		
-		Set<String> groups = new TreeSet<String>();
+		Set<GroupName> groups = new TreeSet<GroupName>();
 		if ( currentAssembly != null && !currentAssembly.isEmpty()) {
 			String[] keys = currentAssembly.split("-"); 
 			Assembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
-			for ( String key: assembly.getAggregateGroupMap().keySet() ) {
+			for ( GroupName key: assembly.getAggregateGroupMap().keySet() ) {
 				groups.add( key );
 			}
-			for ( String key: assembly.getComputationGroupMap().keySet() ) {
+			for ( GroupName key: assembly.getComputationGroupMap().keySet() ) {
 				groups.add( key );
 			}
-			for ( String key: assembly.getDistricts().getAggregateGroupMap().keySet() ) {
+			for ( GroupName key: assembly.getDistricts().getAggregateGroupMap().keySet() ) {
 				groups.add(key);
 			}
-			for ( String key: assembly.getDistricts().getComputationGroupMap().keySet() ) {
+			for ( GroupName key: assembly.getDistricts().getComputationGroupMap().keySet() ) {
 				groups.add(key);
 			}
 		}
-		this.assemblyGroups = new String[groups.size()];
+		this.assemblyGroups = new GroupName[groups.size()];
 		this.assemblyGroups = groups.toArray(this.assemblyGroups);
 	}
 
@@ -73,19 +73,19 @@ public class SelectAssembly implements Serializable {
 		loadGroups(currentAssembly);
 	}
 
-	public String[] getAssemblyGroups() {
+	public GroupName[] getAssemblyGroups() {
 		return assemblyGroups;
 	}
 
-	public void setAssemblyGroups(String[] assemblyGroups) {
+	public void setAssemblyGroups(GroupName[] assemblyGroups) {
 		this.assemblyGroups = assemblyGroups;
 	}
 
-	public String[] getAssemblyGroupItems() {
+	public GroupName[] getAssemblyGroupItems() {
 		return assemblyGroupItems;
 	}
 
-	public void setAssemblyGroupItems(String[] assemblyGroupItems) {
+	public void setAssemblyGroupItems(GroupName[] assemblyGroupItems) {
 		this.assemblyGroupItems = assemblyGroupItems;
 	}
 

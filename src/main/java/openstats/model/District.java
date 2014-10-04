@@ -12,16 +12,14 @@ import javax.persistence.*;
 	private String chamber;
 	private String district;
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<Legislator> legislators;
-	@ElementCollection
-	private Map<String, ArrayList<Long>> aggregates;
-	@ElementCollection
-	private Map<String, ArrayList<Double>> computations;
+	private List<Legislator> legislators = new ArrayList<Legislator>();
+	@OneToMany(cascade = CascadeType.ALL)
+	private Map<GroupName, AggregateValues> aggregateMap = new LinkedHashMap<GroupName, AggregateValues>();
+	@OneToMany(cascade = CascadeType.ALL)
+	private Map<GroupName, ComputationValues> computationMap = new LinkedHashMap<GroupName, ComputationValues>();
 	
 	public District() {
-		legislators = new ArrayList<Legislator>();
-		aggregates = new TreeMap<String, ArrayList<Long>>();
-		computations = new TreeMap<String, ArrayList<Double>>();
+		
 	}
 	
 	public String getChamber() {
@@ -42,21 +40,12 @@ import javax.persistence.*;
 	public void setLegislators(List<Legislator> legislators) {
 		this.legislators = legislators;
 	}
-	
-	public Map<String, ArrayList<Long>> getAggregates() {
-		return aggregates;
+	public Map<GroupName, AggregateValues> getAggregateMap() {
+		return aggregateMap;
 	}
 
-	public void setAggregates(Map<String, ArrayList<Long>> aggregates) {
-		this.aggregates = aggregates;
-	}
-
-	public Map<String, ArrayList<Double>> getComputations() {
-		return computations;
-	}
-
-	public void setComputations(Map<String, ArrayList<Double>> computations) {
-		this.computations = computations;
+	public Map<GroupName, ComputationValues> getComputationMap() {
+		return computationMap;
 	}
 
 	@Override
@@ -74,11 +63,11 @@ import javax.persistence.*;
 			for ( Legislator l: getLegislators() ) {
 				district.getLegislators().add(l.createDto(dtoType));
 			}
-			for ( String key: getAggregates().keySet() ) {
-				district.getAggregates().put(key, aggregates.get(key));
+			for ( GroupName key: getAggregateMap().keySet() ) {
+				district.getAggregateMap().put(key, aggregateMap.get(key));
 			}
-			for ( String key: getComputations().keySet() ) {
-				district.getComputations().put(key, computations.get(key));
+			for ( GroupName key: getComputationMap().keySet() ) {
+				district.getComputationMap().put(key, computationMap.get(key));
 			}
 			break;
 		case SUMMARY: // intentionally left blank

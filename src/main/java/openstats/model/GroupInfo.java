@@ -11,16 +11,11 @@ import javax.persistence.*;
 
 	@ElementCollection
 	@OrderColumn
-	private List<String> groupLabels;
+	private List<String> groupLabels = new ArrayList<String>();
 	@ElementCollection
 	@OrderColumn
-	private List<String> groupDescriptions;
+	private List<String> groupDescriptions = new ArrayList<String>();
 	
-	public GroupInfo() {
-		groupLabels = new ArrayList<String>();
-		groupDescriptions = new ArrayList<String>();
-	}
-
 	public List<String> getGroupLabels() {
 		return groupLabels;
 	}

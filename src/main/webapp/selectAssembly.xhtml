@@ -13,8 +13,8 @@
 		</h:form>
 		<h:form rendered="#{!empty selectAssembly.currentAssembly}">
 			<h:message for="groupitems"/>
-			<h:selectManyCheckbox value="#{selectAssembly.assemblyGroupItems}" id="groupitems" required="true" requiredMessage="At least one group must be selected.">
-				<f:selectItems value="#{selectAssembly.assemblyGroups}" />
+			<h:selectManyCheckbox value="#{selectAssembly.assemblyGroupItems}" id="groupitems" converter="#{groupNameConverterBean}"  required="true" requiredMessage="At least one group must be selected.">
+				<f:selectItems value="#{selectAssembly.assemblyGroups}" var="groupName" itemLabel="#{groupName.groupName}" itemValue="#{groupName.groupName}"/>
 			</h:selectManyCheckbox>
 			<h:commandButton id="submit" value="Submit" action="exportCsv" />
 		</h:form>
