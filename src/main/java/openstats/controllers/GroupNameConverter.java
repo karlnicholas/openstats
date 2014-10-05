@@ -22,7 +22,7 @@ public class GroupNameConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
-		return GroupNameHandler.getGroupName(((String)value), em).getGroupName();
+		return ((GroupName)value).getGroupName();
 	}
 
 }
