@@ -16,7 +16,6 @@
  */
 package openstats.data;
 
-import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.*;
 import javax.persistence.criteria.*;
@@ -25,24 +24,28 @@ import openstats.model.*;
 
 import java.util.*;
 
-@ApplicationScoped
 public class AssemblyRepository {
 
     @Inject
     private EntityManager em;
-
-    public Assembly findById(Long id) {
-        return em.find(Assembly.class, id);
+    public AssemblyRepository() {}
+    // for testing
+    public AssemblyRepository(EntityManager em) {
+    	this.em = em;
     }
 
-    public List<Assembly> listAllAssemblies() {
-		return em.createNamedQuery("Assembly.listAssemblies", Assembly.class).getResultList();
+    public DBAssembly findById(Long id) {
+        return em.find(DBAssembly.class, id);
+    }
+
+    public List<DBAssembly> listAllAssemblies() {
+		return em.createNamedQuery("Assembly.listAssemblies", DBAssembly.class).getResultList();
     }
     
-    public Assembly findByStateSession(String state, String session) {
+    public DBAssembly findByStateSession(String state, String session) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Assembly> criteria = cb.createQuery(Assembly.class);
-        Root<Assembly> assembly = criteria.from(Assembly.class);
+        CriteriaQuery<DBAssembly> criteria = cb.createQuery(DBAssembly.class);
+        Root<DBAssembly> assembly = criteria.from(DBAssembly.class);
         // Swap criteria statements if you would like to try out type-safe criteria queries, a new
         // feature in JPA 2.0
         // criteria.select(member).where(cb.equal(member.get(Member_.email), email));
@@ -51,6 +54,7 @@ public class AssemblyRepository {
         		cb.equal(assembly.get("session"), session)
         	);
         return em.createQuery(criteria).getSingleResult();
+        
     }
 
 }

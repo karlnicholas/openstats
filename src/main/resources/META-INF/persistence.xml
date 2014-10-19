@@ -6,12 +6,11 @@
 		http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="openstats">
 		<jta-data-source>java:jboss/datasources/OpenStatsDS</jta-data-source>
-		<class>openstats.model.Assembly</class>
-		<class>openstats.model.District</class>
-		<class>openstats.model.Districts</class>
-		<class>openstats.model.Legislator</class>
-		<class>openstats.model.GroupInfo</class>
-		<class>openstats.model.GroupName</class>
+		<class>openstats.model.DBAssembly</class>
+		<class>openstats.model.DBDistrict</class>
+		<class>openstats.model.DBDistricts</class>
+		<class>openstats.model.DBLegislator</class>
+		<class>openstats.osmodel.OSGroup</class>
 		<class>openstats.model.AggregateValues</class>
 		<class>openstats.model.ComputationValues</class>
 		<properties>

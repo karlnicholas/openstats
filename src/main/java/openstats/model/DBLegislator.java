@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @SuppressWarnings("serial")
 @Entity
-public class Legislator implements DtoInterface<Legislator>, Serializable {
+public class DBLegislator implements DtoInterface<DBLegislator>, Serializable {
 	@Id @GeneratedValue private Long id;
 	
 	private String name;
@@ -25,8 +25,8 @@ public class Legislator implements DtoInterface<Legislator>, Serializable {
 		this.party = party;
 	}
 	@Override
-	public Legislator createDto(DTOTYPE dtoType) {
-		Legislator legislator = new Legislator();
+	public DBLegislator createDto(DTOTYPE dtoType) {
+		DBLegislator legislator = new DBLegislator();
 		legislator.setName(getName());
 		legislator.setParty(getParty());
 		return legislator;

@@ -18,8 +18,8 @@ public class SelectAssembly implements Serializable {
 	private Map<String,Object> assemblyTitles;
 	private String currentAssembly;
 	//
-	private GroupName[] assemblyGroups;
-	private GroupName[] assemblyGroupItems;
+	private DBGroup[] assemblyGroups;
+	private DBGroup[] assemblyGroupItems;
 	
     @Inject
     private AssemblyRepository assemblyRepository;
@@ -27,32 +27,32 @@ public class SelectAssembly implements Serializable {
     @PostConstruct
 	public void postConstruct() {
     	assemblyTitles = new TreeMap<String, Object>();
-		List<Assembly> assemblies = assemblyRepository.listAllAssemblies(); 
-		for ( Assembly assembly: assemblies ) {
+		List<DBAssembly> assemblies = assemblyRepository.listAllAssemblies(); 
+		for ( DBAssembly assembly: assemblies ) {
 			assemblyTitles.put(assembly.getState() + " " + assembly.getSession(), assembly.getState() + "-" + assembly.getSession());
 		}
 	}
         
     private void loadGroups(String currentAssembly) {
 		this.currentAssembly = currentAssembly;		
-		Set<GroupName> groups = new TreeSet<GroupName>();
+		Set<DBGroup> groups = new TreeSet<DBGroup>();
 		if ( currentAssembly != null && !currentAssembly.isEmpty()) {
 			String[] keys = currentAssembly.split("-"); 
-			Assembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
-			for ( GroupName key: assembly.getAggregateGroupMap().keySet() ) {
+			DBAssembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
+			for ( DBGroup key: assembly.getAggregateGroupMap().keySet() ) {
 				groups.add( key );
 			}
-			for ( GroupName key: assembly.getComputationGroupMap().keySet() ) {
+			for ( DBGroup key: assembly.getComputationGroupMap().keySet() ) {
 				groups.add( key );
 			}
-			for ( GroupName key: assembly.getDistricts().getAggregateGroupMap().keySet() ) {
+			for ( DBGroup key: assembly.getDistricts().getAggregateGroupMap().keySet() ) {
 				groups.add(key);
 			}
-			for ( GroupName key: assembly.getDistricts().getComputationGroupMap().keySet() ) {
+			for ( DBGroup key: assembly.getDistricts().getComputationGroupMap().keySet() ) {
 				groups.add(key);
 			}
 		}
-		this.assemblyGroups = new GroupName[groups.size()];
+		this.assemblyGroups = new DBGroup[groups.size()];
 		this.assemblyGroups = groups.toArray(this.assemblyGroups);
 	}
 
@@ -73,19 +73,19 @@ public class SelectAssembly implements Serializable {
 		loadGroups(currentAssembly);
 	}
 
-	public GroupName[] getAssemblyGroups() {
+	public DBGroup[] getAssemblyGroups() {
 		return assemblyGroups;
 	}
 
-	public void setAssemblyGroups(GroupName[] assemblyGroups) {
+	public void setAssemblyGroups(DBGroup[] assemblyGroups) {
 		this.assemblyGroups = assemblyGroups;
 	}
 
-	public GroupName[] getAssemblyGroupItems() {
+	public DBGroup[] getAssemblyGroupItems() {
 		return assemblyGroupItems;
 	}
 
-	public void setAssemblyGroupItems(GroupName[] assemblyGroupItems) {
+	public void setAssemblyGroupItems(DBGroup[] assemblyGroupItems) {
 		this.assemblyGroupItems = assemblyGroupItems;
 	}
 

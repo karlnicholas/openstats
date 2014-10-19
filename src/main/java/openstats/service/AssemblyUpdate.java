@@ -25,7 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import javax.validation.*;
 
-import openstats.model.Assembly;
+import openstats.model.DBAssembly;
 
 // The @Stateless annotation eliminates the need for manual transaction demarcation
 @Stateless
@@ -37,7 +37,7 @@ public class AssemblyUpdate {
     private EntityManager em;
 
     @Inject
-    private Event<Assembly> assemblyEventSrc;
+    private Event<DBAssembly> assemblyEventSrc;
 
     /*
      * find the assembly in the database
@@ -49,16 +49,16 @@ public class AssemblyUpdate {
      * update aggregations and computations.
      * 
      */
-    public void updateGroup(Assembly assembly) throws Exception {
+    public void updateGroup(DBAssembly assembly) throws Exception {
         log.info("Updating group for " + assembly.getState()+"-"+assembly.getSession());
         CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<Assembly> criteria = cb.createQuery(Assembly.class);
-        Root<Assembly> assemblyRoot = criteria.from(Assembly.class);
+        CriteriaQuery<DBAssembly> criteria = cb.createQuery(DBAssembly.class);
+        Root<DBAssembly> assemblyRoot = criteria.from(DBAssembly.class);
         criteria.select(assemblyRoot).where(
         		cb.equal(assemblyRoot.get("state"), assembly.getState()), 
         		cb.equal(assemblyRoot.get("session"), assembly.getSession())
         	);
-        Assembly assemblyDb = em.createQuery(criteria).getSingleResult();
+        DBAssembly assemblyDb = em.createQuery(criteria).getSingleResult();
         if ( assemblyDb == null ) {
         	throw new ValidationException("Assembly not found for state and sesssion:" +assembly.getState()+"-"+assembly.getSession());
         }

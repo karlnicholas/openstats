@@ -1,19 +1,13 @@
-package openstats.model;
+package openstats.osmodel;
 
-import java.io.Serializable;
-
-import javax.persistence.*;
-
-@SuppressWarnings("serial")
-@Entity public class GroupName implements Comparable<GroupName>, Serializable {
-	@Id @GeneratedValue private Long id;
-	
-	@Column(unique=true)
+public class OSGroup implements Comparable<OSGroup> {
 	private String groupName;
+	private String groupDescription;
 	
-	public GroupName() {}
-	public GroupName(String groupName) {
+	public OSGroup() {}
+	public OSGroup(String groupName, String groupDescription) {
 		this.groupName = groupName;
+		this.groupDescription = groupDescription;
 	}
 
 	public String getGroupName() {
@@ -24,8 +18,14 @@ import javax.persistence.*;
 		this.groupName = groupName;
 	}
 
+	public String getGroupDescription() {
+		return groupDescription;
+	}
+	public void setGroupDescription(String groupDescription) {
+		this.groupDescription = groupDescription;
+	}
 	@Override
-	public int compareTo(GroupName o) {
+	public int compareTo(OSGroup o) {
 		return groupName.compareTo(o.groupName);
 	}
 	@Override
@@ -44,7 +44,7 @@ import javax.persistence.*;
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		GroupName other = (GroupName) obj;
+		OSGroup other = (OSGroup) obj;
 		if (groupName == null) {
 			if (other.groupName != null)
 				return false;

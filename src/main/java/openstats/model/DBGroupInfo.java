@@ -5,8 +5,11 @@ import java.util.*;
 
 import javax.persistence.*;
 
+import openstats.model.DtoInterface;
+import openstats.model.DtoInterface.DTOTYPE;
+
 @SuppressWarnings("serial")
-@Entity public class GroupInfo implements DtoInterface<GroupInfo>, Serializable {
+@Entity public class DBGroupInfo implements DtoInterface<DBGroupInfo>, Serializable {
 	@Id @GeneratedValue private Long id;
 
 	@ElementCollection
@@ -33,8 +36,8 @@ import javax.persistence.*;
 	}
 
 	@Override
-	public GroupInfo createDto(DTOTYPE dtoType) {
-		GroupInfo groupInfo = new GroupInfo();
+	public DBGroupInfo createDto(DTOTYPE dtoType) {
+		DBGroupInfo groupInfo = new DBGroupInfo();
 		for ( String label: getGroupLabels()) {
 			groupInfo.getGroupLabels().add(label);
 		}

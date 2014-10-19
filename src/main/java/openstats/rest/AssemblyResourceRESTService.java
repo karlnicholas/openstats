@@ -50,15 +50,15 @@ public class AssemblyResourceRESTService {
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Assembly> listAllAssemblies() {
+    public List<DBAssembly> listAllAssemblies() {
         return repository.listAllAssemblies();
     }
 
     @GET
     @Path("/summary/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Assembly getSummary(@PathParam("id") long id) {
-        Assembly assembly = repository.findById(id);
+    public DBAssembly getSummary(@PathParam("id") long id) {
+        DBAssembly assembly = repository.findById(id);
     	assembly = assembly.createDto(DTOTYPE.SUMMARY);
         if (assembly == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -69,8 +69,8 @@ public class AssemblyResourceRESTService {
     @GET
     @Path("/full/{id:[0-9][0-9]*}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Assembly getFull(@PathParam("id") long id) {
-        Assembly assembly = repository.findById(id);
+    public DBAssembly getFull(@PathParam("id") long id) {
+        DBAssembly assembly = repository.findById(id);
     	assembly = assembly.createDto(DTOTYPE.FULL);
         if (assembly == null) {
             throw new WebApplicationException(Response.Status.NOT_FOUND);
@@ -82,7 +82,7 @@ public class AssemblyResourceRESTService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createAssembly(Assembly assembly) {
+    public Response createAssembly(DBAssembly assembly) {
 
         Response.ResponseBuilder builder = null;
 
@@ -129,7 +129,7 @@ public class AssemblyResourceRESTService {
      * @return True if the email already exists, and false otherwise
      */
     public boolean stateSessionAlreadyExists(String state, String session) {
-        Assembly assembly = null;
+        DBAssembly assembly = null;
         try {
             assembly = repository.findByStateSession(state, session);
         } catch (NoResultException e) {

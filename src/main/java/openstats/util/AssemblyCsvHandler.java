@@ -3,6 +3,7 @@ import java.io.*;
 import java.util.*;
 
 import openstats.model.*;
+import openstats.osmodel.*;
 
 import org.supercsv.io.AbstractCsvWriter;
 import org.supercsv.prefs.CsvPreference;
@@ -21,16 +22,16 @@ public class AssemblyCsvHandler {
 		}
 	}
 	
-	public List<String> createHeader(Assembly assembly, List<GroupName> groups) throws Exception {
+	public List<String> createHeader(DBAssembly assembly, List<DBGroup> groups) throws Exception {
 		List<String> csvHeader = new ArrayList<String>();
 
-        Districts districts = assembly.getDistricts();
+        DBDistricts districts = assembly.getDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         csvHeader.add("District");
         csvHeader.add("Chamber");
 //			Aggregate aggregate = districts.getAggregate(GROUPLABEL);
 
-        for ( GroupName group: groups ) {
+        for ( DBGroup group: groups ) {
 	        for ( String label: districts.getAggregateGroupMap().get(group).getGroupLabels()) {
 	        	csvHeader.add(label);
 	        }
@@ -39,8 +40,8 @@ public class AssemblyCsvHandler {
 	        }
         }
 
-        for ( GroupName group: groups ) {
-        	GroupInfo groupInfo = assembly.getAggregateGroupMap().get(group);
+        for ( DBGroup group: groups ) {
+        	DBGroupInfo groupInfo = assembly.getAggregateGroupMap().get(group);
         	if ( groupInfo != null ) {
 		        for ( String label: groupInfo.getGroupLabels()) {
 		        	csvHeader.add(label);
@@ -57,21 +58,21 @@ public class AssemblyCsvHandler {
 	}
 
 
-	public List<List<String>> createBody(Assembly assembly, List<GroupName> groups) throws Exception {
+	public List<List<String>> createBody(DBAssembly assembly, List<DBGroup> groups) throws Exception {
 		List<List<String>> csvResult = new ArrayList<List<String>>();
 		int rowOffset = 0;
 
-        Districts districts = assembly.getDistricts();
+        DBDistricts districts = assembly.getDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         List<String> row = new ArrayList<String>();
 
 
         // write data for districts 
-        for ( final District dist: districts.getDistrictList()) {
+        for ( final DBDistrict dist: districts.getDistrictList()) {
         	row = new ArrayList<String>();
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber());
-	        for ( GroupName group: groups ) {
+	        for ( DBGroup group: groups ) {
 	        	AggregateValues aggs = dist.getAggregateMap().get(group);
     	        for ( Long agg: aggs.getValueList() ) {
     	        	row.add(agg.toString());
@@ -89,7 +90,7 @@ public class AssemblyCsvHandler {
     	for ( int i=0; i<rowOffset; ++i ) {
     		row.add("");
     	}
-        for ( GroupName group: groups ) {
+        for ( DBGroup group: groups ) {
 	        AggregateValues aggs = assembly.getAggregateMap().get(group);
 	        if ( aggs != null ) {
     	        for ( Long agg: aggs.getValueList() ) {
@@ -107,7 +108,7 @@ public class AssemblyCsvHandler {
         return csvResult;
 	}
 
-	public void writeCsv(OutputStream out, Assembly assembly, List<GroupName> groups) throws Exception {
+	public void writeCsv(OutputStream out, DBAssembly assembly, List<DBGroup> groups) throws Exception {
         
 		OutputStreamWriter writer = new OutputStreamWriter(out);
 		List<String> csvHeader = createHeader(assembly, groups);
