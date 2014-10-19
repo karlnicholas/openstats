@@ -1,17 +1,24 @@
 package openstats.osmodel;
 
-import java.util.List;
+import java.util.*;
 
 public class OSAssembly implements Comparable<OSAssembly> {
 
 	private String state;
 	private String session;
 	private OSGroup osGroup;
-	private OSDistricts osDistricts;
-	private OSGroupInfo aggregateGroupInfo; 
-	private OSGroupInfo computationGroupInfo; 
-	private List<Long> aggregateValues;
-	private List<Double> computationValues;
+	private OSDistricts osDistricts = new OSDistricts();
+	private OSGroupInfo aggregateGroupInfo = new OSGroupInfo(); 
+	private OSGroupInfo computationGroupInfo = new OSGroupInfo(); 
+	private List<Long> aggregateValues = new ArrayList<Long>();
+	private List<Double> computationValues = new ArrayList<Double>();
+	
+	public OSAssembly(String state, String session, OSGroup osGroup) {
+		this.state = state;
+		this.session = session;
+		this.osGroup = osGroup;
+	}
+	
 	public String getState() {
 		return state;
 	}
