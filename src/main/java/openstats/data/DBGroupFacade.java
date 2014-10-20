@@ -1,72 +1,54 @@
 package openstats.data;
 
-import java.util.*;
-
 import javax.inject.Inject;
-import javax.persistence.EntityManager;
+import javax.persistence.*;
 
 import openstats.model.*;
+import openstats.osmodel.OSAssembly;
 
 public class DBGroupFacade {
 
 	@Inject
     private EntityManager em;
+	@Inject
+	private AssemblyRepository assemblyRepository;
 	
 	public DBGroupFacade() {}
     // for testing
 	public DBGroupFacade(EntityManager em) {
 		this.em = em;
+		assemblyRepository = new AssemblyRepository(em);
 	}
-	
+		
 	/**
-	 * Create an DBGroup given name and description.
+	 * Write an OSAssembly, deleting old entries if needed.
+	 * Check consitency of OSGroup information contained therein.
 	 * 
-	 * @param groupName
-	 * @param groupDescription
-	 * @return
-	 * @throws OpenStatsException
+	 * @param osAssembly
+	 * @throws OpenStatsException 
 	 */
-	public DBGroup createDBGroup(String groupName, String groupDescription) throws OpenStatsException {
-        // GroupNameHandler.initialize(em);
-		DBGroup dbGroup = new DBGroup(groupName, groupDescription); 
-        GroupNameHandler.createDBGroup(dbGroup, em);
-        return dbGroup;
-	}
-
-	/**
-	 * Gets a DBGroup by its name.
-	 * 
-	 * @param groupName
-	 * @return {@link} DBGroup
-	 * @throws OpenStatsException
-	 */
-	public DBGroup getDBGroup(String groupName) throws OpenStatsException {
-        // GroupNameHandler.initialize(em);
-        return GroupNameHandler.getDBGroup(groupName, em);
-	}
-	
-	/**
-	 * Allows for the updating of a DBGroup description.
-	 * 
-	 * @param groupName
-	 * @param groupDescription
-	 * @throws OpenStatsException
-	 */
-	public void udpateDBGroup(String groupName, String groupDescription) throws OpenStatsException {
-		DBGroup dbGroup = GroupNameHandler.getDBGroup(groupName, em);
-		dbGroup.setGroupDescription(groupDescription);
-		GroupNameHandler.updateDBGroup(dbGroup, em);
-	}
-
-	/**
-	 * Looks up and deletes an DBGroup by its name.
-	 *  
-	 * @param groupName
-	 * @throws OpenStatsException
-	 */
-	public void deleteDBGroup(String groupName) throws OpenStatsException {
-		DBGroup dbGroup = GroupNameHandler.getDBGroup(groupName, em);
-		GroupNameHandler.deleteDBGroup(dbGroup, em);
+	public void writeOSAssembly(OSAssembly osAssembly) throws OpenStatsException {
+		EntityTransaction tx = em.getTransaction();
+		tx.begin();
+		DBGroup dbGroup = DBGroupHandler.getDBGroup(osAssembly.getOSGroup().getGroupName(), em);
+		
+		if ( dbGroup == null ) {
+			// create new DBGroup
+			dbGroup = new DBGroup(osAssembly.getOSGroup());
+			DBGroupHandler.createDBGroup(dbGroup, em);
+		}
+		DBAssembly dbAssembly;
+		Long count = assemblyRepository.checkByStateSession(osAssembly.getState(), osAssembly.getSession());
+		if ( count > 0 ) {
+			dbAssembly = assemblyRepository.findByStateSession(osAssembly.getState(), osAssembly.getSession());
+			// do updates and consistency
+		} else {
+			// create a new one
+			dbAssembly = new DBAssembly(dbGroup, osAssembly);
+		}
+		em.persist(dbAssembly);
+		tx.commit();
+		
 	}
 		
 }

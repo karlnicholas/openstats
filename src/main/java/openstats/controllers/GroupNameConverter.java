@@ -19,7 +19,7 @@ public class GroupNameConverter implements Converter {
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {		
 		try {
-			return GroupNameHandler.getDBGroup(value, em);
+			return DBGroupHandler.getDBGroup(value, em);
 		} catch (OpenStatsException e) {
 			throw new RuntimeException(e);
 		}

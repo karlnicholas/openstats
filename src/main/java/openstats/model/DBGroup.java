@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
+import openstats.osmodel.OSGroup;
+
 @SuppressWarnings("serial")
 @Entity public class DBGroup implements Comparable<DBGroup>, Serializable {
 	@Id @GeneratedValue private Long id;
@@ -13,9 +15,9 @@ import javax.persistence.*;
 	private String groupDescription;
 	
 	public DBGroup() {}
-	public DBGroup(String groupName, String groupDescription) {
-		this.groupName = groupName;
-		this.groupDescription = groupDescription;
+	public DBGroup(OSGroup osGroup) {
+		this.groupName = osGroup.getGroupName();
+		this.groupDescription = osGroup.getGroupDescription();
 	}
 
 	public String getGroupName() {

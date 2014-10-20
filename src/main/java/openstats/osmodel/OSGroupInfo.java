@@ -1,11 +1,15 @@
 package openstats.osmodel;
 
-import java.io.Serializable;
 import java.util.*;
 
-public class OSGroupInfo implements Serializable {
+public class OSGroupInfo {
 	private List<String> groupLabels = new ArrayList<String>();
 	private List<String> groupDescriptions = new ArrayList<String>();
+	
+	public OSGroupInfo(	List<String> groupLabels, List<String> groupDescriptions ) {
+		this.groupLabels = groupLabels;
+		this.groupDescriptions = groupDescriptions;
+	}
 	
 	public List<String> getGroupLabels() {
 		return groupLabels;

@@ -5,7 +5,7 @@ import java.util.*;
 
 import javax.persistence.*;
 
-import openstats.osmodel.OSGroup;
+import openstats.osmodel.*;
 
 @SuppressWarnings("serial")
 @Entity public class DBDistrict implements Comparable<DBDistrict>, DtoInterface<DBDistrict>, Serializable {
@@ -13,12 +13,28 @@ import openstats.osmodel.OSGroup;
 	
 	private String chamber;
 	private String district;
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<DBLegislator> legislators = new ArrayList<DBLegislator>();
+	
 	@OneToMany(cascade = CascadeType.ALL)
-	private Map<OSGroup, AggregateValues> aggregateMap = new LinkedHashMap<OSGroup, AggregateValues>();
+	private Map<DBGroup, AggregateValues> aggregateMap = new LinkedHashMap<DBGroup, AggregateValues>();
+	
 	@OneToMany(cascade = CascadeType.ALL)
-	private Map<OSGroup, ComputationValues> computationMap = new LinkedHashMap<OSGroup, ComputationValues>();
+	private Map<DBGroup, ComputationValues> computationMap = new LinkedHashMap<DBGroup, ComputationValues>();
+	
+	public DBDistrict() {}
+	public DBDistrict(DBGroup dbGroup, OSDistrict osDistrict) {
+		this.chamber = osDistrict.getChamber();
+		this.district = osDistrict.getDistrict();
+		// skip legislators for now
+		if ( osDistrict.getAggregateValues() != null ) {
+			aggregateMap.put(dbGroup, new AggregateValues(osDistrict.getAggregateValues()) );
+		}
+		if ( osDistrict.getComputationValues() != null ) {
+			computationMap.put(dbGroup, new ComputationValues(osDistrict.getComputationValues()) );
+		}
+	}
 
 	public String getChamber() {
 		return chamber;
@@ -38,11 +54,11 @@ import openstats.osmodel.OSGroup;
 	public void setLegislators(List<DBLegislator> legislators) {
 		this.legislators = legislators;
 	}
-	public Map<OSGroup, AggregateValues> getAggregateMap() {
+	public Map<DBGroup, AggregateValues> getAggregateMap() {
 		return aggregateMap;
 	}
 
-	public Map<OSGroup, ComputationValues> getComputationMap() {
+	public Map<DBGroup, ComputationValues> getComputationMap() {
 		return computationMap;
 	}
 
@@ -61,10 +77,10 @@ import openstats.osmodel.OSGroup;
 			for ( DBLegislator l: getLegislators() ) {
 				district.getLegislators().add(l.createDto(dtoType));
 			}
-			for ( OSGroup osGroup: getAggregateMap().keySet() ) {
+			for ( DBGroup osGroup: getAggregateMap().keySet() ) {
 				district.getAggregateMap().put(osGroup, aggregateMap.get(osGroup));
 			}
-			for ( OSGroup osGroup: getComputationMap().keySet() ) {
+			for ( DBGroup osGroup: getComputationMap().keySet() ) {
 				district.getComputationMap().put(osGroup, computationMap.get(osGroup));
 			}
 			break;

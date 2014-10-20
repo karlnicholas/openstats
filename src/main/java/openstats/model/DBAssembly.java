@@ -9,28 +9,52 @@ import javax.xml.bind.annotation.*;
 import openstats.osmodel.*;
 
 @NamedQueries({ 
-	@NamedQuery(name = "Assembly.listAssemblies", query = "SELECT s FROM Assembly s") 
+	@NamedQuery(name = DBAssembly.LISTASSEMBLIES, query = "SELECT a FROM DBAssembly a") 
 })
 
 @SuppressWarnings("serial")
 @XmlRootElement
 @Entity public class DBAssembly implements Comparable<DBAssembly>, DtoInterface<DBAssembly>, Serializable {
+	public static final String LISTASSEMBLIES  = "DBAssembly.listAssemblies";
 	@Id @GeneratedValue private Long id;
 
 	private String state;
 	private String session;
+	
 	@OneToOne(cascade={CascadeType.ALL})
 	private DBDistricts districts = new DBDistricts();
+	
 	@OneToMany(cascade={CascadeType.ALL})
 	@JoinTable(name="assembly_aggregategroupmap")
-	private Map<DBGroup, DBGroupInfo> aggregateGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>(); 
+	private Map<DBGroup, DBGroupInfo> aggregateGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
+	
 	@OneToMany(cascade={CascadeType.ALL})
 	@JoinTable(name="assembly_computationgroupmap")
-	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>(); 
+	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	private Map<DBGroup, AggregateValues> aggregateMap = new LinkedHashMap<DBGroup, AggregateValues>();
+	
 	@OneToMany(cascade = CascadeType.ALL)
 	private Map<DBGroup, ComputationValues> computationMap = new LinkedHashMap<DBGroup, ComputationValues>();
+	
+	public DBAssembly() {}
+	public DBAssembly(DBGroup dbGroup, OSAssembly osAssembly) {
+		this.state = osAssembly.getState();
+		this.session = osAssembly.getSession();
+		this.districts = new DBDistricts(dbGroup, osAssembly.getOSDistricts());
+		
+		if ( osAssembly.getAggregateGroupInfo() != null || osAssembly.getAggregateValues() != null ) {
+			aggregateGroupMap.put(dbGroup, new DBGroupInfo(osAssembly.getAggregateGroupInfo()));
+			aggregateMap.put(dbGroup, new AggregateValues(osAssembly.getAggregateValues()) );
+		}
+
+		if ( osAssembly.getComputationGroupInfo() != null || osAssembly.getComputationValues() != null ) {
+			computationGroupMap.put(dbGroup, new DBGroupInfo(osAssembly.getComputationGroupInfo()));
+			computationMap.put(dbGroup, new ComputationValues(osAssembly.getComputationValues()) );
+		}
+
+	}
 	
 	@XmlTransient
 	public Long getId() {

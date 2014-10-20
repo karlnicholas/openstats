@@ -6,7 +6,7 @@ import java.util.*;
 import javax.persistence.*;
 
 import openstats.model.DtoInterface;
-import openstats.model.DtoInterface.DTOTYPE;
+import openstats.osmodel.OSGroupInfo;
 
 @SuppressWarnings("serial")
 @Entity public class DBGroupInfo implements DtoInterface<DBGroupInfo>, Serializable {
@@ -18,6 +18,12 @@ import openstats.model.DtoInterface.DTOTYPE;
 	@ElementCollection
 	@OrderColumn
 	private List<String> groupDescriptions = new ArrayList<String>();
+	
+	public DBGroupInfo() {}
+	public DBGroupInfo(OSGroupInfo osGroupInfo) {
+		groupLabels.addAll(osGroupInfo.getGroupLabels());
+		groupDescriptions.addAll(osGroupInfo.getGroupDescriptions());
+	}
 	
 	public List<String> getGroupLabels() {
 		return groupLabels;

@@ -57,4 +57,18 @@ public class AssemblyRepository {
         
     }
 
+    public Long checkByStateSession(String state, String session) {
+        CriteriaBuilder cb = em.getCriteriaBuilder();
+        CriteriaQuery<Long> criteria = cb.createQuery(Long.class);
+        Root<DBAssembly> assembly = criteria.from(DBAssembly.class);
+        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
+        // feature in JPA 2.0
+        // criteria.select(member).where(cb.equal(member.get(Member_.email), email));
+        criteria.select(cb.count(assembly)).where(
+        		cb.equal(assembly.get("state"), state), 
+        		cb.equal(assembly.get("session"), session)
+        	);
+        return em.createQuery(criteria).getSingleResult();
+        
+    }
 }

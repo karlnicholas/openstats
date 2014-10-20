@@ -11,7 +11,14 @@ import javax.persistence.*;
 	
 	@ElementCollection
 	@OrderColumn
-	private List<Double> valueList = new ArrayList<Double>();
+	private List<Double> valueList;
+	
+	public ComputationValues() {
+		valueList = new ArrayList<Double>();
+	}
+	public ComputationValues(List<Double> valueList) {
+		this.valueList = valueList;
+	}
 
 	public List<Double> getValueList() {
 		return valueList;

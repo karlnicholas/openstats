@@ -4,8 +4,8 @@ import java.util.*;
 
 public class OSDistricts {
 
-	private OSGroupInfo aggregateGroupInfo = new OSGroupInfo(); 
-	private OSGroupInfo computationGroupInfo = new OSGroupInfo(); 
+	private OSGroupInfo aggregateGroupInfo = null; 
+	private OSGroupInfo computationGroupInfo = null; 
 	private List<OSDistrict> osDistrictList = new ArrayList<OSDistrict>();
 
 	public OSGroupInfo getAggregateGroupInfo() {

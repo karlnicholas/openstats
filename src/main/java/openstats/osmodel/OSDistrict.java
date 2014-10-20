@@ -14,6 +14,8 @@ public class OSDistrict {
 	public OSDistrict(String chamber, String district) {
 		this.chamber = chamber;
 		this.district = district;
+		aggregateValues = null;
+		computationValues = null;
 	}
 	public OSDistrict(DBDistrict district, OSGroup osGroup) {
 		this.chamber = district.getChamber();

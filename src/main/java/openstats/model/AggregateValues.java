@@ -11,7 +11,14 @@ import javax.persistence.*;
 	
 	@ElementCollection
 	@OrderColumn
-	private List<Long> valueList = new ArrayList<Long>();
+	private List<Long> valueList;
+	
+	public AggregateValues() {
+		valueList = new ArrayList<Long>();
+	}
+	public AggregateValues(List<Long> valueList) {
+		this.valueList = valueList;
+	}
 
 	public List<Long> getValueList() {
 		return valueList;

@@ -8,10 +8,10 @@ public class OSAssembly implements Comparable<OSAssembly> {
 	private String session;
 	private OSGroup osGroup;
 	private OSDistricts osDistricts = new OSDistricts();
-	private OSGroupInfo aggregateGroupInfo = new OSGroupInfo(); 
-	private OSGroupInfo computationGroupInfo = new OSGroupInfo(); 
-	private List<Long> aggregateValues = new ArrayList<Long>();
-	private List<Double> computationValues = new ArrayList<Double>();
+	private OSGroupInfo aggregateGroupInfo = null; 
+	private OSGroupInfo computationGroupInfo = null; 
+	private List<Long> aggregateValues = null;
+	private List<Double> computationValues = null;
 	
 	public OSAssembly(String state, String session, OSGroup osGroup) {
 		this.state = state;
