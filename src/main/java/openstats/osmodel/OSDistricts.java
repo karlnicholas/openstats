@@ -2,11 +2,33 @@ package openstats.osmodel;
 
 import java.util.*;
 
+import openstats.model.*;
+
 public class OSDistricts {
 
-	private OSGroupInfo aggregateGroupInfo = null; 
-	private OSGroupInfo computationGroupInfo = null; 
+	private OSGroupInfo aggregateGroupInfo; 
+	private OSGroupInfo computationGroupInfo; 
 	private List<OSDistrict> osDistrictList = new ArrayList<OSDistrict>();
+	
+	public OSDistricts() {
+		aggregateGroupInfo = null; 
+		computationGroupInfo = null; 
+	}
+	public OSDistricts(DBGroup dbGroup, DBDistricts dbDistricts) {
+		if ( dbDistricts.getAggregateGroupMap().containsKey(dbGroup) ) {
+			aggregateGroupInfo = new OSGroupInfo( dbDistricts.getAggregateGroupMap().get(dbGroup) );
+		} else {
+			aggregateGroupInfo = null; 
+		}
+		if ( dbDistricts.getComputationGroupMap().containsKey(dbGroup) ) {
+			computationGroupInfo = new OSGroupInfo( dbDistricts.getComputationGroupMap().get(dbGroup) );
+		} else {
+			computationGroupInfo = null; 
+		}
+		for ( DBDistrict dbDistrict: dbDistricts.getDistrictList()) {
+			osDistrictList.add(new OSDistrict(dbGroup, dbDistrict));
+		}
+	}
 
 	public OSGroupInfo getAggregateGroupInfo() {
 		return aggregateGroupInfo;

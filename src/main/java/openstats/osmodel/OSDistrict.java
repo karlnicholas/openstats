@@ -1,6 +1,6 @@
 package openstats.osmodel;
 
-import java.util.List;
+import java.util.*;
 
 import openstats.model.*;
 
@@ -17,11 +17,19 @@ public class OSDistrict {
 		aggregateValues = null;
 		computationValues = null;
 	}
-	public OSDistrict(DBDistrict district, OSGroup osGroup) {
+	public OSDistrict(DBGroup dbGroup, DBDistrict district) {
 		this.chamber = district.getChamber();
 		this.district = district.getDistrict();
-		this.aggregateValues = district.getAggregateMap().get(osGroup).getValueList();
-		this.computationValues = district.getComputationMap().get(osGroup).getValueList();
+		if ( district.getAggregateMap().containsKey(dbGroup)) {
+			this.aggregateValues = new ArrayList<Long>(district.getAggregateMap().get(dbGroup).getValueList());
+		} else {
+			aggregateValues = null;
+		}
+		if ( district.getComputationMap().containsKey(dbGroup)) {
+			this.computationValues = new ArrayList<Double>(district.getComputationMap().get(dbGroup).getValueList());
+		} else {
+			computationValues = null;
+		}
 	}
 	public String getChamber() {
 		return chamber;

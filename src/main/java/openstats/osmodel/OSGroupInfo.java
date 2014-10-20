@@ -2,15 +2,22 @@ package openstats.osmodel;
 
 import java.util.*;
 
+import openstats.model.DBGroupInfo;
+
 public class OSGroupInfo {
-	private List<String> groupLabels = new ArrayList<String>();
-	private List<String> groupDescriptions = new ArrayList<String>();
+	private List<String> groupLabels;
+	private List<String> groupDescriptions;
 	
 	public OSGroupInfo(	List<String> groupLabels, List<String> groupDescriptions ) {
 		this.groupLabels = groupLabels;
 		this.groupDescriptions = groupDescriptions;
 	}
 	
+	public OSGroupInfo(	DBGroupInfo dbGroupInfo ) {
+		this.groupLabels = new ArrayList<String>(dbGroupInfo.getGroupLabels());
+		this.groupDescriptions = new ArrayList<String>(dbGroupInfo.getGroupDescriptions());
+	}
+
 	public List<String> getGroupLabels() {
 		return groupLabels;
 	}

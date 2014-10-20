@@ -39,7 +39,8 @@ import openstats.osmodel.*;
 	private Map<DBGroup, ComputationValues> computationMap = new LinkedHashMap<DBGroup, ComputationValues>();
 	
 	public DBAssembly() {}
-	public DBAssembly(DBGroup dbGroup, OSAssembly osAssembly) {
+	
+	public void update(DBGroup dbGroup, OSAssembly osAssembly) {
 		this.state = osAssembly.getState();
 		this.session = osAssembly.getSession();
 		this.districts = new DBDistricts(dbGroup, osAssembly.getOSDistricts());
@@ -53,7 +54,6 @@ import openstats.osmodel.*;
 			computationGroupMap.put(dbGroup, new DBGroupInfo(osAssembly.getComputationGroupInfo()));
 			computationMap.put(dbGroup, new ComputationValues(osAssembly.getComputationValues()) );
 		}
-
 	}
 	
 	@XmlTransient

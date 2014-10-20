@@ -2,21 +2,46 @@ package openstats.osmodel;
 
 import java.util.*;
 
+import openstats.model.*;
+
 public class OSAssembly implements Comparable<OSAssembly> {
 
 	private String state;
 	private String session;
 	private OSGroup osGroup;
-	private OSDistricts osDistricts = new OSDistricts();
-	private OSGroupInfo aggregateGroupInfo = null; 
-	private OSGroupInfo computationGroupInfo = null; 
-	private List<Long> aggregateValues = null;
-	private List<Double> computationValues = null;
+	private OSDistricts osDistricts;
+	private OSGroupInfo aggregateGroupInfo; 
+	private OSGroupInfo computationGroupInfo; 
+	private List<Long> aggregateValues;
+	private List<Double> computationValues;
 	
 	public OSAssembly(String state, String session, OSGroup osGroup) {
 		this.state = state;
 		this.session = session;
 		this.osGroup = osGroup;
+		this.osDistricts = new OSDistricts();
+		this.aggregateGroupInfo = null; 
+		this.computationGroupInfo = null; 
+		this.aggregateValues = null;
+		this.computationValues = null;
+	}
+	
+	public OSAssembly(DBGroup dbGroup, DBAssembly dbAssembly) {
+		this.state = dbAssembly.getState();
+		this.session = dbAssembly.getSession();
+		this.osGroup = new OSGroup(dbGroup.getGroupName(), dbGroup.getGroupDescription());
+		this.osDistricts = new OSDistricts(dbGroup, dbAssembly.getDistricts());
+
+		if ( dbAssembly.getAggregateGroupMap().containsKey(dbGroup) || dbAssembly.getAggregateMap().containsKey(dbGroup) ) {
+			aggregateGroupInfo = new OSGroupInfo(dbAssembly.getAggregateGroupMap().get(dbGroup));
+			aggregateValues = new ArrayList<Long>(dbAssembly.getAggregateMap().get(dbGroup).getValueList());
+		}
+
+		if ( dbAssembly.getComputationGroupMap().containsKey(dbGroup) || dbAssembly.getComputationMap().containsKey(dbGroup) ) {
+			computationGroupInfo = new OSGroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
+			computationValues = new ArrayList<Double>(dbAssembly.getComputationMap().get(dbGroup).getValueList());
+		}
+
 	}
 	
 	public String getState() {

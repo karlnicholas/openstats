@@ -40,14 +40,31 @@ public class DBGroupFacade {
 		DBAssembly dbAssembly;
 		Long count = assemblyRepository.checkByStateSession(osAssembly.getState(), osAssembly.getSession());
 		if ( count > 0 ) {
+			// update existing one
 			dbAssembly = assemblyRepository.findByStateSession(osAssembly.getState(), osAssembly.getSession());
-			// do updates and consistency
+			dbAssembly.update(dbGroup, osAssembly);
+			em.merge(dbAssembly);
 		} else {
 			// create a new one
-			dbAssembly = new DBAssembly(dbGroup, osAssembly);
+			dbAssembly = new DBAssembly();
+			dbAssembly.update(dbGroup, osAssembly);
+			em.persist(dbAssembly);
 		}
-		em.persist(dbAssembly);
 		tx.commit();
+		
+	}
+	
+	/**
+	 * Build OSAssembly object for Group for State/Session.
+	 *  
+	 * @param dbGroup
+	 * @param state
+	 * @param session
+	 * @return
+	 */
+	public OSAssembly buildOSAssembly(DBGroup dbGroup, String state, String session) {
+		DBAssembly dbAssembly = assemblyRepository.findByStateSession(state, session);
+		return new OSAssembly(dbGroup, dbAssembly);
 		
 	}
 		
