@@ -17,21 +17,16 @@
 package openstats.rest;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.persistence.NoResultException;
-import javax.persistence.criteria.*;
-import javax.validation.*;
 import javax.ws.rs.*;
-import javax.ws.rs.Path;
 import javax.ws.rs.core.*;
 
 import openstats.data.*;
-import openstats.model.*;
-import openstats.model.DtoInterface.DTOTYPE;
-import openstats.service.AssemblyUpdate;
+import openstats.dbmodel.*;
+import openstats.dbmodel.DtoInterface.DTOTYPE;
 
 /**
  * JAX-RS Example
@@ -41,9 +36,6 @@ import openstats.service.AssemblyUpdate;
 @Path("/assemblies")
 @RequestScoped
 public class AssemblyResourceRESTService {
-
-    @Inject
-    private Logger log;
 
     @Inject
     private AssemblyRepository repository;
@@ -108,6 +100,7 @@ public class AssemblyResourceRESTService {
      * @param violations A set of violations that needs to be reported
      * @return JAX-RS response containing all violations
      */
+/*    
     private Response.ResponseBuilder createViolationResponse(Set<ConstraintViolation<?>> violations) {
         log.fine("Validation completed. violations found: " + violations.size());
 
@@ -119,7 +112,7 @@ public class AssemblyResourceRESTService {
 
         return Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
     }
-
+*/
     /**
      * Checks if a assembly with the same email address is already registered. This is the only way to easily capture the
      * "@UniqueConstraint(columnNames = "email")" constraint from the Assembly class.

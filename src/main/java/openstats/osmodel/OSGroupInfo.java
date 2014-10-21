@@ -2,7 +2,7 @@ package openstats.osmodel;
 
 import java.util.*;
 
-import openstats.model.DBGroupInfo;
+import openstats.dbmodel.DBGroupInfo;
 
 public class OSGroupInfo {
 	private List<String> groupLabels;

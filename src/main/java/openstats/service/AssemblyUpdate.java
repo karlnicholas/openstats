@@ -25,7 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import javax.validation.*;
 
-import openstats.model.DBAssembly;
+import openstats.dbmodel.DBAssembly;
 
 // The @Stateless annotation eliminates the need for manual transaction demarcation
 @Stateless

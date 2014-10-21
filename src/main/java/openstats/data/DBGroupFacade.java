@@ -3,7 +3,7 @@ package openstats.data;
 import javax.inject.Inject;
 import javax.persistence.*;
 
-import openstats.model.*;
+import openstats.dbmodel.*;
 import openstats.osmodel.OSAssembly;
 
 public class DBGroupFacade {

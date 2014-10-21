@@ -1,18 +1,16 @@
 package openstats.util;
+
 import java.io.*;
 import java.util.*;
 
-import openstats.model.*;
 import openstats.osmodel.*;
 
 import org.supercsv.io.AbstractCsvWriter;
 import org.supercsv.prefs.CsvPreference;
 
-
 public class AssemblyCsvHandler {
-	private 
-	
-	class MyCsvWriter extends AbstractCsvWriter {
+
+	private class MyCsvWriter extends AbstractCsvWriter {
 
 		public MyCsvWriter(Writer writer, CsvPreference preference) {
 			super(writer, preference);
@@ -22,101 +20,92 @@ public class AssemblyCsvHandler {
 		}
 	}
 	
-	public List<String> createHeader(DBAssembly assembly, List<DBGroup> groups) throws Exception {
+	public List<String> createHeader(OSAssembly osAssembly) throws Exception {
 		List<String> csvHeader = new ArrayList<String>();
 
-        DBDistricts districts = assembly.getDistricts();
+        OSDistricts districts = osAssembly.getOSDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         csvHeader.add("District");
         csvHeader.add("Chamber");
 //			Aggregate aggregate = districts.getAggregate(GROUPLABEL);
 
-        for ( DBGroup group: groups ) {
-	        for ( String label: districts.getAggregateGroupMap().get(group).getGroupLabels()) {
-	        	csvHeader.add(label);
-	        }
-	        for ( String label: districts.getComputationGroupMap().get(group).getGroupLabels()) {
-	        	csvHeader.add(label);
-	        }
+        for ( String label: districts.getAggregateGroupInfo().getGroupLabels()) {
+        	csvHeader.add(label);
+        }
+        for ( String label: districts.getComputationGroupInfo().getGroupLabels()) {
+        	csvHeader.add(label);
         }
 
-        for ( DBGroup group: groups ) {
-        	DBGroupInfo groupInfo = assembly.getAggregateGroupMap().get(group);
-        	if ( groupInfo != null ) {
-		        for ( String label: groupInfo.getGroupLabels()) {
-		        	csvHeader.add(label);
-		        }
-        	}
-        	groupInfo = assembly.getComputationGroupMap().get(group);
-        	if ( groupInfo != null ) {
-		        for ( String label: groupInfo.getGroupLabels()) {
-		        	csvHeader.add(label);
-		        }
-        	}
-        }
+    	OSGroupInfo groupInfo = osAssembly.getAggregateGroupInfo();
+    	if ( groupInfo != null ) {
+	        for ( String label: groupInfo.getGroupLabels()) {
+	        	csvHeader.add(label);
+	        }
+    	}
+    	groupInfo = osAssembly.getComputationGroupInfo();
+    	if ( groupInfo != null ) {
+	        for ( String label: groupInfo.getGroupLabels()) {
+	        	csvHeader.add(label);
+	        }
+    	}
         return csvHeader;
 	}
 
 
-	public List<List<String>> createBody(DBAssembly assembly, List<DBGroup> groups) throws Exception {
+	public List<List<String>> createBody(OSAssembly osAssembly) throws Exception {
 		List<List<String>> csvResult = new ArrayList<List<String>>();
 		int rowOffset = 0;
 
-        DBDistricts districts = assembly.getDistricts();
+        OSDistricts districts = osAssembly.getOSDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         List<String> row = new ArrayList<String>();
 
 
         // write data for districts 
-        for ( final DBDistrict dist: districts.getDistrictList()) {
+        for ( final OSDistrict dist: districts.getOSDistrictList()) {
         	row = new ArrayList<String>();
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber());
-	        for ( DBGroup group: groups ) {
-	        	AggregateValues aggs = dist.getAggregateMap().get(group);
-    	        for ( Long agg: aggs.getValueList() ) {
-    	        	row.add(agg.toString());
-    	        }
-    	        ComputationValues comps = dist.getComputationMap().get(group);
-    	        for ( Double comp: comps.getValueList() ) {
-    	        	row.add(comp.toString());
-    	        }
-    	        csvResult.add(row);
+        	List<Long> aggs = dist.getAggregateValues();
+	        for ( Long agg: aggs ) {
+	        	row.add(agg.toString());
 	        }
+	        List<Double >comps = dist.getComputationValues();
+	        for ( Double comp: comps ) {
+	        	row.add(comp.toString());
+	        }
+	        csvResult.add(row);
         }
         rowOffset = row.size();
-        // write data for assembly
+        // write data for osAssembly
     	row = new ArrayList<String>();
     	for ( int i=0; i<rowOffset; ++i ) {
     		row.add("");
     	}
-        for ( DBGroup group: groups ) {
-	        AggregateValues aggs = assembly.getAggregateMap().get(group);
-	        if ( aggs != null ) {
-    	        for ( Long agg: aggs.getValueList() ) {
-    	        	row.add(agg.toString());
-    	        }
+        List<Long> aggs = osAssembly.getAggregateValues();
+        if ( aggs != null ) {
+	        for ( Long agg: aggs ) {
+	        	row.add(agg.toString());
 	        }
-	        ComputationValues comps = assembly.getComputationMap().get(group);
-	        if ( comps != null ) {
-    	        for ( Double comp: comps.getValueList() ) {
-    	        	row.add(comp.toString());
-    	        }
+        }
+        List<Double> comps = osAssembly.getComputationValues();
+        if ( comps != null ) {
+	        for ( Double comp: comps ) {
+	        	row.add(comp.toString());
 	        }
         }
         csvResult.add(row);
         return csvResult;
 	}
 
-	public void writeCsv(OutputStream out, DBAssembly assembly, List<DBGroup> groups) throws Exception {
+	public void writeCsv(OutputStream out, OSAssembly osAssembly) throws Exception {
         
 		OutputStreamWriter writer = new OutputStreamWriter(out);
-		List<String> csvHeader = createHeader(assembly, groups);
-		List<List<String>> csvBody = createBody(assembly, groups);
+		List<String> csvHeader = createHeader(osAssembly);
+		List<List<String>> csvBody = createBody(osAssembly);
 		
 		MyCsvWriter csvWriter = null;
         try {
-        	
         	csvWriter = new MyCsvWriter(writer, CsvPreference.STANDARD_PREFERENCE);
 	        String[] sColumns = new String[csvHeader.size()];
 	        sColumns = csvHeader.toArray(sColumns);

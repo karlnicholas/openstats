@@ -6,14 +6,14 @@
 		http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	<persistence-unit name="openstats">
 		<jta-data-source>java:jboss/datasources/OpenStatsDS</jta-data-source>
-		<class>openstats.model.DBGroup</class>
-		<class>openstats.model.DBGroupInfo</class>
-		<class>openstats.model.DBAssembly</class>
-		<class>openstats.model.DBDistricts</class>
-		<class>openstats.model.DBDistrict</class>
-		<class>openstats.model.DBLegislator</class>
-		<class>openstats.model.AggregateValues</class>
-		<class>openstats.model.ComputationValues</class>
+		<class>openstats.dbmodel.DBGroup</class>
+		<class>openstats.dbmodel.DBGroupInfo</class>
+		<class>openstats.dbmodel.DBAssembly</class>
+		<class>openstats.dbmodel.DBDistricts</class>
+		<class>openstats.dbmodel.DBDistrict</class>
+		<class>openstats.dbmodel.DBLegislator</class>
+		<class>openstats.dbmodel.AggregateValues</class>
+		<class>openstats.dbmodel.ComputationValues</class>
 		<properties>
 			<!-- Properties for Hibernate -->
 			<property name="hibernate.show_sql" value="false" />

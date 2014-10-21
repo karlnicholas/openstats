@@ -1,4 +1,4 @@
-package openstats.controllers;
+package openstats.managedbeans;
 
 import java.io.*;
 import java.util.*;
@@ -8,7 +8,7 @@ import javax.faces.bean.*;
 import javax.inject.*;
 
 import openstats.data.AssemblyRepository;
-import openstats.model.*;
+import openstats.dbmodel.*;
 
 @ManagedBean
 @SessionScoped
@@ -19,7 +19,7 @@ public class SelectAssembly implements Serializable {
 	private String currentAssembly;
 	//
 	private DBGroup[] assemblyGroups;
-	private DBGroup[] assemblyGroupItems;
+	private DBGroup assemblyGroupItem;
 	
     @Inject
     private AssemblyRepository assemblyRepository;
@@ -81,12 +81,12 @@ public class SelectAssembly implements Serializable {
 		this.assemblyGroups = assemblyGroups;
 	}
 
-	public DBGroup[] getAssemblyGroupItems() {
-		return assemblyGroupItems;
+	public DBGroup getAssemblyGroupItem() {
+		return assemblyGroupItem;
 	}
 
-	public void setAssemblyGroupItems(DBGroup[] assemblyGroupItems) {
-		this.assemblyGroupItems = assemblyGroupItems;
+	public void setAssemblyGroupItem(DBGroup assemblyGroupItem) {
+		this.assemblyGroupItem = assemblyGroupItem;
 	}
 
 }

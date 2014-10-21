@@ -1,4 +1,4 @@
-package openstats.controllers;
+package openstats.managedbeans;
 
 import java.io.*;
 import java.util.*;
@@ -7,8 +7,8 @@ import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.inject.Inject;
 
-import openstats.data.AssemblyRepository;
-import openstats.model.DBAssembly;
+import openstats.data.*;
+import openstats.osmodel.OSAssembly;
 import openstats.util.AssemblyCsvHandler;
 
 @ManagedBean
@@ -18,7 +18,7 @@ public class ExportCsv {
     @Inject
     private FacesContext facesContext;
     @Inject
-    private AssemblyRepository assemblyRepository;
+    private DBGroupFacade dbGroupFacade;
     
     private List<List<String>> csvBody = null;
     private List<String> csvHeader = null;
@@ -37,9 +37,9 @@ public class ExportCsv {
 //		System.out.println("Exporting for: " + assemblies.getCurrentAssembly() + ":" + Arrays.toString(assemblies.getAssemblyGroupItems()) );
     	AssemblyCsvHandler createCsv = new AssemblyCsvHandler();
     	String[] keys = assemblies.getCurrentAssembly().split("-");
-    	DBAssembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
+    	OSAssembly osAssembly = dbGroupFacade.buildOSAssembly(assemblies.getAssemblyGroupItem(), keys[0], keys[1]);
 
-	    ExternalContext ec = facesContext.getExternalContext();
+    	ExternalContext ec = facesContext.getExternalContext();
 
 	    ec.responseReset(); // Some JSF component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
 	    ec.setResponseContentType("text/csv;charset=WINDOWS-1252"); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
@@ -48,7 +48,7 @@ public class ExportCsv {
 	    OutputStream output = ec.getResponseOutputStream();
 	    // Now you can write the InputStream of the file to the above OutputStream the usual way.
 	    // ...
-    	createCsv.writeCsv(output, assembly, Arrays.asList(assemblies.getAssemblyGroupItems()));
+    	createCsv.writeCsv(output, osAssembly );
 
 	    facesContext.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and closed.
     	
@@ -60,13 +60,8 @@ public class ExportCsv {
 		ExternalContext ec = facesContext.getExternalContext();
 		Map<String, Object> sessionMap = ec.getSessionMap();
 		csvBody = (List<List<String>>) sessionMap.get("csvBody");
-
 		if ( csvBody == null ) {
-			SelectAssembly assemblies = (SelectAssembly) ec.getSessionMap().get("selectAssembly");
-	    	String[] keys = assemblies.getCurrentAssembly().split("-");
-	    	DBAssembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
-			csvBody = new AssemblyCsvHandler().createBody(assembly, Arrays.asList(assemblies.getAssemblyGroupItems()));
-			sessionMap.put("csvBody", csvBody);
+			createCsvSessionEntries(ec, sessionMap);
 		}
 		return csvBody;
 	}
@@ -77,14 +72,19 @@ public class ExportCsv {
 		ExternalContext ec = facesContext.getExternalContext();
 		Map<String, Object> sessionMap = ec.getSessionMap();
 		csvHeader = (List<String>) sessionMap.get("csvHeader");
-
 		if ( csvHeader == null ) {
-			SelectAssembly assemblies = (SelectAssembly) ec.getSessionMap().get("selectAssembly");
-	    	String[] keys = assemblies.getCurrentAssembly().split("-");
-	    	DBAssembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
-			csvHeader = new AssemblyCsvHandler().createHeader(assembly, Arrays.asList(assemblies.getAssemblyGroupItems()));
-			sessionMap.put("csvHeader", csvHeader);
+			createCsvSessionEntries(ec, sessionMap);
 		}
 		return csvHeader;
+	}
+	
+	private void createCsvSessionEntries(ExternalContext ec, Map<String, Object> sessionMap) throws Exception {
+		SelectAssembly assemblies = (SelectAssembly) ec.getSessionMap().get("selectAssembly");
+    	String[] keys = assemblies.getCurrentAssembly().split("-");
+    	OSAssembly osAssembly = dbGroupFacade.buildOSAssembly(assemblies.getAssemblyGroupItem(), keys[0], keys[1]);
+		csvBody = new AssemblyCsvHandler().createBody(osAssembly);
+		sessionMap.put("csvBody", csvBody);
+		csvHeader = new AssemblyCsvHandler().createHeader(osAssembly);
+		sessionMap.put("csvHeader", csvHeader);
 	}
 }

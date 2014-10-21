@@ -1,11 +1,11 @@
-package openstats.model;
+package openstats.dbmodel;
 
 import java.io.Serializable;
 import java.util.*;
 
 import javax.persistence.*;
 
-import openstats.model.DtoInterface;
+import openstats.dbmodel.DtoInterface;
 import openstats.osmodel.OSGroupInfo;
 
 @SuppressWarnings("serial")

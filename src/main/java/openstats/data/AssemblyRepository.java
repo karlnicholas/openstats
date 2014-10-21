@@ -20,7 +20,7 @@ import javax.inject.Inject;
 import javax.persistence.*;
 import javax.persistence.criteria.*;
 
-import openstats.model.*;
+import openstats.dbmodel.*;
 
 import java.util.*;
 
@@ -39,7 +39,7 @@ public class AssemblyRepository {
     }
 
     public List<DBAssembly> listAllAssemblies() {
-		return em.createNamedQuery("Assembly.listAssemblies", DBAssembly.class).getResultList();
+		return em.createNamedQuery(DBAssembly.LISTASSEMBLIES, DBAssembly.class).getResultList();
     }
     
     public DBAssembly findByStateSession(String state, String session) {

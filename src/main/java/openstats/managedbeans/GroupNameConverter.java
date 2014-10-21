@@ -1,20 +1,20 @@
-package openstats.controllers;
+package openstats.managedbeans;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
 import javax.faces.convert.*;
-import javax.persistence.*;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
 
-import openstats.model.*;
-import openstats.osmodel.OSGroup;
+import openstats.dbmodel.*;
 
 @ManagedBean(name = "groupNameConverterBean") 
 @FacesConverter(value = "groupNameConverter")
 public class GroupNameConverter implements Converter {
 	
-	@PersistenceContext(unitName = "openstats")
-    private transient EntityManager em;
+	@Inject
+    private EntityManager em;
 	
 	@Override
 	public Object getAsObject(FacesContext context, UIComponent component, String value) {		
@@ -27,7 +27,7 @@ public class GroupNameConverter implements Converter {
 
 	@Override
 	public String getAsString(FacesContext context, UIComponent component, Object value) {
-		return ((OSGroup)value).getGroupName();
+		return ((DBGroup)value).getGroupName();
 	}
 
 }

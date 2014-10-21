@@ -1,4 +1,4 @@
-package openstats.controllers;
+package openstats.managedbeans;
 
 import javax.faces.bean.ManagedBean;
 import javax.faces.context.FacesContext;

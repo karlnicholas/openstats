@@ -2,7 +2,7 @@ package openstats.osmodel;
 
 import java.util.*;
 
-import openstats.model.*;
+import openstats.dbmodel.*;
 
 public class OSDistrict {
 	

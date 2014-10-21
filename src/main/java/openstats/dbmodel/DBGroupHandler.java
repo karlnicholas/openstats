@@ -1,4 +1,4 @@
-package openstats.model;
+package openstats.dbmodel;
 
 import java.util.*;
 
