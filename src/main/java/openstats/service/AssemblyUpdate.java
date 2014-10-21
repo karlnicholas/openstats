@@ -25,7 +25,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 import javax.validation.*;
 
-import openstats.dbmodel.DBAssembly;
+import openstats.data.AssemblyRepository;
+import openstats.dbmodel.*;
+import openstats.osmodel.OSAssembly;
 
 // The @Stateless annotation eliminates the need for manual transaction demarcation
 @Stateless
@@ -35,6 +37,9 @@ public class AssemblyUpdate {
 
     @Inject
     private EntityManager em;
+
+    @Inject
+    private AssemblyRepository assemblyRepository;
 
     @Inject
     private Event<DBAssembly> assemblyEventSrc;
@@ -49,7 +54,7 @@ public class AssemblyUpdate {
      * update aggregations and computations.
      * 
      */
-    public void updateGroup(DBAssembly assembly) throws Exception {
+    public void updateDBAssembly(DBAssembly assembly) throws Exception {
         log.info("Updating group for " + assembly.getState()+"-"+assembly.getSession());
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<DBAssembly> criteria = cb.createQuery(DBAssembly.class);
@@ -68,4 +73,31 @@ public class AssemblyUpdate {
         assemblyEventSrc.fire(assembly);
     }
 
+    /**
+     * 
+     * @param osAssembly
+     * @throws OpenStatsException
+     */
+	public void writeOSAssembly(OSAssembly osAssembly) throws OpenStatsException {
+		DBGroup dbGroup = DBGroupHandler.getDBGroup(osAssembly.getOSGroup().getGroupName(), em);
+		
+		if ( dbGroup == null ) {
+			// create new DBGroup
+			dbGroup = new DBGroup(osAssembly.getOSGroup());
+			DBGroupHandler.createDBGroup(dbGroup, em);
+		}
+		DBAssembly dbAssembly;
+		Long count = assemblyRepository.checkByStateSession(osAssembly.getState(), osAssembly.getSession());
+		if ( count > 0 ) {
+			// update existing one
+			dbAssembly = assemblyRepository.findByStateSession(osAssembly.getState(), osAssembly.getSession());
+			dbAssembly.update(dbGroup, osAssembly);
+			em.merge(dbAssembly);
+		} else {
+			// create a new one
+			dbAssembly = new DBAssembly();
+			dbAssembly.update(dbGroup, osAssembly);
+			em.persist(dbAssembly);
+		}
+	}
 }

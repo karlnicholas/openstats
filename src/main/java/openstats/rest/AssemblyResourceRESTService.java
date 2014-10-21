@@ -26,7 +26,7 @@ import javax.ws.rs.core.*;
 
 import openstats.data.*;
 import openstats.dbmodel.*;
-import openstats.dbmodel.DtoInterface.DTOTYPE;
+import openstats.osmodel.OSAssembly;
 
 /**
  * JAX-RS Example
@@ -38,49 +38,40 @@ import openstats.dbmodel.DtoInterface.DTOTYPE;
 public class AssemblyResourceRESTService {
 
     @Inject
-    private AssemblyRepository repository;
+    private DBGroupFacade dbGroupFacade;
 
     @GET
+    @Path("/summary/{group}/{state}/{session}")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<DBAssembly> listAllAssemblies() {
-        return repository.listAllAssemblies();
+    public OSAssembly getSummary(
+		@PathParam("group") String group,  
+		@PathParam("state") String state, 
+		@PathParam("session") String session
+    ) throws OpenStatsException {
+        return dbGroupFacade.buildOSAssembly(group, state, session);
     }
 
     @GET
-    @Path("/summary/{id:[0-9][0-9]*}")
+    @Path("/full/{group}/{state}/{session}")
     @Produces(MediaType.APPLICATION_JSON)
-    public DBAssembly getSummary(@PathParam("id") long id) {
-        DBAssembly assembly = repository.findById(id);
-    	assembly = assembly.createDto(DTOTYPE.SUMMARY);
-        if (assembly == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-        return assembly;
-    }
-
-    @GET
-    @Path("/full/{id:[0-9][0-9]*}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public DBAssembly getFull(@PathParam("id") long id) {
-        DBAssembly assembly = repository.findById(id);
-    	assembly = assembly.createDto(DTOTYPE.FULL);
-        if (assembly == null) {
-            throw new WebApplicationException(Response.Status.NOT_FOUND);
-        }
-        return assembly;
+    public OSAssembly getFull(
+		@PathParam("group") String group,  
+		@PathParam("state") String state, 
+		@PathParam("session") String session
+	) throws OpenStatsException {
+        return dbGroupFacade.buildOSAssembly(group, state, session);
     }
 
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createAssembly(DBAssembly assembly) {
+    public Response createAssembly(OSAssembly osAssembly) {
 
         Response.ResponseBuilder builder = null;
 
         try {
-
-
+        	dbGroupFacade.writeOSAssembly(osAssembly);
             // Create an "ok" response
             builder = Response.ok();
         } catch (Exception e) {
@@ -121,6 +112,7 @@ public class AssemblyResourceRESTService {
      * @param assembleyKey the Assembly.assembly to check
      * @return True if the email already exists, and false otherwise
      */
+/*    
     public boolean stateSessionAlreadyExists(String state, String session) {
         DBAssembly assembly = null;
         try {
@@ -130,4 +122,5 @@ public class AssemblyResourceRESTService {
         }
         return assembly != null;
     }
+*/    
 }

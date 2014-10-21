@@ -5,6 +5,7 @@ import javax.persistence.*;
 
 import openstats.dbmodel.*;
 import openstats.osmodel.OSAssembly;
+import openstats.service.AssemblyUpdate;
 
 public class DBGroupFacade {
 
@@ -12,6 +13,8 @@ public class DBGroupFacade {
     private EntityManager em;
 	@Inject
 	private AssemblyRepository assemblyRepository;
+	@Inject
+	private AssemblyUpdate assemblyUpdate;
 	
 	public DBGroupFacade() {}
     // for testing
@@ -28,39 +31,16 @@ public class DBGroupFacade {
 	 * @throws OpenStatsException 
 	 */
 	public void writeOSAssembly(OSAssembly osAssembly) throws OpenStatsException {
-		EntityTransaction tx = em.getTransaction();
-		tx.begin();
-		DBGroup dbGroup = DBGroupHandler.getDBGroup(osAssembly.getOSGroup().getGroupName(), em);
-		
-		if ( dbGroup == null ) {
-			// create new DBGroup
-			dbGroup = new DBGroup(osAssembly.getOSGroup());
-			DBGroupHandler.createDBGroup(dbGroup, em);
-		}
-		DBAssembly dbAssembly;
-		Long count = assemblyRepository.checkByStateSession(osAssembly.getState(), osAssembly.getSession());
-		if ( count > 0 ) {
-			// update existing one
-			dbAssembly = assemblyRepository.findByStateSession(osAssembly.getState(), osAssembly.getSession());
-			dbAssembly.update(dbGroup, osAssembly);
-			em.merge(dbAssembly);
-		} else {
-			// create a new one
-			dbAssembly = new DBAssembly();
-			dbAssembly.update(dbGroup, osAssembly);
-			em.persist(dbAssembly);
-		}
-		tx.commit();
-		
+		assemblyUpdate.writeOSAssembly(osAssembly);
 	}
 	
 	/**
-	 * Build OSAssembly object for Group for State/Session.
+	 * Build OSAssembly object for DBGroup for State/Session.
 	 *  
 	 * @param dbGroup
 	 * @param state
 	 * @param session
-	 * @return
+	 * @return {@link}OSAssembly
 	 */
 	public OSAssembly buildOSAssembly(DBGroup dbGroup, String state, String session) {
 		DBAssembly dbAssembly = assemblyRepository.findByStateSession(state, session);
@@ -68,4 +48,19 @@ public class DBGroupFacade {
 		
 	}
 		
+	/**
+	 * Build OSAssembly object for Group/State/Session.
+	 *  
+	 * @param groupName
+	 * @param state
+	 * @param session
+	 * @return {@link}OSAssembly
+	 * @throws OpenStatsException 
+	 */
+	public OSAssembly buildOSAssembly(String groupName, String state, String session) throws OpenStatsException {
+		DBGroup dbGroup = DBGroupHandler.getDBGroup(groupName, em);
+		DBAssembly dbAssembly = assemblyRepository.findByStateSession(state, session);
+		return new OSAssembly(dbGroup, dbAssembly);
+		
+	}
 }

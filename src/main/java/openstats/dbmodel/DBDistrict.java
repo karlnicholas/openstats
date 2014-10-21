@@ -8,7 +8,7 @@ import javax.persistence.*;
 import openstats.osmodel.*;
 
 @SuppressWarnings("serial")
-@Entity public class DBDistrict implements Comparable<DBDistrict>, DtoInterface<DBDistrict>, Serializable {
+@Entity public class DBDistrict implements Comparable<DBDistrict>, Serializable {
 	@Id @GeneratedValue private Long id;
 	
 	private String chamber;
@@ -66,28 +66,6 @@ import openstats.osmodel.*;
 	public int compareTo(DBDistrict o) {
 		if ( !chamber.equals(o.chamber)) return chamber.compareTo(o.chamber);
 		return district.compareTo(o.district);
-	}
-	@Override
-	public DBDistrict createDto(DTOTYPE dtoType) {
-		DBDistrict district = new DBDistrict();
-		district.setChamber(getChamber());
-		district.setDistrict(getDistrict());
-		switch ( dtoType ) {
-		case FULL:
-			for ( DBLegislator l: getLegislators() ) {
-				district.getLegislators().add(l.createDto(dtoType));
-			}
-			for ( DBGroup osGroup: getAggregateMap().keySet() ) {
-				district.getAggregateMap().put(osGroup, aggregateMap.get(osGroup));
-			}
-			for ( DBGroup osGroup: getComputationMap().keySet() ) {
-				district.getComputationMap().put(osGroup, computationMap.get(osGroup));
-			}
-			break;
-		case SUMMARY: // intentionally left blank
-			break;
-		}
-		return district;
 	}
 
 }

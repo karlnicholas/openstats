@@ -4,6 +4,8 @@ public class OSGroup implements Comparable<OSGroup> {
 	private String groupName;
 	private String groupDescription;
 	
+	public OSGroup() {}
+
 	public OSGroup(String groupName, String groupDescription) {
 		this.groupName = groupName;
 		this.groupDescription = groupDescription;

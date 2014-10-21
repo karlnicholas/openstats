@@ -8,6 +8,8 @@ public class OSGroupInfo {
 	private List<String> groupLabels;
 	private List<String> groupDescriptions;
 	
+	public OSGroupInfo() {}
+
 	public OSGroupInfo(	List<String> groupLabels, List<String> groupDescriptions ) {
 		this.groupLabels = groupLabels;
 		this.groupDescriptions = groupDescriptions;

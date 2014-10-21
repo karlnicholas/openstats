@@ -11,6 +11,10 @@ public class OSDistrict {
 	private List<Long> aggregateValues;
 	private List<Double> computationValues;
 
+	public OSDistrict() {
+		aggregateValues = null;
+		computationValues = null;
+	}
 	public OSDistrict(String chamber, String district) {
 		this.chamber = chamber;
 		this.district = district;

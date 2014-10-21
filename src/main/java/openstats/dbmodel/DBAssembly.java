@@ -14,7 +14,7 @@ import openstats.osmodel.*;
 
 @SuppressWarnings("serial")
 @XmlRootElement
-@Entity public class DBAssembly implements Comparable<DBAssembly>, DtoInterface<DBAssembly>, Serializable {
+@Entity public class DBAssembly implements Comparable<DBAssembly>, Serializable {
 	public static final String LISTASSEMBLIES  = "DBAssembly.listAssemblies";
 	@Id @GeneratedValue private Long id;
 
@@ -101,33 +101,5 @@ import openstats.osmodel.*;
 		int s = state.compareTo(assembly.state);
 		if ( s != 0 ) return s;
 		return this.session.compareTo(assembly.session);
-	}
-	@Override
-	public DBAssembly createDto(DTOTYPE dtoType) {
-		DBAssembly assembly = new DBAssembly();
-		assembly.setState(getState());
-		assembly.setSession(getSession());
-		assembly.setDistricts(getDistricts().createDto(dtoType));
-		for ( DBGroup key: getAggregateGroupMap().keySet() ) {
-			DBGroupInfo groupInfo = aggregateGroupMap.get(key);
-			assembly.getAggregateGroupMap().put(key, groupInfo.createDto(dtoType));
-		}
-		for ( DBGroup key: getComputationGroupMap().keySet() ) {
-			DBGroupInfo groupInfo = computationGroupMap.get(key);
-			assembly.getComputationGroupMap().put(key, groupInfo.createDto(dtoType));
-		}
-		switch ( dtoType ) {
-		case FULL:
-			for ( DBGroup key: getAggregateMap().keySet()) {
-				assembly.getAggregateMap().put(key, aggregateMap.get(key) );
-			}
-			for ( DBGroup key: getComputationMap().keySet()) {
-				assembly.getComputationMap().put(key, computationMap.get(key) );
-			}
-			break;
-		case SUMMARY:
-			break;
-		}
-		return assembly;
 	}
 }

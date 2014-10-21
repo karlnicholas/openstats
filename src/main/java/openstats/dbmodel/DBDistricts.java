@@ -9,7 +9,7 @@ import openstats.osmodel.*;
 
 @SuppressWarnings("serial")
 @Entity
-public class DBDistricts implements DtoInterface<DBDistricts>, Serializable {
+public class DBDistricts implements Serializable {
 	@Id @GeneratedValue private Long id;
 
 	@OneToMany(cascade = CascadeType.ALL)
@@ -59,27 +59,6 @@ public class DBDistricts implements DtoInterface<DBDistricts>, Serializable {
 	}
 	public void setAggregateGroupMap(Map<DBGroup, DBGroupInfo> aggregateGroupMap) {
 		this.aggregateGroupMap = aggregateGroupMap;
-	}
-	@Override
-	public DBDistricts createDto(DTOTYPE dtoType) {
-		DBDistricts districts = new DBDistricts();
-		for ( DBGroup key: getAggregateGroupMap().keySet() ) {
-			DBGroupInfo groupInfo = aggregateGroupMap.get(key);
-			districts.getAggregateGroupMap().put(key, groupInfo.createDto(dtoType));
-		}
-		for ( DBGroup key: getComputationGroupMap().keySet() ) {
-			DBGroupInfo groupInfo = computationGroupMap.get(key);
-			districts.getComputationGroupMap().put(key, groupInfo.createDto(dtoType));
-		}
-		switch ( dtoType ) {
-		case FULL:	// intentionally left blank
-			for(DBDistrict d: getDistrictList()) {
-				districts.getDistrictList().add(d.createDto(dtoType));
-			}
-			break;
-		case SUMMARY:	// intentionally left blank
-		}
-		return districts;
 	}
 
 }

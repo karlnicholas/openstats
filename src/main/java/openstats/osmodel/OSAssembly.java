@@ -2,8 +2,11 @@ package openstats.osmodel;
 
 import java.util.*;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
 import openstats.dbmodel.*;
 
+@XmlRootElement
 public class OSAssembly implements Comparable<OSAssembly> {
 
 	private String state;
@@ -15,6 +18,12 @@ public class OSAssembly implements Comparable<OSAssembly> {
 	private List<Long> aggregateValues;
 	private List<Double> computationValues;
 	
+	public OSAssembly() {
+		this.aggregateGroupInfo = null; 
+		this.computationGroupInfo = null; 
+		this.aggregateValues = null;
+		this.computationValues = null;
+	}
 	public OSAssembly(String state, String session, OSGroup osGroup) {
 		this.state = state;
 		this.session = session;
