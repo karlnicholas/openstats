@@ -40,10 +40,10 @@ import openstats.osmodel.*;
 	
 	public DBAssembly() {}
 	
-	public void update(DBGroup dbGroup, OSAssembly osAssembly) {
+	public void putGroup(DBGroup dbGroup, OSAssembly osAssembly) {
 		this.state = osAssembly.getState();
 		this.session = osAssembly.getSession();
-		this.districts = new DBDistricts(dbGroup, osAssembly.getOSDistricts());
+		this.districts.updateGroup(dbGroup, osAssembly.getOSDistricts());
 		
 		if ( osAssembly.getAggregateGroupInfo() != null || osAssembly.getAggregateValues() != null ) {
 			aggregateGroupMap.put(dbGroup, new DBGroupInfo(osAssembly.getAggregateGroupInfo()));
@@ -56,6 +56,20 @@ import openstats.osmodel.*;
 		}
 	}
 	
+	public void removeGroup(DBGroup dbGroup) {
+		districts.removeGroup(dbGroup);
+		
+		if ( aggregateGroupMap.containsKey(dbGroup) || aggregateMap.containsKey(dbGroup) ) {
+			aggregateGroupMap.remove(dbGroup);
+			aggregateMap.remove(dbGroup);
+		}
+
+		if ( computationGroupMap.containsKey(dbGroup) || computationMap.containsKey(dbGroup) ) {
+			computationGroupMap.remove(dbGroup);
+			computationMap.remove(dbGroup);
+		}
+	}
+
 	@XmlTransient
 	public Long getId() {
 		return id;

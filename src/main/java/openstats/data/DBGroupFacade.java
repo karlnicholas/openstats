@@ -34,6 +34,9 @@ public class DBGroupFacade {
 		assemblyUpdate.writeOSAssembly(osAssembly);
 	}
 	
+	public void deleteAssemblyGroup(String groupName, String state, String session) throws OpenStatsException {
+		assemblyUpdate.deleteAssemblyGroup(groupName, state, session);
+	}
 	/**
 	 * Build OSAssembly object for DBGroup for State/Session.
 	 *  

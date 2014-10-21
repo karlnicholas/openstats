@@ -20,7 +20,6 @@ import java.util.*;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
-import javax.persistence.NoResultException;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
@@ -33,35 +32,11 @@ import openstats.osmodel.OSAssembly;
  * <p/>
  * This class produces a RESTful service to read/write the contents of the assemblies table.
  */
-@Path("/assemblies")
 @RequestScoped
 public class AssemblyResourceRESTService {
 
     @Inject
     private DBGroupFacade dbGroupFacade;
-
-    @GET
-    @Path("/summary/{group}/{state}/{session}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public OSAssembly getSummary(
-		@PathParam("group") String group,  
-		@PathParam("state") String state, 
-		@PathParam("session") String session
-    ) throws OpenStatsException {
-        return dbGroupFacade.buildOSAssembly(group, state, session);
-    }
-
-    @GET
-    @Path("/full/{group}/{state}/{session}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public OSAssembly getFull(
-		@PathParam("group") String group,  
-		@PathParam("state") String state, 
-		@PathParam("session") String session
-	) throws OpenStatsException {
-        return dbGroupFacade.buildOSAssembly(group, state, session);
-    }
-
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
@@ -72,6 +47,62 @@ public class AssemblyResourceRESTService {
 
         try {
         	dbGroupFacade.writeOSAssembly(osAssembly);
+            // Create an "ok" response
+            builder = Response.ok();
+        } catch (Exception e) {
+            // Handle generic exceptions
+            Map<String, String> responseObj = new HashMap<String, String>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+
+        return builder.build();
+    }
+
+    @GET
+    @Path("{group}/{state}/{session}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public OSAssembly readAssembly(
+		@PathParam("group") String group,  
+		@PathParam("state") String state, 
+		@PathParam("session") String session
+    ) throws OpenStatsException {
+        return dbGroupFacade.buildOSAssembly(group, state, session);
+    }
+
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response updateAssembly(OSAssembly osAssembly) {
+
+        Response.ResponseBuilder builder = null;
+
+        try {
+        	dbGroupFacade.writeOSAssembly(osAssembly);
+            // Create an "ok" response
+            builder = Response.ok();
+        } catch (Exception e) {
+            // Handle generic exceptions
+            Map<String, String> responseObj = new HashMap<String, String>();
+            responseObj.put("error", e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+        }
+
+        return builder.build();
+    }
+
+    @DELETE
+    @Path("{group}/{state}/{session}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response deleteAssembly(
+		@PathParam("group") String group,  
+		@PathParam("state") String state, 
+		@PathParam("session") String session
+    ) throws OpenStatsException {
+        Response.ResponseBuilder builder = null;
+
+        try {
+            dbGroupFacade.deleteAssemblyGroup(group, state, session);
             // Create an "ok" response
             builder = Response.ok();
         } catch (Exception e) {

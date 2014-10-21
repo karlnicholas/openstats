@@ -24,9 +24,9 @@ public class DBDistricts implements Serializable {
 	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	public DBDistricts() {}
-	public DBDistricts(DBGroup dbGroup, OSDistricts osDistricts) {
+	public void updateGroup(DBGroup dbGroup, OSDistricts osDistricts) {
 		for ( OSDistrict osDistrict: osDistricts.getOSDistrictList() ) {			
-			districtList.add(new DBDistrict(dbGroup, osDistrict));
+			districtList.add(new DBDistrict().updateGroup(dbGroup, osDistrict));
 		}
 		if ( osDistricts.getAggregateGroupInfo() != null ) {
 			aggregateGroupMap.put(dbGroup, new DBGroupInfo(osDistricts.getAggregateGroupInfo()));
@@ -36,6 +36,18 @@ public class DBDistricts implements Serializable {
 		}
 	}
 	
+	public void removeGroup(DBGroup dbGroup) {
+		for ( DBDistrict dbDistrict: districtList ) {			
+			dbDistrict.removeGroup(dbGroup);
+		}
+		if ( aggregateGroupMap.containsKey(dbGroup) ) {
+			aggregateGroupMap.remove(dbGroup);
+		}
+		if ( computationGroupMap.containsKey(dbGroup) ) {
+			computationGroupMap.remove(dbGroup);
+		}
+	}
+
 	public DBDistrict findDistrict(String chamber, String district) {
 		for ( DBDistrict d: districtList ) {
 			if ( d.getChamber().equals(chamber) && d.getDistrict().equals(district)) return d; 

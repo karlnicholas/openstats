@@ -29,7 +29,10 @@ import openstats.data.AssemblyRepository;
 import openstats.dbmodel.*;
 import openstats.osmodel.OSAssembly;
 
+//
 // The @Stateless annotation eliminates the need for manual transaction demarcation
+// I have no idea what that means ...
+//
 @Stateless
 public class AssemblyUpdate {
     @Inject
@@ -74,6 +77,7 @@ public class AssemblyUpdate {
     }
 
     /**
+     * Write (or update?) the DBAssembly referenced by the OSAssembly
      * 
      * @param osAssembly
      * @throws OpenStatsException
@@ -91,13 +95,27 @@ public class AssemblyUpdate {
 		if ( count > 0 ) {
 			// update existing one
 			dbAssembly = assemblyRepository.findByStateSession(osAssembly.getState(), osAssembly.getSession());
-			dbAssembly.update(dbGroup, osAssembly);
+			dbAssembly.putGroup(dbGroup, osAssembly);
 			em.merge(dbAssembly);
 		} else {
 			// create a new one
 			dbAssembly = new DBAssembly();
-			dbAssembly.update(dbGroup, osAssembly);
+			dbAssembly.putGroup(dbGroup, osAssembly);
 			em.persist(dbAssembly);
 		}
+	}
+
+	/**
+     * Delete the DBAssembly referenced by the OSAssembly
+	 * 
+	 * @param osAssembly
+	 * @throws OpenStatsException 
+	 */
+	public void deleteAssemblyGroup(String groupName, String state, String session) throws OpenStatsException {
+		// maybe someday delete the group if nothing references it.
+		DBAssembly dbAssembly = assemblyRepository.findByStateSession(state, session);
+		dbAssembly.removeGroup(DBGroupHandler.getDBGroup(groupName, em));
+		em.merge(dbAssembly);
+		
 	}
 }

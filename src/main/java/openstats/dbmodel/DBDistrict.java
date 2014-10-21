@@ -24,7 +24,7 @@ import openstats.osmodel.*;
 	private Map<DBGroup, ComputationValues> computationMap = new LinkedHashMap<DBGroup, ComputationValues>();
 	
 	public DBDistrict() {}
-	public DBDistrict(DBGroup dbGroup, OSDistrict osDistrict) {
+	public DBDistrict updateGroup(DBGroup dbGroup, OSDistrict osDistrict) {
 		this.chamber = osDistrict.getChamber();
 		this.district = osDistrict.getDistrict();
 		// skip legislators for now
@@ -33,6 +33,18 @@ import openstats.osmodel.*;
 		}
 		if ( osDistrict.getComputationValues() != null ) {
 			computationMap.put(dbGroup, new ComputationValues(osDistrict.getComputationValues()) );
+		}
+		// useful for chaining
+		return this;
+	}
+
+	public void removeGroup(DBGroup dbGroup) {
+		// skip legislators for now
+		if ( aggregateMap.containsKey(dbGroup) ) {
+			aggregateMap.remove(dbGroup);
+		}
+		if ( computationMap.containsKey(dbGroup) ) {
+			computationMap.remove(dbGroup);
 		}
 	}
 
