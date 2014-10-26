@@ -7,7 +7,7 @@ import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.inject.Inject;
 
-import openstats.data.*;
+import openstats.facades.AssemblyFacade;
 import openstats.osmodel.OSAssembly;
 import openstats.util.AssemblyCsvHandler;
 
@@ -18,7 +18,7 @@ public class ExportCsv {
     @Inject
     private FacesContext facesContext;
     @Inject
-    private DBGroupFacade dbGroupFacade;
+    private AssemblyFacade assemblyFacade;
     
     private List<List<String>> csvBody = null;
     private List<String> csvHeader = null;
@@ -37,7 +37,7 @@ public class ExportCsv {
 //		System.out.println("Exporting for: " + assemblies.getCurrentAssembly() + ":" + Arrays.toString(assemblies.getAssemblyGroupItems()) );
     	AssemblyCsvHandler createCsv = new AssemblyCsvHandler();
     	String[] keys = assemblies.getCurrentAssembly().split("-");
-    	OSAssembly osAssembly = dbGroupFacade.buildOSAssembly(assemblies.getAssemblyGroupItem(), keys[0], keys[1]);
+    	OSAssembly osAssembly = assemblyFacade.buildOSAssembly(assemblies.getAssemblyGroupItem(), keys[0], keys[1]);
 
     	ExternalContext ec = facesContext.getExternalContext();
 
@@ -81,7 +81,7 @@ public class ExportCsv {
 	private void createCsvSessionEntries(ExternalContext ec, Map<String, Object> sessionMap) throws Exception {
 		SelectAssembly assemblies = (SelectAssembly) ec.getSessionMap().get("selectAssembly");
     	String[] keys = assemblies.getCurrentAssembly().split("-");
-    	OSAssembly osAssembly = dbGroupFacade.buildOSAssembly(assemblies.getAssemblyGroupItem(), keys[0], keys[1]);
+    	OSAssembly osAssembly = assemblyFacade.buildOSAssembly(assemblies.getAssemblyGroupItem(), keys[0], keys[1]);
 		csvBody = new AssemblyCsvHandler().createBody(osAssembly);
 		sessionMap.put("csvBody", csvBody);
 		csvHeader = new AssemblyCsvHandler().createHeader(osAssembly);

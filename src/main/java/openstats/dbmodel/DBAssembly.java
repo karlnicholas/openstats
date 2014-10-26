@@ -21,21 +21,21 @@ import openstats.osmodel.*;
 	private String state;
 	private String session;
 	
-	@OneToOne(cascade={CascadeType.ALL})
+	@OneToOne(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
 	private DBDistricts districts = new DBDistricts();
 	
-	@OneToMany(cascade={CascadeType.ALL})
+	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
 	@JoinTable(name="assembly_aggregategroupmap")
 	private Map<DBGroup, DBGroupInfo> aggregateGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
-	@OneToMany(cascade={CascadeType.ALL})
+	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
 	@JoinTable(name="assembly_computationgroupmap")
 	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	private Map<DBGroup, AggregateValues> aggregateMap = new LinkedHashMap<DBGroup, AggregateValues>();
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
 	private Map<DBGroup, ComputationValues> computationMap = new LinkedHashMap<DBGroup, ComputationValues>();
 	
 	public DBAssembly() {}

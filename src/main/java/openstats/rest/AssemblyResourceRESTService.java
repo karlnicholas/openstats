@@ -23,8 +23,8 @@ import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
-import openstats.data.*;
 import openstats.dbmodel.*;
+import openstats.facades.AssemblyFacade;
 import openstats.osmodel.OSAssembly;
 
 /**
@@ -32,23 +32,35 @@ import openstats.osmodel.OSAssembly;
  * <p/>
  * This class produces a RESTful service to read/write the contents of the assemblies table.
  */
+@Path("")
 @RequestScoped
 public class AssemblyResourceRESTService {
 
     @Inject
-    private DBGroupFacade dbGroupFacade;
-
+    private AssemblyFacade assemblyFacade;
+    
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createAssembly(OSAssembly osAssembly) {
+    public Response createAssembly(
+		@Context UriInfo ui, 
+		OSAssembly osAssembly
+    ) {
 
         Response.ResponseBuilder builder = null;
-
+        
+        
         try {
-        	dbGroupFacade.writeOSAssembly(osAssembly);
+        	assemblyFacade.writeOSAssembly(osAssembly);
+        	
+        	
             // Create an "ok" response
-            builder = Response.ok();
+            builder = Response.created(ui.getRequestUriBuilder().path(
+        			osAssembly.getOSGroup().getGroupName() + "/" +
+        			osAssembly.getState() + "/" +
+        			osAssembly.getSession()
+        		).build()
+        	);
         } catch (Exception e) {
             // Handle generic exceptions
             Map<String, String> responseObj = new HashMap<String, String>();
@@ -67,7 +79,7 @@ public class AssemblyResourceRESTService {
 		@PathParam("state") String state, 
 		@PathParam("session") String session
     ) throws OpenStatsException {
-        return dbGroupFacade.buildOSAssembly(group, state, session);
+        return assemblyFacade.buildOSAssembly(group, state, session);
     }
 
     @PUT
@@ -78,7 +90,7 @@ public class AssemblyResourceRESTService {
         Response.ResponseBuilder builder = null;
 
         try {
-        	dbGroupFacade.writeOSAssembly(osAssembly);
+        	assemblyFacade.writeOSAssembly(osAssembly);
             // Create an "ok" response
             builder = Response.ok();
         } catch (Exception e) {
@@ -102,7 +114,7 @@ public class AssemblyResourceRESTService {
         Response.ResponseBuilder builder = null;
 
         try {
-            dbGroupFacade.deleteAssemblyGroup(group, state, session);
+            assemblyFacade.deleteAssemblyGroup(group, state, session);
             // Create an "ok" response
             builder = Response.ok();
         } catch (Exception e) {

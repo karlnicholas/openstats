@@ -7,8 +7,8 @@ import javax.annotation.PostConstruct;
 import javax.faces.bean.*;
 import javax.inject.*;
 
-import openstats.data.AssemblyRepository;
 import openstats.dbmodel.*;
+import openstats.facades.AssemblyFacade;
 
 @ManagedBean
 @SessionScoped
@@ -22,12 +22,12 @@ public class SelectAssembly implements Serializable {
 	private DBGroup assemblyGroupItem;
 	
     @Inject
-    private AssemblyRepository assemblyRepository;
+    private AssemblyFacade assemblyFacade;
     
     @PostConstruct
 	public void postConstruct() {
     	assemblyTitles = new TreeMap<String, Object>();
-		List<DBAssembly> assemblies = assemblyRepository.listAllAssemblies(); 
+		List<DBAssembly> assemblies = assemblyFacade.listAllAssemblies(); 
 		for ( DBAssembly assembly: assemblies ) {
 			assemblyTitles.put(assembly.getState() + " " + assembly.getSession(), assembly.getState() + "-" + assembly.getSession());
 		}
@@ -35,23 +35,8 @@ public class SelectAssembly implements Serializable {
         
     private void loadGroups(String currentAssembly) {
 		this.currentAssembly = currentAssembly;		
-		Set<DBGroup> groups = new TreeSet<DBGroup>();
-		if ( currentAssembly != null && !currentAssembly.isEmpty()) {
-			String[] keys = currentAssembly.split("-"); 
-			DBAssembly assembly = assemblyRepository.findByStateSession(keys[0], keys[1]);
-			for ( DBGroup key: assembly.getAggregateGroupMap().keySet() ) {
-				groups.add( key );
-			}
-			for ( DBGroup key: assembly.getComputationGroupMap().keySet() ) {
-				groups.add( key );
-			}
-			for ( DBGroup key: assembly.getDistricts().getAggregateGroupMap().keySet() ) {
-				groups.add(key);
-			}
-			for ( DBGroup key: assembly.getDistricts().getComputationGroupMap().keySet() ) {
-				groups.add(key);
-			}
-		}
+		String[] keys = currentAssembly.split("-");
+		Set<DBGroup> groups = assemblyFacade.loadGroupsForAssembly(keys[0], keys[1]);
 		this.assemblyGroups = new DBGroup[groups.size()];
 		this.assemblyGroups = groups.toArray(this.assemblyGroups);
 	}
