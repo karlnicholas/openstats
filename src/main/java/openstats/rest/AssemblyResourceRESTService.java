@@ -42,10 +42,7 @@ public class AssemblyResourceRESTService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response createAssembly(
-		@Context UriInfo ui, 
-		OSAssembly osAssembly
-    ) {
+    public Response createAssembly(@Context UriInfo ui, OSAssembly osAssembly ) {
 
         Response.ResponseBuilder builder = null;
         
@@ -54,7 +51,7 @@ public class AssemblyResourceRESTService {
         	assemblyFacade.writeOSAssembly(osAssembly);
         	
         	
-            // Create an "ok" response
+            // Create an "created" response
             builder = Response.created(ui.getRequestUriBuilder().path(
         			osAssembly.getOSGroup().getGroupName() + "/" +
         			osAssembly.getState() + "/" +
@@ -85,14 +82,14 @@ public class AssemblyResourceRESTService {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response updateAssembly(OSAssembly osAssembly) {
+    public Response updateAssembly(@Context UriInfo ui, OSAssembly osAssembly ) {
 
         Response.ResponseBuilder builder = null;
 
         try {
         	assemblyFacade.writeOSAssembly(osAssembly);
-            // Create an "ok" response
-            builder = Response.ok();
+            // Create an "no content" response
+            builder = Response.noContent();
         } catch (Exception e) {
             // Handle generic exceptions
             Map<String, String> responseObj = new HashMap<String, String>();
