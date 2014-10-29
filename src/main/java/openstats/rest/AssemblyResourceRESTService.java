@@ -40,12 +40,10 @@ public class AssemblyResourceRESTService {
     private AssemblyFacade assemblyFacade;
     
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response createAssembly(@Context UriInfo ui, OSAssembly osAssembly ) {
 
         Response.ResponseBuilder builder = null;
-        
         
         try {
         	assemblyFacade.writeOSAssembly(osAssembly);
@@ -68,28 +66,38 @@ public class AssemblyResourceRESTService {
         return builder.build();
     }
 
+//     @Produces(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+
     @GET
     @Path("{group}/{state}/{session}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public OSAssembly readAssembly(
+    @Produces(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response readAssembly(
+    	@Context HttpHeaders httpHeaders, 
 		@PathParam("group") String group,  
 		@PathParam("state") String state, 
 		@PathParam("session") String session
     ) throws OpenStatsException {
-        return assemblyFacade.buildOSAssembly(group, state, session);
+        Response.ResponseBuilder builder = null;
+        try {
+            builder = Response.ok(assemblyFacade.buildOSAssembly(group, state, session), MediaType.APPLICATION_JSON);
+        } catch (Exception e) {
+            // Handle generic exceptions
+            builder = Response.status(Response.Status.NOT_FOUND).entity(e.getMessage());
+        }
+
+        return builder.build();
     }
 
     @PUT
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
     public Response updateAssembly(@Context UriInfo ui, OSAssembly osAssembly ) {
 
         Response.ResponseBuilder builder = null;
 
         try {
         	assemblyFacade.writeOSAssembly(osAssembly);
-            // Create an "no content" response
-            builder = Response.noContent();
+            // Create an "created" response
+            builder = Response.ok();
         } catch (Exception e) {
             // Handle generic exceptions
             Map<String, String> responseObj = new HashMap<String, String>();
@@ -102,7 +110,6 @@ public class AssemblyResourceRESTService {
 
     @DELETE
     @Path("{group}/{state}/{session}")
-    @Produces(MediaType.APPLICATION_JSON)
     public Response deleteAssembly(
 		@PathParam("group") String group,  
 		@PathParam("state") String state, 

@@ -3,23 +3,12 @@ package openstats.util;
 import java.io.*;
 import java.util.*;
 
-import openstats.osmodel.*;
+import org.apache.commons.csv.*;
 
-import org.supercsv.io.AbstractCsvWriter;
-import org.supercsv.prefs.CsvPreference;
+import openstats.osmodel.*;
 
 public class AssemblyCsvHandler {
 
-	private class MyCsvWriter extends AbstractCsvWriter {
-
-		public MyCsvWriter(Writer writer, CsvPreference preference) {
-			super(writer, preference);
-		}
-		public void writeRow(String... columns ) throws IOException {
-			super.writeRow(columns);
-		}
-	}
-	
 	public List<String> createHeader(OSAssembly osAssembly) throws Exception {
 		List<String> csvHeader = new ArrayList<String>();
 
@@ -98,29 +87,15 @@ public class AssemblyCsvHandler {
         return csvResult;
 	}
 
-	public void writeCsv(OutputStream out, OSAssembly osAssembly) throws Exception {
+	public void writeCsv(Writer writer, OSAssembly osAssembly) throws Exception {
         
-		OutputStreamWriter writer = new OutputStreamWriter(out);
 		List<String> csvHeader = createHeader(osAssembly);
 		List<List<String>> csvBody = createBody(osAssembly);
 		
-		MyCsvWriter csvWriter = null;
-        try {
-        	csvWriter = new MyCsvWriter(writer, CsvPreference.STANDARD_PREFERENCE);
-	        String[] sColumns = new String[csvHeader.size()];
-	        sColumns = csvHeader.toArray(sColumns);
-            csvWriter.writeHeader(sColumns);
-
-	        for ( List<String> row: csvBody) {
-		        sColumns = row.toArray(sColumns);
-	            csvWriter.writeHeader(sColumns);
-	        }
-        }
-        finally {
-            if( csvWriter != null ) {
-            	csvWriter.close();
-            }
-        }
+		CSVPrinter printer = CSVFormat.DEFAULT.print(writer);
+		printer.printRecord(csvHeader);
+		printer.printRecords(csvBody);
 	}
+		
 
 }

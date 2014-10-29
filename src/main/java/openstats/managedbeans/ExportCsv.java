@@ -45,10 +45,10 @@ public class ExportCsv {
 	    ec.setResponseContentType("text/csv;charset=WINDOWS-1252"); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
 	    ec.setResponseHeader("Content-Disposition","attachment; filename=\""+assemblies.getCurrentAssembly()+".csv\"");
 
-	    OutputStream output = ec.getResponseOutputStream();
+	    Writer writer = new OutputStreamWriter(ec.getResponseOutputStream());
 	    // Now you can write the InputStream of the file to the above OutputStream the usual way.
 	    // ...
-    	createCsv.writeCsv(output, osAssembly );
+    	createCsv.writeCsv(writer, osAssembly );
 
 	    facesContext.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and closed.
     	
