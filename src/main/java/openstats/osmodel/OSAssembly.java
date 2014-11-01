@@ -35,21 +35,25 @@ public class OSAssembly implements Comparable<OSAssembly> {
 		this.computationValues = null;
 	}
 	
-	public OSAssembly(DBGroup dbGroup, DBAssembly dbAssembly) {
+	public OSAssembly(DBGroup dbGroup, DBAssembly dbAssembly) throws OpenStatsException {
 		this.state = dbAssembly.getState();
 		this.session = dbAssembly.getSession();
 		this.osGroup = new OSGroup(dbGroup.getGroupName(), dbGroup.getGroupDescription());
 		this.osDistricts = new OSDistricts(dbGroup, dbAssembly.getDistricts());
 
+		boolean hasResult = false;
 		if ( dbAssembly.getAggregateGroupMap().containsKey(dbGroup) || dbAssembly.getAggregateMap().containsKey(dbGroup) ) {
+			hasResult = true;
 			aggregateGroupInfo = new OSGroupInfo(dbAssembly.getAggregateGroupMap().get(dbGroup));
 			aggregateValues = new ArrayList<Long>(dbAssembly.getAggregateMap().get(dbGroup).getValueList());
 		}
 
 		if ( dbAssembly.getComputationGroupMap().containsKey(dbGroup) || dbAssembly.getComputationMap().containsKey(dbGroup) ) {
+			hasResult = true;
 			computationGroupInfo = new OSGroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
 			computationValues = new ArrayList<Double>(dbAssembly.getComputationMap().get(dbGroup).getValueList());
 		}
+		if ( !hasResult ) throw new OpenStatsException("No results for group " + dbGroup.getGroupName());
 
 	}
 	

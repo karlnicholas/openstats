@@ -106,7 +106,7 @@ public class AssemblyFacade {
 	 * @param session
 	 * @return {@link}OSAssembly
 	 */
-	public OSAssembly buildOSAssembly(DBGroup dbGroup, String state, String session) {
+	public OSAssembly buildOSAssembly(DBGroup dbGroup, String state, String session) throws OpenStatsException {
 		DBAssembly dbAssembly = findByStateSession(state, session);
 		return new OSAssembly(dbGroup, dbAssembly);
 		

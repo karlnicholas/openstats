@@ -16,8 +16,6 @@
  */
 package openstats.rest;
 
-import java.util.*;
-
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
@@ -48,7 +46,6 @@ public class AssemblyResourceRESTService {
         try {
         	assemblyFacade.writeOSAssembly(osAssembly);
         	
-        	
             // Create an "created" response
             builder = Response.created(ui.getRequestUriBuilder().path(
         			osAssembly.getOSGroup().getGroupName() + "/" +
@@ -58,9 +55,7 @@ public class AssemblyResourceRESTService {
         	);
         } catch (Exception e) {
             // Handle generic exceptions
-            Map<String, String> responseObj = new HashMap<String, String>();
-            responseObj.put("error", e.getMessage());
-            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+            builder = Response.status(Response.Status.BAD_REQUEST).header("error", e.getMessage());
         }
 
         return builder.build();
@@ -82,7 +77,7 @@ public class AssemblyResourceRESTService {
             builder = Response.ok(assemblyFacade.buildOSAssembly(group, state, session), MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             // Handle generic exceptions
-            builder = Response.status(Response.Status.NOT_FOUND).entity(e.getMessage());
+            builder = Response.status(Response.Status.BAD_REQUEST).header("error", e.getMessage());
         }
 
         return builder.build();
@@ -100,9 +95,7 @@ public class AssemblyResourceRESTService {
             builder = Response.ok();
         } catch (Exception e) {
             // Handle generic exceptions
-            Map<String, String> responseObj = new HashMap<String, String>();
-            responseObj.put("error", e.getMessage());
-            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+            builder = Response.status(Response.Status.BAD_REQUEST).header("error", e.getMessage());
         }
 
         return builder.build();
@@ -123,9 +116,7 @@ public class AssemblyResourceRESTService {
             builder = Response.ok();
         } catch (Exception e) {
             // Handle generic exceptions
-            Map<String, String> responseObj = new HashMap<String, String>();
-            responseObj.put("error", e.getMessage());
-            builder = Response.status(Response.Status.BAD_REQUEST).entity(responseObj);
+            builder = Response.status(Response.Status.BAD_REQUEST).header("error", e.getMessage());
         }
 
         return builder.build();
