@@ -3,37 +3,30 @@ package openstats.osmodel;
 import java.util.*;
 
 import openstats.dbmodel.DBGroupInfo;
+import openstats.dbmodel.DBInfoItem;
 
 public class OSGroupInfo {
-	private List<String> groupLabels;
-	private List<String> groupDescriptions;
+	private List<OSInfoItem> groupItems;
 	
 	public OSGroupInfo() {}
 
-	public OSGroupInfo(	List<String> groupLabels, List<String> groupDescriptions ) {
-		this.groupLabels = groupLabels;
-		this.groupDescriptions = groupDescriptions;
-	}
-	
 	public OSGroupInfo(	DBGroupInfo dbGroupInfo ) {
-		this.groupLabels = new ArrayList<String>(dbGroupInfo.getGroupLabels());
-		this.groupDescriptions = new ArrayList<String>(dbGroupInfo.getGroupDescriptions());
+		this.groupItems = new ArrayList<OSInfoItem>();
+		for ( DBInfoItem infoItem: dbGroupInfo.getGroupItems() ) {
+			groupItems.add(new OSInfoItem(infoItem));
+		}
 	}
 
-	public List<String> getGroupLabels() {
-		return groupLabels;
+	public OSGroupInfo(List<OSInfoItem> groupItems) {
+		this.groupItems = groupItems;
 	}
 
-	public void setGroupLabels(List<String> groupLabels) {
-		this.groupLabels = groupLabels;
+	public List<OSInfoItem> getInfoItems() {
+		return groupItems;
 	}
 
-	public List<String> getGroupDescriptions() {
-		return groupDescriptions;
-	}
-
-	public void setGroupDescriptions(List<String> groupDescriptions) {
-		this.groupDescriptions = groupDescriptions;
+	public void setGroupItems(List<OSInfoItem> groupItems) {
+		this.groupItems = groupItems;
 	}
 
 }

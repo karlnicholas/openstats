@@ -6,38 +6,27 @@ import java.util.*;
 import javax.persistence.*;
 
 import openstats.osmodel.OSGroupInfo;
+import openstats.osmodel.OSInfoItem;
 
 @SuppressWarnings("serial")
 @Entity public class DBGroupInfo implements Serializable {
 	@Id @GeneratedValue private Long id;
 
-	@ElementCollection
+	@OneToMany(cascade=CascadeType.ALL)
 	@OrderColumn
-	private List<String> groupLabels = new ArrayList<String>();
-	@ElementCollection
-	@OrderColumn
-	private List<String> groupDescriptions = new ArrayList<String>();
+	private List<DBInfoItem> groupItems = new ArrayList<DBInfoItem>();
 	
 	public DBGroupInfo() {}
 	public DBGroupInfo(OSGroupInfo osGroupInfo) {
-		groupLabels.addAll(osGroupInfo.getGroupLabels());
-		groupDescriptions.addAll(osGroupInfo.getGroupDescriptions());
+		for ( OSInfoItem infoItem: osGroupInfo.getInfoItems()) {
+			groupItems.add(new DBInfoItem(infoItem));
+		}
 	}
-	
-	public List<String> getGroupLabels() {
-		return groupLabels;
+	public List<DBInfoItem> getGroupItems() {
+		return groupItems;
 	}
-
-	public void setGroupLabels(List<String> groupLabels) {
-		this.groupLabels = groupLabels;
-	}
-
-	public List<String> getGroupDescriptions() {
-		return groupDescriptions;
-	}
-
-	public void setGroupDescriptions(List<String> groupDescriptions) {
-		this.groupDescriptions = groupDescriptions;
+	public void setGroupItems(List<DBInfoItem> groupItems) {
+		this.groupItems = groupItems;
 	}
 	
 }

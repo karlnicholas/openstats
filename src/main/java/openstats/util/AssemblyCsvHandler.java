@@ -18,23 +18,23 @@ public class AssemblyCsvHandler {
         csvHeader.add("Chamber");
 //			Aggregate aggregate = districts.getAggregate(GROUPLABEL);
 
-        for ( String label: districts.getAggregateGroupInfo().getGroupLabels()) {
-        	csvHeader.add(label);
+        for ( OSInfoItem infoItem: districts.getAggregateGroupInfo().getInfoItems() ) {
+        	csvHeader.add(infoItem.getLabel());
         }
-        for ( String label: districts.getComputationGroupInfo().getGroupLabels()) {
-        	csvHeader.add(label);
+        for ( OSInfoItem infoItem: districts.getComputationGroupInfo().getInfoItems()) {
+        	csvHeader.add(infoItem.getLabel());
         }
 
     	OSGroupInfo groupInfo = osAssembly.getAggregateGroupInfo();
     	if ( groupInfo != null ) {
-	        for ( String label: groupInfo.getGroupLabels()) {
-	        	csvHeader.add(label);
+	        for ( OSInfoItem infoItem: groupInfo.getInfoItems()) {
+	        	csvHeader.add(infoItem.getLabel());
 	        }
     	}
     	groupInfo = osAssembly.getComputationGroupInfo();
     	if ( groupInfo != null ) {
-	        for ( String label: groupInfo.getGroupLabels()) {
-	        	csvHeader.add(label);
+	        for ( OSInfoItem infoItem: groupInfo.getInfoItems()) {
+	        	csvHeader.add(infoItem.getLabel());
 	        }
     	}
         return csvHeader;

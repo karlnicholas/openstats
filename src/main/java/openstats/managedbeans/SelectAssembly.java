@@ -11,9 +11,9 @@ import openstats.dbmodel.*;
 import openstats.facades.AssemblyFacade;
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class SelectAssembly implements Serializable {
-	private static final long serialVersionUID = 482581809901780483L;
+	private static final long serialVersionUID = 1L;
 	//
 	private Map<String,Object> assemblyTitles;
 	private String currentAssembly;
@@ -33,8 +33,9 @@ public class SelectAssembly implements Serializable {
 		}
 	}
         
-    private void loadGroups(String currentAssembly) {
-		this.currentAssembly = currentAssembly;		
+    private void loadGroups() {
+		System.out.println("Current Assembly:" + currentAssembly);
+		if ( currentAssembly == null || currentAssembly.isEmpty() ) return;
 		String[] keys = currentAssembly.split("-");
 		Set<DBGroup> groups = assemblyFacade.loadGroupsForAssembly(keys[0], keys[1]);
 		this.assemblyGroups = new DBGroup[groups.size()];
@@ -50,12 +51,13 @@ public class SelectAssembly implements Serializable {
 	}
 
 	public String getCurrentAssembly() {
+		System.out.println("Get Current Assembly:" + currentAssembly);
 		return currentAssembly;
 	}
 
 	public void setCurrentAssembly(String currentAssembly) {
 		this.currentAssembly = currentAssembly;
-		loadGroups(currentAssembly);
+		loadGroups();
 	}
 
 	public DBGroup[] getAssemblyGroups() {
