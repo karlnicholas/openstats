@@ -5,35 +5,35 @@ import java.util.*;
 
 import org.apache.commons.csv.*;
 
-import openstats.osmodel.*;
+import openstats.model.*;
 
 public class AssemblyCsvHandler {
 
-	public List<String> createHeader(OSAssembly osAssembly) throws Exception {
+	public List<String> createHeader(Assembly osAssembly) throws Exception {
 		List<String> csvHeader = new ArrayList<String>();
 
-        OSDistricts districts = osAssembly.getOSDistricts();
+        Districts districts = osAssembly.getOSDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         csvHeader.add("District");
         csvHeader.add("Chamber");
 //			Aggregate aggregate = districts.getAggregate(GROUPLABEL);
 
-        for ( OSInfoItem infoItem: districts.getAggregateGroupInfo().getInfoItems() ) {
+        for ( InfoItem infoItem: districts.getAggregateGroupInfo().getInfoItems() ) {
         	csvHeader.add(infoItem.getLabel());
         }
-        for ( OSInfoItem infoItem: districts.getComputationGroupInfo().getInfoItems()) {
+        for ( InfoItem infoItem: districts.getComputationGroupInfo().getInfoItems()) {
         	csvHeader.add(infoItem.getLabel());
         }
 
-    	OSGroupInfo groupInfo = osAssembly.getAggregateGroupInfo();
+    	GroupInfo groupInfo = osAssembly.getAggregateGroupInfo();
     	if ( groupInfo != null ) {
-	        for ( OSInfoItem infoItem: groupInfo.getInfoItems()) {
+	        for ( InfoItem infoItem: groupInfo.getInfoItems()) {
 	        	csvHeader.add(infoItem.getLabel());
 	        }
     	}
     	groupInfo = osAssembly.getComputationGroupInfo();
     	if ( groupInfo != null ) {
-	        for ( OSInfoItem infoItem: groupInfo.getInfoItems()) {
+	        for ( InfoItem infoItem: groupInfo.getInfoItems()) {
 	        	csvHeader.add(infoItem.getLabel());
 	        }
     	}
@@ -41,17 +41,17 @@ public class AssemblyCsvHandler {
 	}
 
 
-	public List<List<String>> createBody(OSAssembly osAssembly) throws Exception {
+	public List<List<String>> createBody(Assembly osAssembly) throws Exception {
 		List<List<String>> csvResult = new ArrayList<List<String>>();
 		int rowOffset = 0;
 
-        OSDistricts districts = osAssembly.getOSDistricts();
+        Districts districts = osAssembly.getOSDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         List<String> row = new ArrayList<String>();
 
 
         // write data for districts 
-        for ( final OSDistrict dist: districts.getOSDistrictList()) {
+        for ( final District dist: districts.getOSDistrictList()) {
         	row = new ArrayList<String>();
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber());
@@ -87,7 +87,7 @@ public class AssemblyCsvHandler {
         return csvResult;
 	}
 
-	public void writeCsv(Writer writer, OSAssembly osAssembly) throws Exception {
+	public void writeCsv(Writer writer, Assembly osAssembly) throws Exception {
         
 		List<String> csvHeader = createHeader(osAssembly);
 		List<List<String>> csvBody = createBody(osAssembly);

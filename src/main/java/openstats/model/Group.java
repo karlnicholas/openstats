@@ -1,12 +1,12 @@
-package openstats.osmodel;
+package openstats.model;
 
-public class OSGroup implements Comparable<OSGroup> {
+public class Group implements Comparable<Group> {
 	private String groupName;
 	private String groupDescription;
 	
-	public OSGroup() {}
+	public Group() {}
 
-	public OSGroup(String groupName, String groupDescription) {
+	public Group(String groupName, String groupDescription) {
 		this.groupName = groupName;
 		this.groupDescription = groupDescription;
 	}
@@ -26,7 +26,7 @@ public class OSGroup implements Comparable<OSGroup> {
 		this.groupDescription = groupDescription;
 	}
 	@Override
-	public int compareTo(OSGroup o) {
+	public int compareTo(Group o) {
 		return groupName.compareTo(o.groupName);
 	}
 	@Override
@@ -45,7 +45,7 @@ public class OSGroup implements Comparable<OSGroup> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		OSGroup other = (OSGroup) obj;
+		Group other = (Group) obj;
 		if (groupName == null) {
 			if (other.groupName != null)
 				return false;

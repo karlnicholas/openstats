@@ -1,4 +1,4 @@
-package openstats.osmodel;
+package openstats.model;
 
 import java.util.*;
 
@@ -7,50 +7,50 @@ import javax.xml.bind.annotation.XmlRootElement;
 import openstats.dbmodel.*;
 
 @XmlRootElement
-public class OSAssembly implements Comparable<OSAssembly> {
+public class Assembly implements Comparable<Assembly> {
 
 	private String state;
 	private String session;
-	private OSGroup osGroup;
-	private OSDistricts osDistricts;
-	private OSGroupInfo aggregateGroupInfo; 
-	private OSGroupInfo computationGroupInfo; 
+	private Group osGroup;
+	private Districts osDistricts;
+	private GroupInfo aggregateGroupInfo; 
+	private GroupInfo computationGroupInfo; 
 	private List<Long> aggregateValues;
 	private List<Double> computationValues;
 	
-	public OSAssembly() {
+	public Assembly() {
 		this.aggregateGroupInfo = null; 
 		this.computationGroupInfo = null; 
 		this.aggregateValues = null;
 		this.computationValues = null;
 	}
-	public OSAssembly(String state, String session, OSGroup osGroup) {
+	public Assembly(String state, String session, Group osGroup) {
 		this.state = state;
 		this.session = session;
 		this.osGroup = osGroup;
-		this.osDistricts = new OSDistricts();
+		this.osDistricts = new Districts();
 		this.aggregateGroupInfo = null; 
 		this.computationGroupInfo = null; 
 		this.aggregateValues = null;
 		this.computationValues = null;
 	}
 	
-	public OSAssembly(DBGroup dbGroup, DBAssembly dbAssembly) throws OpenStatsException {
+	public Assembly(DBGroup dbGroup, DBAssembly dbAssembly) throws OpenStatsException {
 		this.state = dbAssembly.getState();
 		this.session = dbAssembly.getSession();
-		this.osGroup = new OSGroup(dbGroup.getGroupName(), dbGroup.getGroupDescription());
-		this.osDistricts = new OSDistricts(dbGroup, dbAssembly.getDistricts());
+		this.osGroup = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());
+		this.osDistricts = new Districts(dbGroup, dbAssembly.getDistricts());
 
 		boolean hasResult = false;
 		if ( dbAssembly.getAggregateGroupMap().containsKey(dbGroup) || dbAssembly.getAggregateMap().containsKey(dbGroup) ) {
 			hasResult = true;
-			aggregateGroupInfo = new OSGroupInfo(dbAssembly.getAggregateGroupMap().get(dbGroup));
+			aggregateGroupInfo = new GroupInfo(dbAssembly.getAggregateGroupMap().get(dbGroup));
 			aggregateValues = new ArrayList<Long>(dbAssembly.getAggregateMap().get(dbGroup).getValueList());
 		}
 
 		if ( dbAssembly.getComputationGroupMap().containsKey(dbGroup) || dbAssembly.getComputationMap().containsKey(dbGroup) ) {
 			hasResult = true;
-			computationGroupInfo = new OSGroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
+			computationGroupInfo = new GroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
 			computationValues = new ArrayList<Double>(dbAssembly.getComputationMap().get(dbGroup).getValueList());
 		}
 		if ( !hasResult ) throw new OpenStatsException("No results for group " + dbGroup.getGroupName());
@@ -69,28 +69,28 @@ public class OSAssembly implements Comparable<OSAssembly> {
 	public void setSession(String session) {
 		this.session = session;
 	}
-	public OSGroup getOSGroup() {
+	public Group getOSGroup() {
 		return osGroup;
 	}
-	public void setOSGroup(OSGroup osGroup) {
+	public void setOSGroup(Group osGroup) {
 		this.osGroup = osGroup;
 	}
-	public OSDistricts getOSDistricts() {
+	public Districts getOSDistricts() {
 		return osDistricts;
 	}
-	public void setOSDistricts(OSDistricts osDistricts) {
+	public void setOSDistricts(Districts osDistricts) {
 		this.osDistricts = osDistricts;
 	}
-	public OSGroupInfo getAggregateGroupInfo() {
+	public GroupInfo getAggregateGroupInfo() {
 		return aggregateGroupInfo;
 	}
-	public void setAggregateGroupInfo(OSGroupInfo aggregateGroupInfo) {
+	public void setAggregateGroupInfo(GroupInfo aggregateGroupInfo) {
 		this.aggregateGroupInfo = aggregateGroupInfo;
 	}
-	public OSGroupInfo getComputationGroupInfo() {
+	public GroupInfo getComputationGroupInfo() {
 		return computationGroupInfo;
 	}
-	public void setComputationGroupInfo(OSGroupInfo computationGroupInfo) {
+	public void setComputationGroupInfo(GroupInfo computationGroupInfo) {
 		this.computationGroupInfo = computationGroupInfo;
 	}
 	public List<Long> getAggregateValues() {
@@ -106,7 +106,7 @@ public class OSAssembly implements Comparable<OSAssembly> {
 		this.computationValues = computationValues;
 	}
 	@Override
-	public int compareTo(OSAssembly assembly) {
+	public int compareTo(Assembly assembly) {
 		int s = state.compareTo(assembly.state);
 		if ( s != 0 ) return s;
 		return this.session.compareTo(assembly.session);

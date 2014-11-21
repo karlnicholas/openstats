@@ -5,7 +5,7 @@ import java.util.*;
 
 import javax.persistence.*;
 
-import openstats.osmodel.*;
+import openstats.model.*;
 
 @SuppressWarnings("serial")
 @Entity public class DBDistrict implements Comparable<DBDistrict>, Serializable {
@@ -24,7 +24,7 @@ import openstats.osmodel.*;
 	private Map<DBGroup, ComputationValues> computationMap = new LinkedHashMap<DBGroup, ComputationValues>();
 	
 	public DBDistrict() {}
-	public DBDistrict updateGroup(DBGroup dbGroup, OSDistrict osDistrict) {
+	public DBDistrict updateGroup(DBGroup dbGroup, District osDistrict) {
 		this.chamber = osDistrict.getChamber();
 		this.district = osDistrict.getDistrict();
 		// skip legislators for now

@@ -11,7 +11,7 @@ import javax.inject.Inject;
 import openstats.dbmodel.DBAssembly;
 import openstats.dbmodel.DBGroup;
 import openstats.facades.AssemblyFacade;
-import openstats.osmodel.OSAssembly;
+import openstats.model.Assembly;
 import openstats.util.AssemblyCsvHandler;
 
 @ManagedBean
@@ -24,7 +24,7 @@ public class ExportCsv implements Serializable {
     @Inject
     private AssemblyFacade assemblyFacade;
     
-    private OSAssembly osAssembly = null;
+    private Assembly osAssembly = null;
     
 	//
 	private Map<String,Object> assemblyTitles;
@@ -86,7 +86,7 @@ public class ExportCsv implements Serializable {
     public void exportCsv() throws Exception {
     	AssemblyCsvHandler createCsv = new AssemblyCsvHandler();
     	String[] keys = currentAssembly.split("-");
-    	OSAssembly osAssembly = assemblyFacade.buildOSAssembly(assemblyGroupItem, keys[0], keys[1]);
+    	Assembly osAssembly = assemblyFacade.buildOSAssembly(assemblyGroupItem, keys[0], keys[1]);
 
     	ExternalContext ec = facesContext.getExternalContext();
 
@@ -108,7 +108,7 @@ public class ExportCsv implements Serializable {
     	facesContext.getExternalContext().redirect("");
     }
 	
-	public OSAssembly getOSAssembly() throws Exception {
+	public Assembly getOSAssembly() throws Exception {
 		if ( osAssembly == null ) {
 	    	String[] keys = currentAssembly.split("-");
 	    	osAssembly = assemblyFacade.buildOSAssembly(assemblyGroupItem, keys[0], keys[1]);

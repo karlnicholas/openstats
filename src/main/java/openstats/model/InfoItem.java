@@ -1,16 +1,16 @@
-package openstats.osmodel;
+package openstats.model;
 
 import openstats.dbmodel.DBInfoItem;
 
-public class OSInfoItem {
+public class InfoItem {
 	private String label;
 	private String description;
-	public OSInfoItem() {}
-	public OSInfoItem(DBInfoItem dbInfoItem) {
+	public InfoItem() {}
+	public InfoItem(DBInfoItem dbInfoItem) {
 		this.label = dbInfoItem.getLabel();
 		this.description = dbInfoItem.getDescription();
 	}
-	public OSInfoItem(String label, String description) {
+	public InfoItem(String label, String description) {
 		this.label = label;
 		this.description = description;
 	}

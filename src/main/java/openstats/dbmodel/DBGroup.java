@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import javax.persistence.*;
 
-import openstats.osmodel.OSGroup;
+import openstats.model.Group;
 
 @SuppressWarnings("serial")
 @Entity public class DBGroup implements Comparable<DBGroup>, Serializable {
@@ -15,7 +15,7 @@ import openstats.osmodel.OSGroup;
 	private String groupDescription;
 	
 	public DBGroup() {}
-	public DBGroup(OSGroup osGroup) {
+	public DBGroup(Group osGroup) {
 		this.groupName = osGroup.getGroupName();
 		this.groupDescription = osGroup.getGroupDescription();
 	}

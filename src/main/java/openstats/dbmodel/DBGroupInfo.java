@@ -5,8 +5,8 @@ import java.util.*;
 
 import javax.persistence.*;
 
-import openstats.osmodel.OSGroupInfo;
-import openstats.osmodel.OSInfoItem;
+import openstats.model.GroupInfo;
+import openstats.model.InfoItem;
 
 @SuppressWarnings("serial")
 @Entity public class DBGroupInfo implements Serializable {
@@ -17,8 +17,8 @@ import openstats.osmodel.OSInfoItem;
 	private List<DBInfoItem> groupItems = new ArrayList<DBInfoItem>();
 	
 	public DBGroupInfo() {}
-	public DBGroupInfo(OSGroupInfo osGroupInfo) {
-		for ( OSInfoItem infoItem: osGroupInfo.getInfoItems()) {
+	public DBGroupInfo(GroupInfo osGroupInfo) {
+		for ( InfoItem infoItem: osGroupInfo.getInfoItems()) {
 			groupItems.add(new DBInfoItem(infoItem));
 		}
 	}

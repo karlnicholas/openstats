@@ -5,7 +5,7 @@ import java.util.*;
 
 import javax.persistence.*;
 
-import openstats.osmodel.*;
+import openstats.model.*;
 
 @SuppressWarnings("serial")
 @Entity
@@ -24,8 +24,8 @@ public class DBDistricts implements Serializable {
 	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	public DBDistricts() {}
-	public void updateGroup(DBGroup dbGroup, OSDistricts osDistricts) {
-		for ( OSDistrict osDistrict: osDistricts.getOSDistrictList() ) {			
+	public void updateGroup(DBGroup dbGroup, Districts osDistricts) {
+		for ( District osDistrict: osDistricts.getOSDistrictList() ) {			
 			districtList.add(new DBDistrict().updateGroup(dbGroup, osDistrict));
 		}
 		if ( osDistricts.getAggregateGroupInfo() != null ) {

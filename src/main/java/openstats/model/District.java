@@ -1,27 +1,27 @@
-package openstats.osmodel;
+package openstats.model;
 
 import java.util.*;
 
 import openstats.dbmodel.*;
 
-public class OSDistrict {
+public class District {
 	
 	private String chamber;
 	private String district;
 	private List<Long> aggregateValues;
 	private List<Double> computationValues;
 
-	public OSDistrict() {
+	public District() {
 		aggregateValues = null;
 		computationValues = null;
 	}
-	public OSDistrict(String chamber, String district) {
+	public District(String chamber, String district) {
 		this.chamber = chamber;
 		this.district = district;
 		aggregateValues = null;
 		computationValues = null;
 	}
-	public OSDistrict(DBGroup dbGroup, DBDistrict district) {
+	public District(DBGroup dbGroup, DBDistrict district) {
 		this.chamber = district.getChamber();
 		this.district = district.getDistrict();
 		if ( district.getAggregateMap().containsKey(dbGroup)) {

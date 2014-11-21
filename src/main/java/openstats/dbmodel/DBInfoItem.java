@@ -7,7 +7,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
-import openstats.osmodel.OSInfoItem;
+import openstats.model.InfoItem;
 
 @SuppressWarnings("serial")
 @Entity public class DBInfoItem implements Serializable {
@@ -17,7 +17,7 @@ import openstats.osmodel.OSInfoItem;
 	@Column(length=1023)
 	private String description;
 	public DBInfoItem() {}
-	public DBInfoItem(OSInfoItem osInfoItem) {
+	public DBInfoItem(InfoItem osInfoItem) {
 		this.Label = osInfoItem.getLabel();
 		this.description = osInfoItem.getDescription();
 	}

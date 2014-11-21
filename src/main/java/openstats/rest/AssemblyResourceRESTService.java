@@ -23,7 +23,7 @@ import javax.ws.rs.core.*;
 
 import openstats.dbmodel.*;
 import openstats.facades.AssemblyFacade;
-import openstats.osmodel.OSAssembly;
+import openstats.model.Assembly;
 
 /**
  * JAX-RS Example
@@ -39,7 +39,7 @@ public class AssemblyResourceRESTService {
     
     @POST
     @Consumes(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createAssembly(@Context UriInfo ui, OSAssembly osAssembly ) {
+    public Response createAssembly(@Context UriInfo ui, Assembly osAssembly ) {
 
         Response.ResponseBuilder builder = null;
         
@@ -55,6 +55,7 @@ public class AssemblyResourceRESTService {
         	);
         } catch (Exception e) {
             // Handle generic exceptions
+        	System.out.println("Bad Request:" + e.getMessage());
             builder = Response.status(Response.Status.BAD_REQUEST).header("error", e.getMessage());
         }
 
@@ -85,7 +86,7 @@ public class AssemblyResourceRESTService {
 
     @PUT
     @Consumes(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response updateAssembly(@Context UriInfo ui, OSAssembly osAssembly ) {
+    public Response updateAssembly(@Context UriInfo ui, Assembly osAssembly ) {
 
         Response.ResponseBuilder builder = null;
 

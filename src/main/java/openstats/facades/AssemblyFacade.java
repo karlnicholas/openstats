@@ -8,7 +8,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 
 import openstats.dbmodel.*;
-import openstats.osmodel.OSAssembly;
+import openstats.model.Assembly;
 
 //
 //The @Stateless annotation eliminates the need for manual transaction demarcation
@@ -106,9 +106,9 @@ public class AssemblyFacade {
 	 * @param session
 	 * @return {@link}OSAssembly
 	 */
-	public OSAssembly buildOSAssembly(DBGroup dbGroup, String state, String session) throws OpenStatsException {
+	public Assembly buildOSAssembly(DBGroup dbGroup, String state, String session) throws OpenStatsException {
 		DBAssembly dbAssembly = findByStateSession(state, session);
-		return new OSAssembly(dbGroup, dbAssembly);
+		return new Assembly(dbGroup, dbAssembly);
 		
 	}
 		
@@ -121,10 +121,10 @@ public class AssemblyFacade {
 	 * @return {@link}OSAssembly
 	 * @throws OpenStatsException 
 	 */
-	public OSAssembly buildOSAssembly(String groupName, String state, String session) throws OpenStatsException {
+	public Assembly buildOSAssembly(String groupName, String state, String session) throws OpenStatsException {
 		DBGroup dbGroup = DBGroupHandler.getDBGroup(groupName, em);
 		DBAssembly dbAssembly = findByStateSession(state, session);
-		return new OSAssembly(dbGroup, dbAssembly);
+		return new Assembly(dbGroup, dbAssembly);
 		
 	}
 	
@@ -134,7 +134,7 @@ public class AssemblyFacade {
      * @param osAssembly
      * @throws OpenStatsException
      */
-	public void writeOSAssembly(OSAssembly osAssembly) throws OpenStatsException {
+	public void writeOSAssembly(Assembly osAssembly) throws OpenStatsException {
 		DBGroup dbGroup = DBGroupHandler.getDBGroup(osAssembly.getOSGroup().getGroupName(), em);
 		
 		if ( dbGroup == null ) {

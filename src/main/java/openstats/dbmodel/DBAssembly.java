@@ -6,7 +6,7 @@ import java.util.*;
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 
-import openstats.osmodel.*;
+import openstats.model.*;
 
 @NamedQueries({ 
 	@NamedQuery(name = DBAssembly.LISTASSEMBLIES, query = "SELECT a FROM DBAssembly a") 
@@ -40,7 +40,7 @@ import openstats.osmodel.*;
 	
 	public DBAssembly() {}
 	
-	public void putGroup(DBGroup dbGroup, OSAssembly osAssembly) {
+	public void putGroup(DBGroup dbGroup, Assembly osAssembly) {
 		this.state = osAssembly.getState();
 		this.session = osAssembly.getSession();
 		this.districts.updateGroup(dbGroup, osAssembly.getOSDistricts());
