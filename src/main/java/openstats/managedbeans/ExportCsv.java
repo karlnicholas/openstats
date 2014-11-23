@@ -24,7 +24,7 @@ public class ExportCsv implements Serializable {
     @Inject
     private AssemblyFacade assemblyFacade;
     
-    private Assembly osAssembly = null;
+    private Assembly Assembly = null;
     
 	//
 	private Map<String,Object> assemblyTitles;
@@ -34,7 +34,7 @@ public class ExportCsv implements Serializable {
 	private DBGroup assemblyGroupItem;
 	
     @PostConstruct
-	public void postConstruct() {
+	public void ptConstruct() {
     	assemblyTitles = new TreeMap<String, Object>();
 		List<DBAssembly> assemblies = assemblyFacade.listAllAssemblies(); 
 		for ( DBAssembly assembly: assemblies ) {
@@ -86,21 +86,21 @@ public class ExportCsv implements Serializable {
     public void exportCsv() throws Exception {
     	AssemblyCsvHandler createCsv = new AssemblyCsvHandler();
     	String[] keys = currentAssembly.split("-");
-    	Assembly osAssembly = assemblyFacade.buildOSAssembly(assemblyGroupItem, keys[0], keys[1]);
+    	Assembly Assembly = assemblyFacade.buildAssembly(assemblyGroupItem, keys[0], keys[1]);
 
     	ExternalContext ec = facesContext.getExternalContext();
 
 	    ec.responseReset(); // Some JSF component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
 	    ec.setResponseContentType("text/csv;charset=WINDOWS-1252"); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
-	    ec.setResponseHeader("Content-Disposition","attachment; filename=\""+currentAssembly+".csv\"");
+	    ec.setResponseHeader("Content-Dispition","attachment; filename=\""+currentAssembly+".csv\"");
 
 	    Writer writer = new OutputStreamWriter(ec.getResponseOutputStream());
 	    // Now you can write the InputStream of the file to the above OutputStream the usual way.
 	    // ...
-    	createCsv.writeCsv(writer, osAssembly );
+    	createCsv.writeCsv(writer, Assembly );
     	writer.flush();
 
-	    facesContext.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and closed.
+	    facesContext.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and cled.
     	
 	}
 
@@ -108,12 +108,12 @@ public class ExportCsv implements Serializable {
     	facesContext.getExternalContext().redirect("");
     }
 	
-	public Assembly getOSAssembly() throws Exception {
-		if ( osAssembly == null ) {
+	public Assembly getAssembly() throws Exception {
+		if ( Assembly == null ) {
 	    	String[] keys = currentAssembly.split("-");
-	    	osAssembly = assemblyFacade.buildOSAssembly(assemblyGroupItem, keys[0], keys[1]);
+	    	Assembly = assemblyFacade.buildAssembly(assemblyGroupItem, keys[0], keys[1]);
 		}
-		return osAssembly;
+		return Assembly;
 	}
 
 }

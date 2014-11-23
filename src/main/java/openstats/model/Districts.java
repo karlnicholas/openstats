@@ -3,18 +3,24 @@ package openstats.model;
 import java.util.*;
 
 import openstats.dbmodel.*;
+import openstats.model.District.CHAMBER;
 
 public class Districts {
 
 	private GroupInfo aggregateGroupInfo; 
 	private GroupInfo computationGroupInfo; 
-	private List<District> osDistrictList = new ArrayList<District>();
+	private List<District> districtList = new ArrayList<District>();
 	
 	public Districts() {
 		aggregateGroupInfo = null; 
 		computationGroupInfo = null; 
 	}
-	public Districts(DBGroup dbGroup, DBDistricts dbDistricts) {
+	public Districts(DBDistricts dbDistricts) {
+		for ( DBDistrict dbDistrict: dbDistricts.getDistrictList()) {
+			districtList.add(new District(dbDistrict));
+		}
+	}
+	public void copyGroup(DBGroup dbGroup, DBDistricts dbDistricts) {
 		if ( dbDistricts.getAggregateGroupMap().containsKey(dbGroup) ) {
 			aggregateGroupInfo = new GroupInfo( dbDistricts.getAggregateGroupMap().get(dbGroup) );
 		} else {
@@ -26,7 +32,8 @@ public class Districts {
 			computationGroupInfo = null; 
 		}
 		for ( DBDistrict dbDistrict: dbDistricts.getDistrictList()) {
-			osDistrictList.add(new District(dbGroup, dbDistrict));
+			District district = findDistrict(dbDistrict.getChamber(), dbDistrict.getDistrict());
+			district.copyGroup(dbGroup, dbDistrict);
 		}
 	}
 
@@ -42,15 +49,15 @@ public class Districts {
 	public void setComputationGroupInfo(GroupInfo computationGroupInfo) {
 		this.computationGroupInfo = computationGroupInfo;
 	}
-	public List<District> getOSDistrictList() {
-		return osDistrictList;
+	public List<District> getDistrictList() {
+		return districtList;
 	}
-	public void setOSDistrictList(List<District> osDistrictList) {
-		this.osDistrictList = osDistrictList;
+	public void setDistrictList(List<District> districtList) {
+		this.districtList = districtList;
 	}
-	public District findOSDistrict(String chamber, String district) {
-		for ( District d: osDistrictList ) {
-			if ( d.getChamber().equals(chamber) && d.getDistrict().equals(district)) return d; 
+	public District findDistrict(CHAMBER chamber, String district) {
+		for ( District d: districtList ) {
+			if ( d.getChamber()== chamber && d.getDistrict().equals(district)) return d; 
 		}
 		return null;
 	}

@@ -24,15 +24,21 @@ public class DBDistricts implements Serializable {
 	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	public DBDistricts() {}
-	public void updateGroup(DBGroup dbGroup, Districts osDistricts) {
-		for ( District osDistrict: osDistricts.getOSDistrictList() ) {			
-			districtList.add(new DBDistrict().updateGroup(dbGroup, osDistrict));
+
+	public DBDistricts(Districts districts) {
+		for ( District district: districts.getDistrictList() ) {			
+			districtList.add(new DBDistrict(district));
 		}
-		if ( osDistricts.getAggregateGroupInfo() != null ) {
-			aggregateGroupMap.put(dbGroup, new DBGroupInfo(osDistricts.getAggregateGroupInfo()));
+	}
+	public void copyGroup(DBGroup dbGroup, Districts districts) {
+		for ( District district: districts.getDistrictList() ) {			
+			districtList.add(new DBDistrict().copyGroup(dbGroup, district));
 		}
-		if ( osDistricts.getComputationGroupInfo() != null ) {
-			computationGroupMap.put(dbGroup, new DBGroupInfo(osDistricts.getComputationGroupInfo()));
+		if ( districts.getAggregateGroupInfo() != null ) {
+			aggregateGroupMap.put(dbGroup, new DBGroupInfo(districts.getAggregateGroupInfo()));
+		}
+		if ( districts.getComputationGroupInfo() != null ) {
+			computationGroupMap.put(dbGroup, new DBGroupInfo(districts.getComputationGroupInfo()));
 		}
 	}
 	
@@ -50,7 +56,7 @@ public class DBDistricts implements Serializable {
 
 	public DBDistrict findDistrict(String chamber, String district) {
 		for ( DBDistrict d: districtList ) {
-			if ( d.getChamber().equals(chamber) && d.getDistrict().equals(district)) return d; 
+			if ( d.getChamber().equals(chamber) && d.getName().equals(district)) return d; 
 		}
 		return null;
 	}

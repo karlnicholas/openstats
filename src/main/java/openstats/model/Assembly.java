@@ -11,8 +11,8 @@ public class Assembly implements Comparable<Assembly> {
 
 	private String state;
 	private String session;
-	private Group osGroup;
-	private Districts osDistricts;
+	private Group group;
+	private Districts districts;
 	private GroupInfo aggregateGroupInfo; 
 	private GroupInfo computationGroupInfo; 
 	private List<Long> aggregateValues;
@@ -24,37 +24,36 @@ public class Assembly implements Comparable<Assembly> {
 		this.aggregateValues = null;
 		this.computationValues = null;
 	}
-	public Assembly(String state, String session, Group osGroup) {
+	public Assembly(String state, String session) {
 		this.state = state;
 		this.session = session;
-		this.osGroup = osGroup;
-		this.osDistricts = new Districts();
+		this.districts = new Districts();
 		this.aggregateGroupInfo = null; 
 		this.computationGroupInfo = null; 
 		this.aggregateValues = null;
 		this.computationValues = null;
 	}
 	
-	public Assembly(DBGroup dbGroup, DBAssembly dbAssembly) throws OpenStatsException {
+	public Assembly(DBAssembly dbAssembly) throws OpenStatsException {
 		this.state = dbAssembly.getState();
 		this.session = dbAssembly.getSession();
-		this.osGroup = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());
-		this.osDistricts = new Districts(dbGroup, dbAssembly.getDistricts());
+		this.districts = new Districts(dbAssembly.getDistricts());
+	}
+	
+	public void copyGroup(DBGroup dbGroup, DBAssembly dbAssembly) {
 
-		boolean hasResult = false;
+		this.group = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());
+		districts.copyGroup(dbGroup, dbAssembly.getDistricts());
+
 		if ( dbAssembly.getAggregateGroupMap().containsKey(dbGroup) || dbAssembly.getAggregateMap().containsKey(dbGroup) ) {
-			hasResult = true;
 			aggregateGroupInfo = new GroupInfo(dbAssembly.getAggregateGroupMap().get(dbGroup));
 			aggregateValues = new ArrayList<Long>(dbAssembly.getAggregateMap().get(dbGroup).getValueList());
 		}
 
 		if ( dbAssembly.getComputationGroupMap().containsKey(dbGroup) || dbAssembly.getComputationMap().containsKey(dbGroup) ) {
-			hasResult = true;
 			computationGroupInfo = new GroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
 			computationValues = new ArrayList<Double>(dbAssembly.getComputationMap().get(dbGroup).getValueList());
 		}
-		if ( !hasResult ) throw new OpenStatsException("No results for group " + dbGroup.getGroupName());
-
 	}
 	
 	public String getState() {
@@ -69,17 +68,17 @@ public class Assembly implements Comparable<Assembly> {
 	public void setSession(String session) {
 		this.session = session;
 	}
-	public Group getOSGroup() {
-		return osGroup;
+	public Group getGroup() {
+		return group;
 	}
-	public void setOSGroup(Group osGroup) {
-		this.osGroup = osGroup;
+	public void setGroup(Group group) {
+		this.group = group;
 	}
-	public Districts getOSDistricts() {
-		return osDistricts;
+	public Districts getDistricts() {
+		return districts;
 	}
-	public void setOSDistricts(Districts osDistricts) {
-		this.osDistricts = osDistricts;
+	public void setDistricts(Districts districts) {
+		this.districts = districts;
 	}
 	public GroupInfo getAggregateGroupInfo() {
 		return aggregateGroupInfo;

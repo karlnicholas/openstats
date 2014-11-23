@@ -10,8 +10,8 @@
       </h:form>
       <h4>Export Available for #{exportCsv.currentAssembly} and #{exportCsv.assemblyGroupItem.groupName}</h4>
       <p>
-      <h:dataTable value="#{exportCsv.OSAssembly.aggregateGroupInfo.infoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.OSAssembly.aggregateGroupInfo.infoItems}">
+      <h:dataTable value="#{exportCsv.assembly.aggregateGroupInfo.infoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.aggregateGroupInfo.infoItems}">
         <f:facet name="header">
           <h:outputText value="Assembly Aggregates"/>
         </f:facet>
@@ -26,8 +26,8 @@
       </h:dataTable>
       </p>
       <p>
-      <h:dataTable value="#{exportCsv.OSAssembly.computationGroupInfo.infoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.OSAssembly.computationGroupInfo.infoItems}" >
+      <h:dataTable value="#{exportCsv.assembly.computationGroupInfo.infoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.computationGroupInfo.infoItems}" >
         <f:facet name="header">
           <h:outputText value="Assembly Computations"/>
         </f:facet>
@@ -42,8 +42,8 @@
       </h:dataTable>
       </p>
       <p>
-      <h:dataTable value="#{exportCsv.OSAssembly.OSDistricts.aggregateGroupInfo.infoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.OSAssembly.OSDistricts.aggregateGroupInfo.infoItems}" >
+      <h:dataTable value="#{exportCsv.assembly.districts.aggregateGroupInfo.infoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.districts.aggregateGroupInfo.infoItems}" >
         <f:facet name="header">
           <h:outputText value="District Aggregates"/>
         </f:facet>
@@ -58,8 +58,8 @@
       </h:dataTable>
       </p>
       <p>
-      <h:dataTable value="#{exportCsv.OSAssembly.OSDistricts.computationGroupInfo.infoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.OSAssembly.OSDistricts.computationGroupInfo.infoItems}" >
+      <h:dataTable value="#{exportCsv.assembly.districts.computationGroupInfo.infoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.districts.computationGroupInfo.infoItems}" >
         <f:facet name="header">
           <h:outputText value="District Computations"/>
         </f:facet>

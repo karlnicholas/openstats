@@ -8,14 +8,9 @@ import javax.xml.bind.annotation.*;
 
 import openstats.model.*;
 
-@NamedQueries({ 
-	@NamedQuery(name = DBAssembly.LISTASSEMBLIES, query = "SELECT a FROM DBAssembly a") 
-})
-
 @SuppressWarnings("serial")
 @XmlRootElement
 @Entity public class DBAssembly implements Comparable<DBAssembly>, Serializable {
-	public static final String LISTASSEMBLIES  = "DBAssembly.listAssemblies";
 	@Id @GeneratedValue private Long id;
 
 	private String state;
@@ -40,19 +35,23 @@ import openstats.model.*;
 	
 	public DBAssembly() {}
 	
-	public void putGroup(DBGroup dbGroup, Assembly osAssembly) {
-		this.state = osAssembly.getState();
-		this.session = osAssembly.getSession();
-		this.districts.updateGroup(dbGroup, osAssembly.getOSDistricts());
+	public DBAssembly(Assembly assembly) {
+		this.state = assembly.getState();
+		this.session = assembly.getSession();
+		this.districts = new DBDistricts(assembly.getDistricts());
+	}
+	
+	public void copyGroup(DBGroup dbGroup, Assembly assembly) {
+		districts.copyGroup(dbGroup, assembly.getDistricts());
 		
-		if ( osAssembly.getAggregateGroupInfo() != null || osAssembly.getAggregateValues() != null ) {
-			aggregateGroupMap.put(dbGroup, new DBGroupInfo(osAssembly.getAggregateGroupInfo()));
-			aggregateMap.put(dbGroup, new AggregateValues(osAssembly.getAggregateValues()) );
+		if ( assembly.getAggregateGroupInfo() != null || assembly.getAggregateValues() != null ) {
+			aggregateGroupMap.put(dbGroup, new DBGroupInfo(assembly.getAggregateGroupInfo()));
+			aggregateMap.put(dbGroup, new AggregateValues(assembly.getAggregateValues()) );
 		}
 
-		if ( osAssembly.getComputationGroupInfo() != null || osAssembly.getComputationValues() != null ) {
-			computationGroupMap.put(dbGroup, new DBGroupInfo(osAssembly.getComputationGroupInfo()));
-			computationMap.put(dbGroup, new ComputationValues(osAssembly.getComputationValues()) );
+		if ( assembly.getComputationGroupInfo() != null || assembly.getComputationValues() != null ) {
+			computationGroupMap.put(dbGroup, new DBGroupInfo(assembly.getComputationGroupInfo()));
+			computationMap.put(dbGroup, new ComputationValues(assembly.getComputationValues()) );
 		}
 	}
 	
@@ -111,9 +110,9 @@ import openstats.model.*;
 		return computationMap;
 	}
 	@Override
-	public int compareTo(DBAssembly assembly) {
-		int s = state.compareTo(assembly.state);
+	public int compareTo(DBAssembly dbAssembly) {
+		int s = state.compareTo(dbAssembly.state);
 		if ( s != 0 ) return s;
-		return this.session.compareTo(assembly.session);
+		return this.session.compareTo(dbAssembly.session);
 	}
 }

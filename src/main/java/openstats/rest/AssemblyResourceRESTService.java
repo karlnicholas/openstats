@@ -1,5 +1,5 @@
 /*
- * JBoss, Home of Professional Open Source
+ * JBs, Home of Professional Open Source
  * Copyright 2014, Red Hat, Inc. and/or its affiliates, and individual
  * contributors by the @authors tag. See the copyright.txt in the
  * distribution for a full listing of individual contributors.
@@ -39,18 +39,18 @@ public class AssemblyResourceRESTService {
     
     @POST
     @Consumes(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response createAssembly(@Context UriInfo ui, Assembly osAssembly ) {
+    public Response createAssembly(@Context UriInfo ui, Assembly Assembly ) {
 
         Response.ResponseBuilder builder = null;
         
         try {
-        	assemblyFacade.writeOSAssembly(osAssembly);
+        	assemblyFacade.writeAssembly(Assembly);
         	
             // Create an "created" response
             builder = Response.created(ui.getRequestUriBuilder().path(
-        			osAssembly.getOSGroup().getGroupName() + "/" +
-        			osAssembly.getState() + "/" +
-        			osAssembly.getSession()
+        			Assembly.getGroup().getGroupName() + "/" +
+        			Assembly.getState() + "/" +
+        			Assembly.getSession()
         		).build()
         	);
         } catch (Exception e) {
@@ -75,7 +75,7 @@ public class AssemblyResourceRESTService {
     ) throws OpenStatsException {
         Response.ResponseBuilder builder = null;
         try {
-            builder = Response.ok(assemblyFacade.buildOSAssembly(group, state, session), MediaType.APPLICATION_JSON);
+            builder = Response.ok(assemblyFacade.buildAssembly(group, state, session), MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             // Handle generic exceptions
             builder = Response.status(Response.Status.BAD_REQUEST).header("error", e.getMessage());
@@ -86,12 +86,12 @@ public class AssemblyResourceRESTService {
 
     @PUT
     @Consumes(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response updateAssembly(@Context UriInfo ui, Assembly osAssembly ) {
+    public Response updateAssembly(@Context UriInfo ui, Assembly Assembly ) {
 
         Response.ResponseBuilder builder = null;
 
         try {
-        	assemblyFacade.writeOSAssembly(osAssembly);
+        	assemblyFacade.writeAssembly(Assembly);
             // Create an "created" response
             builder = Response.ok();
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class AssemblyResourceRESTService {
         Map<String, String> responseObj = new HashMap<String, String>();
 
         for (ConstraintViolation<?> violation : violations) {
-            responseObj.put(violation.getPropertyPath().toString(), violation.getMessage());
+            responseObj.put(violation.getPropertyPath().ttring(), violation.getMessage());
         }
 
         return Response.status(Response.Status.BAD_REQUEST).entity(responseObj);

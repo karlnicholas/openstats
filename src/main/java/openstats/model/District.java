@@ -5,9 +5,12 @@ import java.util.*;
 import openstats.dbmodel.*;
 
 public class District {
+	public static enum CHAMBER {UPPER, LOWER};
 	
-	private String chamber;
 	private String district;
+	private CHAMBER chamber;
+	private String name;
+	private String description;
 	private List<Long> aggregateValues;
 	private List<Double> computationValues;
 
@@ -15,37 +18,55 @@ public class District {
 		aggregateValues = null;
 		computationValues = null;
 	}
-	public District(String chamber, String district) {
-		this.chamber = chamber;
+	public District(String district, CHAMBER chamber) {
 		this.district = district;
+		this.chamber = chamber;
+		name = null;
+		description = null;
 		aggregateValues = null;
 		computationValues = null;
 	}
-	public District(DBGroup dbGroup, DBDistrict district) {
-		this.chamber = district.getChamber();
-		this.district = district.getDistrict();
-		if ( district.getAggregateMap().containsKey(dbGroup)) {
-			this.aggregateValues = new ArrayList<Long>(district.getAggregateMap().get(dbGroup).getValueList());
+	public District(DBDistrict dbDistrict) {
+		this.district = dbDistrict.getDistrict();
+		this.chamber = dbDistrict.getChamber();
+		this.name = dbDistrict.getName();
+		this.description = dbDistrict.getDescription();
+	}
+	public void copyGroup(DBGroup dbGroup, DBDistrict dbDistrict) {
+		if ( dbDistrict.getAggregateMap().containsKey(dbGroup)) {
+			this.aggregateValues = new ArrayList<Long>(dbDistrict.getAggregateMap().get(dbGroup).getValueList());
 		} else {
 			aggregateValues = null;
 		}
-		if ( district.getComputationMap().containsKey(dbGroup)) {
-			this.computationValues = new ArrayList<Double>(district.getComputationMap().get(dbGroup).getValueList());
+		if ( dbDistrict.getComputationMap().containsKey(dbGroup)) {
+			this.computationValues = new ArrayList<Double>(dbDistrict.getComputationMap().get(dbGroup).getValueList());
 		} else {
 			computationValues = null;
 		}
-	}
-	public String getChamber() {
-		return chamber;
-	}
-	public void setChamber(String chamber) {
-		this.chamber = chamber;
 	}
 	public String getDistrict() {
 		return district;
 	}
 	public void setDistrict(String district) {
 		this.district = district;
+	}
+	public CHAMBER getChamber() {
+		return chamber;
+	}
+	public void setChamber(CHAMBER chamber) {
+		this.chamber = chamber;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public List<Long> getAggregateValues() {
 		return aggregateValues;

@@ -31,7 +31,9 @@ public class AssemblyFacade {
     }
 
     public List<DBAssembly> listAllAssemblies() {
-		return em.createNamedQuery(DBAssembly.LISTASSEMBLIES, DBAssembly.class).getResultList();
+    	CriteriaBuilder builder = em.getCriteriaBuilder();
+    	CriteriaQuery<DBAssembly> query = builder.createQuery(DBAssembly.class);
+    	return em.createQuery(query.select(query.from(DBAssembly.class))).getResultList();
     }
     
     public DBAssembly findByStateSession(String state, String session) {
@@ -99,68 +101,71 @@ public class AssemblyFacade {
 	}
 
     /**
-	 * Build OSAssembly object for DBGroup for State/Session.
+	 * Build Assembly object for DBGroup for State/Session.
 	 *  
 	 * @param dbGroup
 	 * @param state
 	 * @param session
-	 * @return {@link}OSAssembly
+	 * @return {@link}Assembly
 	 */
-	public Assembly buildOSAssembly(DBGroup dbGroup, String state, String session) throws OpenStatsException {
+	public Assembly buildAssembly(DBGroup dbGroup, String state, String session) throws OpenStatsException {
 		DBAssembly dbAssembly = findByStateSession(state, session);
-		return new Assembly(dbGroup, dbAssembly);
+		Assembly assembly = new Assembly(dbAssembly);
+		assembly.copyGroup(dbGroup, dbAssembly);
+		return assembly;
 		
 	}
 		
 	/**
-	 * Build OSAssembly object for Group/State/Session.
+	 * Build Assembly object for Group/State/Session.
 	 *  
 	 * @param groupName
 	 * @param state
 	 * @param session
-	 * @return {@link}OSAssembly
+	 * @return {@link}Assembly
 	 * @throws OpenStatsException 
 	 */
-	public Assembly buildOSAssembly(String groupName, String state, String session) throws OpenStatsException {
+	public Assembly buildAssembly(String groupName, String state, String session) throws OpenStatsException {
 		DBGroup dbGroup = DBGroupHandler.getDBGroup(groupName, em);
 		DBAssembly dbAssembly = findByStateSession(state, session);
-		return new Assembly(dbGroup, dbAssembly);
-		
+		Assembly assembly = new Assembly(dbAssembly);
+		assembly.copyGroup(dbGroup, dbAssembly);
+		return assembly;
 	}
 	
     /**
-     * Write (or update?) the DBAssembly referenced by the OSAssembly
+     * Write (or update?) the DBAssembly referenced by the Assembly
      * 
-     * @param osAssembly
+     * @param Assembly
      * @throws OpenStatsException
      */
-	public void writeOSAssembly(Assembly osAssembly) throws OpenStatsException {
-		DBGroup dbGroup = DBGroupHandler.getDBGroup(osAssembly.getOSGroup().getGroupName(), em);
+	public void writeAssembly(Assembly Assembly) throws OpenStatsException {
+		DBGroup dbGroup = DBGroupHandler.getDBGroup(Assembly.getGroup().getGroupName(), em);
 		
 		if ( dbGroup == null ) {
 			// create new DBGroup
-			dbGroup = new DBGroup(osAssembly.getOSGroup());
+			dbGroup = new DBGroup(Assembly.getGroup());
 			DBGroupHandler.createDBGroup(dbGroup, em);
 		}
 		DBAssembly dbAssembly;
-		Long count = checkByStateSession(osAssembly.getState(), osAssembly.getSession());
+		Long count = checkByStateSession(Assembly.getState(), Assembly.getSession());
 		if ( count > 0 ) {
 			// update existing one
-			dbAssembly = findByStateSession(osAssembly.getState(), osAssembly.getSession());
-			dbAssembly.putGroup(dbGroup, osAssembly);
+			dbAssembly = findByStateSession(Assembly.getState(), Assembly.getSession());
+			dbAssembly.copyGroup(dbGroup, Assembly);
 			em.merge(dbAssembly);
 		} else {
 			// create a new one
 			dbAssembly = new DBAssembly();
-			dbAssembly.putGroup(dbGroup, osAssembly);
+			dbAssembly.copyGroup(dbGroup, Assembly);
 			em.persist(dbAssembly);
 		}
 	}
 
 	/**
-     * Delete the DBAssembly referenced by the OSAssembly
+     * Delete the DBAssembly referenced by the Assembly
 	 * 
-	 * @param osAssembly
+	 * @param Assembly
 	 * @throws OpenStatsException 
 	 */
 	public void deleteAssemblyGroup(String groupName, String state, String session) throws OpenStatsException {

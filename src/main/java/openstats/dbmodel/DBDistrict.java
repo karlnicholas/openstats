@@ -6,13 +6,17 @@ import java.util.*;
 import javax.persistence.*;
 
 import openstats.model.*;
+import openstats.model.District.CHAMBER;
 
 @SuppressWarnings("serial")
 @Entity public class DBDistrict implements Comparable<DBDistrict>, Serializable {
 	@Id @GeneratedValue private Long id;
 	
-	private String chamber;
+	@Column(length=3)
 	private String district;
+	private CHAMBER chamber;
+	private String name;
+	private String description;
 	
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<DBLegislator> legislators = new ArrayList<DBLegislator>();
@@ -24,15 +28,19 @@ import openstats.model.*;
 	private Map<DBGroup, ComputationValues> computationMap = new LinkedHashMap<DBGroup, ComputationValues>();
 	
 	public DBDistrict() {}
-	public DBDistrict updateGroup(DBGroup dbGroup, District osDistrict) {
-		this.chamber = osDistrict.getChamber();
-		this.district = osDistrict.getDistrict();
+	public DBDistrict(District district) {
+		this.district = district.getDistrict();
+		this.chamber = district.getChamber();
+		this.name = district.getName();
+		this.description = district.getDescription();
+	}
+	public DBDistrict copyGroup(DBGroup dbGroup, District district) {
 		// skip legislators for now
-		if ( osDistrict.getAggregateValues() != null ) {
-			aggregateMap.put(dbGroup, new AggregateValues(osDistrict.getAggregateValues()) );
+		if ( district.getAggregateValues() != null ) {
+			aggregateMap.put(dbGroup, new AggregateValues(district.getAggregateValues()) );
 		}
-		if ( osDistrict.getComputationValues() != null ) {
-			computationMap.put(dbGroup, new ComputationValues(osDistrict.getComputationValues()) );
+		if ( district.getComputationValues() != null ) {
+			computationMap.put(dbGroup, new ComputationValues(district.getComputationValues()) );
 		}
 		// useful for chaining
 		return this;
@@ -48,17 +56,29 @@ import openstats.model.*;
 		}
 	}
 
-	public String getChamber() {
-		return chamber;
-	}
-	public void setChamber(String chamber) {
-		this.chamber = chamber;
-	}
 	public String getDistrict() {
 		return district;
 	}
 	public void setDistrict(String district) {
 		this.district = district;
+	}
+	public CHAMBER getChamber() {
+		return chamber;
+	}
+	public void setChamber(CHAMBER chamber) {
+		this.chamber = chamber;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public String getDescription() {
+		return description;
+	}
+	public void setDescription(String description) {
+		this.description = description;
 	}
 	public List<DBLegislator> getLegislators() {
 		return legislators;
@@ -77,7 +97,7 @@ import openstats.model.*;
 	@Override
 	public int compareTo(DBDistrict o) {
 		if ( !chamber.equals(o.chamber)) return chamber.compareTo(o.chamber);
-		return district.compareTo(o.district);
+		return name.compareTo(o.name);
 	}
 
 }
