@@ -6,6 +6,7 @@ import java.util.*;
 import javax.persistence.*;
 
 import openstats.model.*;
+import openstats.model.District.CHAMBER;
 
 @SuppressWarnings("serial")
 @Entity
@@ -31,8 +32,9 @@ public class DBDistricts implements Serializable {
 		}
 	}
 	public void copyGroup(DBGroup dbGroup, Districts districts) {
-		for ( District district: districts.getDistrictList() ) {			
-			districtList.add(new DBDistrict().copyGroup(dbGroup, district));
+		for ( District district: districts.getDistrictList() ) {
+			findDistrict(district.getChamber(), district.getDistrict())
+			.copyGroup(dbGroup, district);
 		}
 		if ( districts.getAggregateGroupInfo() != null ) {
 			aggregateGroupMap.put(dbGroup, new DBGroupInfo(districts.getAggregateGroupInfo()));
@@ -54,9 +56,9 @@ public class DBDistricts implements Serializable {
 		}
 	}
 
-	public DBDistrict findDistrict(String chamber, String district) {
+	public DBDistrict findDistrict(CHAMBER chamber, String district) {
 		for ( DBDistrict d: districtList ) {
-			if ( d.getChamber().equals(chamber) && d.getName().equals(district)) return d; 
+			if ( d.getChamber() == chamber && d.getDistrict().equals(district)) return d; 
 		}
 		return null;
 	}
