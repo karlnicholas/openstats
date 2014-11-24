@@ -139,27 +139,11 @@ public class AssemblyFacade {
      * @param Assembly
      * @throws OpenStatsException
      */
-	public void writeAssembly(Assembly Assembly) throws OpenStatsException {
-		DBGroup dbGroup = DBGroupHandler.getDBGroup(Assembly.getGroup().getGroupName(), em);
-		
-		if ( dbGroup == null ) {
-			// create new DBGroup
-			dbGroup = new DBGroup(Assembly.getGroup());
-			DBGroupHandler.createDBGroup(dbGroup, em);
-		}
-		DBAssembly dbAssembly;
-		Long count = checkByStateSession(Assembly.getState(), Assembly.getSession());
-		if ( count > 0 ) {
-			// update existing one
-			dbAssembly = findByStateSession(Assembly.getState(), Assembly.getSession());
-			dbAssembly.copyGroup(dbGroup, Assembly);
-			em.merge(dbAssembly);
-		} else {
-			// create a new one
-			dbAssembly = new DBAssembly();
-			dbAssembly.copyGroup(dbGroup, Assembly);
-			em.persist(dbAssembly);
-		}
+	public void writeAssembly(Assembly assembly) throws OpenStatsException {
+		DBGroup dbGroup = DBGroupHandler.createDBGroup(assembly.getGroup(), em);
+		DBAssembly dbAssembly = findByStateSession(assembly.getState(), assembly.getSession());
+		dbAssembly.copyGroup(dbGroup, assembly);
+		em.merge(dbAssembly);
 	}
 
 	/**

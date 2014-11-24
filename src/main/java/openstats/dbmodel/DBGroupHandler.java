@@ -5,6 +5,8 @@ import java.util.*;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 
+import openstats.model.Group;
+
 public class DBGroupHandler {
 
 	private DBGroupHandler() {}
@@ -25,13 +27,17 @@ public class DBGroupHandler {
 
 	private TreeMap<String, DBGroup> groupMap = null;
 	
-	public static void createDBGroup(DBGroup dbGroup, EntityManager em) throws OpenStatsException {
+	public static DBGroup createDBGroup(Group group, EntityManager em) throws OpenStatsException {
 		DBGroupHandler handler = SingletonHelper.INSTANCE;
 		synchronized(handler) {
 			checkInit(handler, em);
-			if ( handler.groupMap.containsKey(dbGroup.getGroupName()) ) throw new OpenStatsException("DBGroup already created: " + dbGroup.getGroupName());
+			if ( handler.groupMap.containsKey(group.getGroupName()) ) {
+				return handler.groupMap.get(group.getGroupName());
+			}
+			DBGroup dbGroup = new DBGroup(group);
 			em.persist(dbGroup);
 			handler.groupMap.put(dbGroup.getGroupName(), dbGroup);
+			return dbGroup;
 		}
 	}
 
