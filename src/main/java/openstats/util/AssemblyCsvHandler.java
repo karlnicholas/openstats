@@ -59,7 +59,7 @@ public class AssemblyCsvHandler {
         // write data for districts 
         for ( final District dist: districts.getDistrictList()) {
         	row = new ArrayList<String>();
-        	row.add(dist.getName());
+        	row.add(dist.getDistrict());
         	row.add(dist.getChamber().toString());
         	List<Long> aggs = dist.getAggregateValues();
             if ( aggs != null ) {

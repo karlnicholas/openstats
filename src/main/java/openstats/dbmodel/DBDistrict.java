@@ -15,7 +15,6 @@ import openstats.model.District.CHAMBER;
 	@Column(length=3)
 	private String district;
 	private CHAMBER chamber;
-	private String name;
 	private String description;
 	
 	@OneToMany(cascade = CascadeType.ALL)
@@ -31,7 +30,6 @@ import openstats.model.District.CHAMBER;
 	public DBDistrict(District district) {
 		this.district = district.getDistrict();
 		this.chamber = district.getChamber();
-		this.name = district.getName();
 		this.description = district.getDescription();
 	}
 	public DBDistrict copyGroup(DBGroup dbGroup, District district) {
@@ -68,12 +66,6 @@ import openstats.model.District.CHAMBER;
 	public void setChamber(CHAMBER chamber) {
 		this.chamber = chamber;
 	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
-	}
 	public String getDescription() {
 		return description;
 	}
@@ -97,7 +89,7 @@ import openstats.model.District.CHAMBER;
 	@Override
 	public int compareTo(DBDistrict o) {
 		if ( !chamber.equals(o.chamber)) return chamber.compareTo(o.chamber);
-		return name.compareTo(o.name);
+		return district.compareTo(o.district);
 	}
 
 }

@@ -9,7 +9,6 @@ public class District {
 	
 	private String district;
 	private CHAMBER chamber;
-	private String name;
 	private String description;
 	private List<Long> aggregateValues;
 	private List<Double> computationValues;
@@ -21,7 +20,6 @@ public class District {
 	public District(String district, CHAMBER chamber) {
 		this.district = district;
 		this.chamber = chamber;
-		name = null;
 		description = null;
 		aggregateValues = null;
 		computationValues = null;
@@ -29,7 +27,6 @@ public class District {
 	public District(DBDistrict dbDistrict) {
 		this.district = dbDistrict.getDistrict();
 		this.chamber = dbDistrict.getChamber();
-		this.name = dbDistrict.getName();
 		this.description = dbDistrict.getDescription();
 	}
 	public void copyGroup(DBGroup dbGroup, DBDistrict dbDistrict) {
@@ -55,12 +52,6 @@ public class District {
 	}
 	public void setChamber(CHAMBER chamber) {
 		this.chamber = chamber;
-	}
-	public String getName() {
-		return name;
-	}
-	public void setName(String name) {
-		this.name = name;
 	}
 	public String getDescription() {
 		return description;
