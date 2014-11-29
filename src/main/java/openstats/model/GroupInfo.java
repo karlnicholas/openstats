@@ -12,9 +12,7 @@ public class GroupInfo {
 
 	public GroupInfo( DBGroupInfo dbGroupInfo ) {
 		this.infoItems = new ArrayList<InfoItem>();
-		for ( DBInfoItem infoItem: dbGroupInfo.getGroupItems() ) {
-			infoItems.add(new InfoItem(infoItem));
-		}
+		mergeGroupInfo(dbGroupInfo);
 	}
 
 	public GroupInfo(List<InfoItem> infoItems) {
@@ -27,6 +25,12 @@ public class GroupInfo {
 
 	public void setGroupItems(List<InfoItem> infoItems) {
 		this.infoItems = infoItems;
+	}
+
+	public void mergeGroupInfo(DBGroupInfo dbGroupInfo) {
+		for( DBInfoItem dbInfoItem: dbGroupInfo.getGroupItems() ) {
+			infoItems.add(new InfoItem(dbInfoItem));
+		}
 	}
 
 }

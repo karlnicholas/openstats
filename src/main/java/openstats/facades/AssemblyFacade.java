@@ -159,5 +159,14 @@ public class AssemblyFacade {
 		em.merge(dbAssembly);
 		
 	}
+	public openstats.model.Assembly buildAssembly2(List<DBGroup> groupNames, String state, String session) throws OpenStatsException {
+		DBAssembly dbAssembly = findByStateSession(state, session);
+		Assembly assembly = new Assembly(dbAssembly);
+		for ( DBGroup dbGroup: groupNames ) {
+//			DBGroup dbGroup = DBGroupHandler.getDBGroup(groupName, em);
+			assembly.copyGroup(dbGroup, dbAssembly);
+		}
+		return assembly;
+	}
 
 }

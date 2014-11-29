@@ -22,14 +22,17 @@ public class Districts {
 	}
 	public void copyGroup(DBGroup dbGroup, DBDistricts dbDistricts) {
 		if ( dbDistricts.getAggregateGroupMap().containsKey(dbGroup) ) {
-			aggregateGroupInfo = new GroupInfo( dbDistricts.getAggregateGroupMap().get(dbGroup) );
-		} else {
-			aggregateGroupInfo = null; 
+			if ( aggregateGroupInfo == null )
+				aggregateGroupInfo = new GroupInfo( dbDistricts.getAggregateGroupMap().get(dbGroup) );
+			else 
+				aggregateGroupInfo.mergeGroupInfo(dbDistricts.getAggregateGroupMap().get(dbGroup));
 		}
 		if ( dbDistricts.getComputationGroupMap().containsKey(dbGroup) ) {
-			computationGroupInfo = new GroupInfo( dbDistricts.getComputationGroupMap().get(dbGroup) );
-		} else {
-			computationGroupInfo = null; 
+			if (computationGroupInfo == null )
+				computationGroupInfo = new GroupInfo( dbDistricts.getComputationGroupMap().get(dbGroup) );
+			else 
+				computationGroupInfo.mergeGroupInfo( dbDistricts.getComputationGroupMap().get(dbGroup) );
+				
 		}
 		for ( DBDistrict dbDistrict: dbDistricts.getDistrictList()) {
 			District district = findDistrict(dbDistrict.getChamber(), dbDistrict.getDistrict());

@@ -30,24 +30,30 @@ public class ExportCsv implements Serializable {
 	private Map<String,Object> assemblyTitles;
 	private String currentAssembly;
 	//
-	private DBGroup[] assemblyGroups;
-	private DBGroup assemblyGroupItem;
+//	private DBGroup[] assemblyGroups;
+//	private DBGroup assemblyGroupItem;
+	private DBGroup[] allAssemblyGroups;
+	private DBGroup[] selectedAssemblyGroups;
+
+	private boolean groupsSelected;
+
 	
     @PostConstruct
-	public void ptConstruct() {
+	public void postConstruct() {
     	assemblyTitles = new TreeMap<String, Object>();
 		List<DBAssembly> assemblies = assemblyFacade.listAllAssemblies(); 
 		for ( DBAssembly assembly: assemblies ) {
 			assemblyTitles.put(assembly.getState() + " " + assembly.getSession(), assembly.getState() + "-" + assembly.getSession());
 		}
+		setGroupsSelected(false);
 	}
         
     private void loadGroups() {
 		if ( currentAssembly == null || currentAssembly.isEmpty() ) return;
 		String[] keys = currentAssembly.split("-");
 		Set<DBGroup> groups = assemblyFacade.loadGroupsForAssembly(keys[0], keys[1]);
-		this.assemblyGroups = new DBGroup[groups.size()];
-		this.assemblyGroups = groups.toArray(this.assemblyGroups);
+		this.allAssemblyGroups = new DBGroup[groups.size()];
+		this.allAssemblyGroups = groups.toArray(allAssemblyGroups);
 	}
 
 	public Map<String, Object> getAssemblyTitles() {
@@ -67,26 +73,36 @@ public class ExportCsv implements Serializable {
 		loadGroups();
 	}
 
-	public DBGroup[] getAssemblyGroups() {
-		return assemblyGroups;
+	public DBGroup[] getAllAssemblyGroups() {
+		return allAssemblyGroups;
 	}
 
-	public void setAssemblyGroups(DBGroup[] assemblyGroups) {
-		this.assemblyGroups = assemblyGroups;
+	public void setAllAssemblyGroups(DBGroup[] allAssemblyGroups) {
+		this.allAssemblyGroups = allAssemblyGroups;
+		groupsSelected = true;
 	}
 
-	public DBGroup getAssemblyGroupItem() {
-		return assemblyGroupItem;
+	public DBGroup[] getSelectedAssemblyGroups() {
+		return selectedAssemblyGroups;
 	}
 
-	public void setAssemblyGroupItem(DBGroup assemblyGroupItem) {
-		this.assemblyGroupItem = assemblyGroupItem;
+	public void setSelectedAssemblyGroups(DBGroup[] selectedAssemblyGroups) {
+		this.selectedAssemblyGroups = selectedAssemblyGroups;
+		groupsSelected = true;
+	}
+	
+    public boolean isGroupsSelected() {
+		return groupsSelected;
 	}
 
-    public void exportCsv() throws Exception {
+	public void setGroupsSelected(boolean groupsSelected) {
+		this.groupsSelected = groupsSelected;
+	}
+
+	public void exportCsv() throws Exception {
     	AssemblyCsvHandler createCsv = new AssemblyCsvHandler();
     	String[] keys = currentAssembly.split("-");
-    	Assembly Assembly = assemblyFacade.buildAssembly(assemblyGroupItem, keys[0], keys[1]);
+    	Assembly Assembly = assemblyFacade.buildAssembly2(Arrays.asList(selectedAssemblyGroups), keys[0], keys[1]);
 
     	ExternalContext ec = facesContext.getExternalContext();
 
@@ -111,7 +127,7 @@ public class ExportCsv implements Serializable {
 	public Assembly getAssembly() throws Exception {
 		if ( Assembly == null ) {
 	    	String[] keys = currentAssembly.split("-");
-	    	Assembly = assemblyFacade.buildAssembly(assemblyGroupItem, keys[0], keys[1]);
+	    	Assembly = assemblyFacade.buildAssembly2(Arrays.asList(selectedAssemblyGroups), keys[0], keys[1]);
 		}
 		return Assembly;
 	}

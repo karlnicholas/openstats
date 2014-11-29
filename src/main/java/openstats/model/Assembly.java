@@ -42,17 +42,31 @@ public class Assembly implements Comparable<Assembly> {
 	
 	public void copyGroup(DBGroup dbGroup, DBAssembly dbAssembly) {
 
-		this.group = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());
+		group = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());
 		districts.copyGroup(dbGroup, dbAssembly.getDistricts());
 
 		if ( dbAssembly.getAggregateGroupMap().containsKey(dbGroup) || dbAssembly.getAggregateMap().containsKey(dbGroup) ) {
-			aggregateGroupInfo = new GroupInfo(dbAssembly.getAggregateGroupMap().get(dbGroup));
-			aggregateValues = new ArrayList<Long>(dbAssembly.getAggregateMap().get(dbGroup).getValueList());
+			if ( aggregateGroupInfo == null || aggregateValues == null ) {
+				aggregateGroupInfo = new GroupInfo(dbAssembly.getAggregateGroupMap().get(dbGroup));
+				aggregateValues = new ArrayList<Long>(dbAssembly.getAggregateMap().get(dbGroup).getValueList());
+			} else {
+				aggregateGroupInfo.mergeGroupInfo( dbAssembly.getAggregateGroupMap().get(dbGroup) );
+				for ( Long value: dbAssembly.getAggregateMap().get(dbGroup).getValueList() ) {
+					aggregateValues.add(value);	
+				} 
+			}
 		}
 
 		if ( dbAssembly.getComputationGroupMap().containsKey(dbGroup) || dbAssembly.getComputationMap().containsKey(dbGroup) ) {
-			computationGroupInfo = new GroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
-			computationValues = new ArrayList<Double>(dbAssembly.getComputationMap().get(dbGroup).getValueList());
+			if ( computationGroupInfo == null || computationValues == null ) {
+				computationGroupInfo = new GroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
+				computationValues = new ArrayList<Double>(dbAssembly.getComputationMap().get(dbGroup).getValueList());
+			} else {
+				computationGroupInfo.mergeGroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
+				for ( Double value: dbAssembly.getComputationMap().get(dbGroup).getValueList() ) {
+					computationValues.add(value);
+				}
+			}
 		}
 	}
 	

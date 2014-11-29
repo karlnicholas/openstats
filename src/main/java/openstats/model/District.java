@@ -31,14 +31,22 @@ public class District {
 	}
 	public void copyGroup(DBGroup dbGroup, DBDistrict dbDistrict) {
 		if ( dbDistrict.getAggregateMap().containsKey(dbGroup)) {
-			this.aggregateValues = new ArrayList<Long>(dbDistrict.getAggregateMap().get(dbGroup).getValueList());
-		} else {
-			aggregateValues = null;
+			if ( aggregateValues == null ) {
+				aggregateValues = new ArrayList<Long>(dbDistrict.getAggregateMap().get(dbGroup).getValueList());
+			} else {
+				for ( Long value: dbDistrict.getAggregateMap().get(dbGroup).getValueList() ) {
+					aggregateValues.add( value );
+				}
+			}
 		}
 		if ( dbDistrict.getComputationMap().containsKey(dbGroup)) {
-			this.computationValues = new ArrayList<Double>(dbDistrict.getComputationMap().get(dbGroup).getValueList());
-		} else {
-			computationValues = null;
+			if ( computationValues == null ) {
+				computationValues = new ArrayList<Double>(dbDistrict.getComputationMap().get(dbGroup).getValueList());
+			} else {
+				for ( Double value: dbDistrict.getComputationMap().get(dbGroup).getValueList() ) {
+					computationValues.add( value );
+				}
+			}
 		}
 	}
 	public String getDistrict() {
