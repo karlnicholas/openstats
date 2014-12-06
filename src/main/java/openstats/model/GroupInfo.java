@@ -19,6 +19,13 @@ public class GroupInfo {
 		this.infoItems = infoItems;
 	}
 
+	public GroupInfo(GroupInfo groupInfo) {
+		this.infoItems = new ArrayList<InfoItem>();
+		for( InfoItem infoItem: groupInfo.getInfoItems() ) {
+			infoItems.add(new InfoItem(infoItem));
+		}
+	}
+
 	public List<InfoItem> getInfoItems() {
 		return infoItems;
 	}

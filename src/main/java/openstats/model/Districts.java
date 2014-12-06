@@ -20,6 +20,17 @@ public class Districts {
 			districtList.add(new District(dbDistrict));
 		}
 	}
+	public Districts(Districts districts) {
+		if ( districts.getAggregateGroupInfo() != null )
+			aggregateGroupInfo = new GroupInfo( districts.getAggregateGroupInfo() );
+
+		if (districts.getComputationGroupInfo() != null )
+			computationGroupInfo = new GroupInfo( districts.getComputationGroupInfo() );
+
+		for ( District district: districts.getDistrictList()) {
+			districtList.add(new District(district));
+		}
+	}
 	public void copyGroup(DBGroup dbGroup, DBDistricts dbDistricts) {
 		if ( dbDistricts.getAggregateGroupMap().containsKey(dbGroup) ) {
 			if ( aggregateGroupInfo == null )

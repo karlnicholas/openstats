@@ -40,6 +40,11 @@ public class Assembly implements Comparable<Assembly> {
 		this.districts = new Districts(dbAssembly.getDistricts());
 	}
 	
+	public Assembly(Assembly assembly) {
+		this.state = assembly.getState();
+		this.session = assembly.getSession();
+		this.districts = new Districts(assembly.getDistricts());
+	}
 	public void copyGroup(DBGroup dbGroup, DBAssembly dbAssembly) {
 
 		group = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());

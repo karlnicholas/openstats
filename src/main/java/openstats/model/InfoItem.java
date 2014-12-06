@@ -14,6 +14,10 @@ public class InfoItem {
 		this.label = label;
 		this.description = description;
 	}
+	public InfoItem(InfoItem infoItem) {
+		this.label = infoItem.getLabel();
+		this.description = infoItem.getDescription();
+	}
 	public String getLabel() {
 		return label;
 	}

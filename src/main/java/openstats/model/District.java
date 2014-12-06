@@ -29,6 +29,15 @@ public class District {
 		this.chamber = dbDistrict.getChamber();
 		this.description = dbDistrict.getDescription();
 	}
+	public District(District district) {
+		this.district = district.getDistrict();
+		this.chamber = district.getChamber();
+		this.description = district.getDescription();
+		if ( district.getAggregateValues() != null )
+			aggregateValues = new ArrayList<Long>(district.getAggregateValues());
+		if ( district.getComputationValues() != null )
+			computationValues = new ArrayList<Double>(district.getComputationValues());
+	}
 	public void copyGroup(DBGroup dbGroup, DBDistrict dbDistrict) {
 		if ( dbDistrict.getAggregateMap().containsKey(dbGroup)) {
 			if ( aggregateValues == null ) {
