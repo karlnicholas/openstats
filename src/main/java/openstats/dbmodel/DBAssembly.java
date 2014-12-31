@@ -16,7 +16,7 @@ import openstats.model.*;
 	private String state;
 	private String session;
 	
-	@OneToOne(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
+	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.ALL})
 	private DBDistricts districts = new DBDistricts();
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
@@ -28,10 +28,10 @@ import openstats.model.*;
 	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-	private Map<DBGroup, AggregateValues> aggregateMap = new LinkedHashMap<DBGroup, AggregateValues>();
+	private Map<DBGroup, AggregateResults> aggregateMap = new LinkedHashMap<DBGroup, AggregateResults>();
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
-	private Map<DBGroup, ComputationValues> computationMap = new LinkedHashMap<DBGroup, ComputationValues>();
+	private Map<DBGroup, ComputationResults> computationMap = new LinkedHashMap<DBGroup, ComputationResults>();
 	
 	public DBAssembly() {}
 	
@@ -44,14 +44,14 @@ import openstats.model.*;
 	public void copyGroup(DBGroup dbGroup, Assembly assembly) {
 		districts.copyGroup(dbGroup, assembly.getDistricts());
 		
-		if ( assembly.getAggregateGroupInfo() != null || assembly.getAggregateValues() != null ) {
+		if ( assembly.getAggregateGroupInfo() != null || assembly.getAggregateResults() != null ) {
 			aggregateGroupMap.put(dbGroup, new DBGroupInfo(assembly.getAggregateGroupInfo()));
-			aggregateMap.put(dbGroup, new AggregateValues(assembly.getAggregateValues()) );
+			aggregateMap.put(dbGroup, new AggregateResults(assembly.getAggregateResults()) );
 		}
 
-		if ( assembly.getComputationGroupInfo() != null || assembly.getComputationValues() != null ) {
+		if ( assembly.getComputationGroupInfo() != null || assembly.getComputationResults() != null ) {
 			computationGroupMap.put(dbGroup, new DBGroupInfo(assembly.getComputationGroupInfo()));
-			computationMap.put(dbGroup, new ComputationValues(assembly.getComputationValues()) );
+			computationMap.put(dbGroup, new ComputationResults(assembly.getComputationResults()) );
 		}
 	}
 	
@@ -103,10 +103,10 @@ import openstats.model.*;
 	public void setAggregateGroupMap(Map<DBGroup, DBGroupInfo> aggregateGroupMap) {
 		this.aggregateGroupMap = aggregateGroupMap;
 	}	
-	public Map<DBGroup, AggregateValues> getAggregateMap() {
+	public Map<DBGroup, AggregateResults> getAggregateMap() {
 		return aggregateMap;
 	}
-	public Map<DBGroup, ComputationValues> getComputationMap() {
+	public Map<DBGroup, ComputationResults> getComputationMap() {
 		return computationMap;
 	}
 	@Override

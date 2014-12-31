@@ -17,14 +17,14 @@ import openstats.model.District.CHAMBER;
 	private CHAMBER chamber;
 	private String description;
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<DBLegislator> legislators = new ArrayList<DBLegislator>();
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	private Map<DBGroup, AggregateValues> aggregateMap = new LinkedHashMap<DBGroup, AggregateValues>();
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+	private Map<DBGroup, AggregateResults> aggregateMap = new LinkedHashMap<DBGroup, AggregateResults>();
 	
-	@OneToMany(cascade = CascadeType.ALL)
-	private Map<DBGroup, ComputationValues> computationMap = new LinkedHashMap<DBGroup, ComputationValues>();
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+	private Map<DBGroup, ComputationResults> computationMap = new LinkedHashMap<DBGroup, ComputationResults>();
 	
 	public DBDistrict() {}
 	public DBDistrict(District district) {
@@ -34,11 +34,11 @@ import openstats.model.District.CHAMBER;
 	}
 	public DBDistrict copyGroup(DBGroup dbGroup, District district) {
 		// skip legislators for now
-		if ( district.getAggregateValues() != null ) {
-			aggregateMap.put(dbGroup, new AggregateValues(district.getAggregateValues()) );
+		if ( district.getAggregateResults() != null ) {
+			aggregateMap.put(dbGroup, new AggregateResults(district.getAggregateResults()) );
 		}
-		if ( district.getComputationValues() != null ) {
-			computationMap.put(dbGroup, new ComputationValues(district.getComputationValues()) );
+		if ( district.getComputationResults() != null ) {
+			computationMap.put(dbGroup, new ComputationResults(district.getComputationResults()) );
 		}
 		// useful for chaining
 		return this;
@@ -54,6 +54,7 @@ import openstats.model.District.CHAMBER;
 		}
 	}
 
+	public Long getId() { return id; }
 	public String getDistrict() {
 		return district;
 	}
@@ -78,12 +79,19 @@ import openstats.model.District.CHAMBER;
 	public void setLegislators(List<DBLegislator> legislators) {
 		this.legislators = legislators;
 	}
-	public Map<DBGroup, AggregateValues> getAggregateMap() {
+	public Map<DBGroup, AggregateResults> getAggregateMap() {
 		return aggregateMap;
 	}
+	public void setAggregateMap(Map<DBGroup, AggregateResults> aggregateMap) {
+		this.aggregateMap = aggregateMap;
+	}
 
-	public Map<DBGroup, ComputationValues> getComputationMap() {
+	public Map<DBGroup, ComputationResults> getComputationMap() {
 		return computationMap;
+	}
+
+	public void setComputationMap(Map<DBGroup, ComputationResults> computationMap) {
+		this.computationMap = computationMap;
 	}
 
 	@Override

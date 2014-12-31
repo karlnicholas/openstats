@@ -10,19 +10,19 @@ public class District {
 	private String district;
 	private CHAMBER chamber;
 	private String description;
-	private List<Long> aggregateValues;
-	private List<Double> computationValues;
+	private List<AggregateResult> aggregateResults = new ArrayList<AggregateResult>();
+	private List<ComputationResult> computationResults = new ArrayList<ComputationResult>();
 
 	public District() {
-		aggregateValues = null;
-		computationValues = null;
+		aggregateResults = null;
+		computationResults = null;
 	}
 	public District(String district, CHAMBER chamber) {
 		this.district = district;
 		this.chamber = chamber;
 		description = null;
-		aggregateValues = null;
-		computationValues = null;
+		aggregateResults = null;
+		computationResults = null;
 	}
 	public District(DBDistrict dbDistrict) {
 		this.district = dbDistrict.getDistrict();
@@ -33,28 +33,20 @@ public class District {
 		this.district = district.getDistrict();
 		this.chamber = district.getChamber();
 		this.description = district.getDescription();
-		if ( district.getAggregateValues() != null )
-			aggregateValues = new ArrayList<Long>(district.getAggregateValues());
-		if ( district.getComputationValues() != null )
-			computationValues = new ArrayList<Double>(district.getComputationValues());
+		if ( district.getAggregateResults() != null )
+			aggregateResults = new ArrayList<AggregateResult>(district.getAggregateResults());
+		if ( district.getComputationResults() != null )
+			computationResults = new ArrayList<ComputationResult>(district.getComputationResults());
 	}
 	public void copyGroup(DBGroup dbGroup, DBDistrict dbDistrict) {
 		if ( dbDistrict.getAggregateMap().containsKey(dbGroup)) {
-			if ( aggregateValues == null ) {
-				aggregateValues = new ArrayList<Long>(dbDistrict.getAggregateMap().get(dbGroup).getValueList());
-			} else {
-				for ( Long value: dbDistrict.getAggregateMap().get(dbGroup).getValueList() ) {
-					aggregateValues.add( value );
-				}
+			for ( AggregateResult result: dbDistrict.getAggregateMap().get(dbGroup).getResultList() ) {
+				aggregateResults.add( result );
 			}
 		}
 		if ( dbDistrict.getComputationMap().containsKey(dbGroup)) {
-			if ( computationValues == null ) {
-				computationValues = new ArrayList<Double>(dbDistrict.getComputationMap().get(dbGroup).getValueList());
-			} else {
-				for ( Double value: dbDistrict.getComputationMap().get(dbGroup).getValueList() ) {
-					computationValues.add( value );
-				}
+			for ( ComputationResult result: dbDistrict.getComputationMap().get(dbGroup).getResultList() ) {
+				computationResults.add( result );
 			}
 		}
 	}
@@ -76,17 +68,17 @@ public class District {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<Long> getAggregateValues() {
-		return aggregateValues;
+	public List<AggregateResult> getAggregateResults() {
+		return aggregateResults;
 	}
-	public void setAggregateValues(List<Long> aggregateValues) {
-		this.aggregateValues = aggregateValues;
+	public void setAggregateResults(List<AggregateResult> aggregateResults) {
+		this.aggregateResults = aggregateResults;
 	}
-	public List<Double> getComputationValues() {
-		return computationValues;
+	public List<ComputationResult> getComputationResults() {
+		return computationResults;
 	}
-	public void setComputationValues(List<Double> computationValues) {
-		this.computationValues = computationValues;
+	public void setComputationResults(List<ComputationResult> computationResults) {
+		this.computationResults = computationResults;
 	}
 
 }

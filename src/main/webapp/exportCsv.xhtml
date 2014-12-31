@@ -8,7 +8,7 @@
         <h:commandButton action="#{exportCsv.exportCsv()}" value="Export Csv" />
         <h:commandButton action="#{exportCsv.goToIndex()}" value="Go To Index" />
       </h:form>
-      <h4>Export Available for #{exportCsv.currentAssembly}.}</h4>
+      <h4>Export Available for #{exportCsv.currentAssembly}.</h4>
       <p>Group Chosen: #{exportCsv.assembly.group.groupName}</p>
       <p>
       <h:dataTable value="#{exportCsv.assembly.aggregateGroupInfo.infoItems}" var="infoItem"

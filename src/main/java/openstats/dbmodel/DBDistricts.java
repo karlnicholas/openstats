@@ -13,14 +13,14 @@ import openstats.model.District.CHAMBER;
 public class DBDistricts implements Serializable {
 	@Id @GeneratedValue private Long id;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
 	private List<DBDistrict> districtList = new ArrayList<DBDistrict>();
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="DBDistricts_aggregateGroupMap")
 	private Map<DBGroup, DBGroupInfo> aggregateGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="DBDistricts_computationGroupMap")
 	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
@@ -62,6 +62,7 @@ public class DBDistricts implements Serializable {
 		}
 		return null;
 	}
+	public Long getId() { return id; }
 	public List<DBDistrict> getDistrictList() {
 		return districtList;
 	}

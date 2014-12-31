@@ -15,14 +15,14 @@ public class Assembly implements Comparable<Assembly> {
 	private Districts districts;
 	private GroupInfo aggregateGroupInfo; 
 	private GroupInfo computationGroupInfo; 
-	private List<Long> aggregateValues;
-	private List<Double> computationValues;
+	private List<AggregateResult> aggregateResults;
+	private List<ComputationResult> computationResults;
 	
 	public Assembly() {
 		this.aggregateGroupInfo = null; 
 		this.computationGroupInfo = null; 
-		this.aggregateValues = null;
-		this.computationValues = null;
+		this.aggregateResults = null;
+		this.computationResults = null;
 	}
 	public Assembly(String state, String session) {
 		this.state = state;
@@ -30,11 +30,11 @@ public class Assembly implements Comparable<Assembly> {
 		this.districts = new Districts();
 		this.aggregateGroupInfo = null; 
 		this.computationGroupInfo = null; 
-		this.aggregateValues = null;
-		this.computationValues = null;
+		this.aggregateResults = null;
+		this.computationResults = null;
 	}
 	
-	public Assembly(DBAssembly dbAssembly) throws OpenStatsException {
+	public Assembly(DBAssembly dbAssembly) {
 		this.state = dbAssembly.getState();
 		this.session = dbAssembly.getSession();
 		this.districts = new Districts(dbAssembly.getDistricts());
@@ -51,25 +51,25 @@ public class Assembly implements Comparable<Assembly> {
 		districts.copyGroup(dbGroup, dbAssembly.getDistricts());
 
 		if ( dbAssembly.getAggregateGroupMap().containsKey(dbGroup) || dbAssembly.getAggregateMap().containsKey(dbGroup) ) {
-			if ( aggregateGroupInfo == null || aggregateValues == null ) {
+			if ( aggregateGroupInfo == null || aggregateResults == null ) {
 				aggregateGroupInfo = new GroupInfo(dbAssembly.getAggregateGroupMap().get(dbGroup));
-				aggregateValues = new ArrayList<Long>(dbAssembly.getAggregateMap().get(dbGroup).getValueList());
+				aggregateResults = new ArrayList<AggregateResult>(dbAssembly.getAggregateMap().get(dbGroup).getResultList());
 			} else {
 				aggregateGroupInfo.mergeGroupInfo( dbAssembly.getAggregateGroupMap().get(dbGroup) );
-				for ( Long value: dbAssembly.getAggregateMap().get(dbGroup).getValueList() ) {
-					aggregateValues.add(value);	
+				for ( AggregateResult result: dbAssembly.getAggregateMap().get(dbGroup).getResultList() ) {
+					aggregateResults.add(result);	
 				} 
 			}
 		}
 
 		if ( dbAssembly.getComputationGroupMap().containsKey(dbGroup) || dbAssembly.getComputationMap().containsKey(dbGroup) ) {
-			if ( computationGroupInfo == null || computationValues == null ) {
+			if ( computationGroupInfo == null || computationResults == null ) {
 				computationGroupInfo = new GroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
-				computationValues = new ArrayList<Double>(dbAssembly.getComputationMap().get(dbGroup).getValueList());
+				computationResults = new ArrayList<ComputationResult>(dbAssembly.getComputationMap().get(dbGroup).getResultList());
 			} else {
 				computationGroupInfo.mergeGroupInfo(dbAssembly.getComputationGroupMap().get(dbGroup));
-				for ( Double value: dbAssembly.getComputationMap().get(dbGroup).getValueList() ) {
-					computationValues.add(value);
+				for ( ComputationResult result: dbAssembly.getComputationMap().get(dbGroup).getResultList() ) {
+					computationResults.add(result);
 				}
 			}
 		}
@@ -111,17 +111,17 @@ public class Assembly implements Comparable<Assembly> {
 	public void setComputationGroupInfo(GroupInfo computationGroupInfo) {
 		this.computationGroupInfo = computationGroupInfo;
 	}
-	public List<Long> getAggregateValues() {
-		return aggregateValues;
+	public List<AggregateResult> getAggregateResults() {
+		return aggregateResults;
 	}
-	public void setAggregateValues(List<Long> aggregateValues) {
-		this.aggregateValues = aggregateValues;
+	public void setAggregateResults(List<AggregateResult> aggregateResults) {
+		this.aggregateResults = aggregateResults;
 	}
-	public List<Double> getComputationValues() {
-		return computationValues;
+	public List<ComputationResult> getComputationResults() {
+		return computationResults;
 	}
-	public void setComputationValues(List<Double> computationValues) {
-		this.computationValues = computationValues;
+	public void setComputationResults(List<ComputationResult> computationResults) {
+		this.computationResults = computationResults;
 	}
 	@Override
 	public int compareTo(Assembly assembly) {

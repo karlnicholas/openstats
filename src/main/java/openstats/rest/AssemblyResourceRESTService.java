@@ -16,11 +16,16 @@
  */
 package openstats.rest;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;
 
+import openstats.data.AssemblyRepository;
 import openstats.dbmodel.*;
 import openstats.facades.AssemblyFacade;
 import openstats.model.Assembly;
@@ -33,9 +38,15 @@ import openstats.model.Assembly;
 @Path("")
 @RequestScoped
 public class AssemblyResourceRESTService {
+	
+	@Inject
+	private Logger log;
 
     @Inject
     private AssemblyFacade assemblyFacade;
+    
+    @Inject
+    private AssemblyRepository assemblyRepo;
     
     @POST
     @Consumes(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
@@ -75,9 +86,30 @@ public class AssemblyResourceRESTService {
     ) throws OpenStatsException {
         Response.ResponseBuilder builder = null;
         try {
-            builder = Response.ok(assemblyFacade.buildAssembly(group, state, session), MediaType.APPLICATION_JSON);
+        	List<String> groupNames = new ArrayList<String>();
+        	groupNames.add(group);
+    		builder = Response.ok(assemblyRepo.buildAssemblyFromNames(groupNames, state, session), MediaType.APPLICATION_JSON);
         } catch (Exception e) {
             // Handle generic exceptions
+            builder = Response.status(Response.Status.BAD_REQUEST).header("error", e.getMessage());
+        }
+        return builder.build();
+    }
+
+    @GET
+    @Path("/template/{state}/{session}")
+    @Produces(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+    public Response getTemplateAssembly (
+    	@Context HttpHeaders httpHeaders, 
+		@PathParam("state") String state, 
+		@PathParam("session") String session
+    ) throws OpenStatsException {
+        Response.ResponseBuilder builder = null;
+        try {
+    		builder = Response.ok(assemblyRepo.getAssembly(state, session), MediaType.APPLICATION_JSON);
+        } catch (Exception e) {
+            // Handle generic exceptions
+        	log.severe(e.getMessage());
             builder = Response.status(Response.Status.BAD_REQUEST).header("error", e.getMessage());
         }
 

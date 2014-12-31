@@ -13,7 +13,7 @@ public class DBAssemblyHandler {
 	private static class SingletonHelper {
 		private static final DBAssemblyHandler INSTANCE = new DBAssemblyHandler();
 	}
-	private static void checkInit(DBAssemblyHandler handler, EntityManager em) throws OpenStatsException {
+	private static void checkInit(DBAssemblyHandler handler, EntityManager em) {
 		if ( handler.assemblyMap == null ) {
 			handler.assemblyMap = new TreeMap<String, Assembly>();
 	        CriteriaBuilder cb = em.getCriteriaBuilder();
@@ -21,7 +21,9 @@ public class DBAssemblyHandler {
 	        Root<DBAssembly> assemblyRoot = criteria.from(DBAssembly.class);
 	        for( DBAssembly dbAssembly: em.createQuery(criteria.select(assemblyRoot)).getResultList() ) {
 				String key = dbAssembly.getState()+'-'+dbAssembly.getSession();
+				
 				Assembly assembly = new Assembly(dbAssembly);
+				
 	        	handler.assemblyMap.put(key, assembly);
 	        }
 		}
@@ -41,7 +43,7 @@ public class DBAssemblyHandler {
 		}
 	}
 
-	public static Assembly getAssembly(String state, String session, EntityManager em) throws OpenStatsException {
+	public static Assembly getAssembly(String state, String session, EntityManager em) {
 		DBAssemblyHandler handler = SingletonHelper.INSTANCE;
 		synchronized(handler) {
 			checkInit(handler, em);
@@ -49,5 +51,4 @@ public class DBAssemblyHandler {
 			return handler.assemblyMap.get(key);
 		}
 	}
-
 }

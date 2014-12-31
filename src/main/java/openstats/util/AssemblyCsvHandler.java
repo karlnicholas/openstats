@@ -5,14 +5,16 @@ import java.util.*;
 
 import org.apache.commons.csv.*;
 
+import openstats.dbmodel.AggregateResult;
+import openstats.dbmodel.ComputationResult;
 import openstats.model.*;
 
 public class AssemblyCsvHandler {
 
-	public List<String> createHeader(Assembly osAssembly) throws Exception {
+	public List<String> createHeader(Assembly assembly) throws Exception {
 		List<String> csvHeader = new ArrayList<String>();
 
-        Districts districts = osAssembly.getDistricts();
+        Districts districts = assembly.getDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         csvHeader.add("District");
         csvHeader.add("Chamber");
@@ -31,13 +33,13 @@ public class AssemblyCsvHandler {
 	        }
     	}
 
-    	groupInfo = osAssembly.getAggregateGroupInfo();
+    	groupInfo = assembly.getAggregateGroupInfo();
     	if ( groupInfo != null ) {
 	        for ( InfoItem infoItem: groupInfo.getInfoItems()) {
 	        	csvHeader.add(infoItem.getLabel());
 	        }
     	}
-    	groupInfo = osAssembly.getComputationGroupInfo();
+    	groupInfo = assembly.getComputationGroupInfo();
     	if ( groupInfo != null ) {
 	        for ( InfoItem infoItem: groupInfo.getInfoItems()) {
 	        	csvHeader.add(infoItem.getLabel());
@@ -47,11 +49,11 @@ public class AssemblyCsvHandler {
 	}
 
 
-	public List<List<String>> createBody(Assembly osAssembly) throws Exception {
+	public List<List<String>> createBody(Assembly assembly) throws Exception {
 		List<List<String>> csvResult = new ArrayList<List<String>>();
 		int rowOffset = 0;
 
-        Districts districts = osAssembly.getDistricts();
+        Districts districts = assembly.getDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         List<String> row = new ArrayList<String>();
 
@@ -61,46 +63,42 @@ public class AssemblyCsvHandler {
         	row = new ArrayList<String>();
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber().toString());
-        	List<Long> aggs = dist.getAggregateValues();
-            if ( aggs != null ) {
-		        for ( Long agg: aggs ) {
-		        	row.add(agg.toString());
+        	if ( dist.getAggregateResults() != null ) {
+		        for ( AggregateResult result: dist.getAggregateResults() ) {
+		        	row.add(Long.toString(result.value));
 		        }
-            }
-	        List<Double> comps = dist.getComputationValues();
-	        if ( comps != null ) {
-		        for ( Double comp: comps ) {
-		        	row.add(comp.toString());
+        	}
+        	if ( dist.getComputationResults() != null ) {
+		        for ( ComputationResult comp: dist.getComputationResults() ) {
+		        	row.add(Double.toString(comp.value));
 		        }
-	        }
+        	}
 	        csvResult.add(row);
         }
         rowOffset = row.size();
-        // write data for osAssembly
+        // write data for assembly
     	row = new ArrayList<String>();
     	for ( int i=0; i<rowOffset; ++i ) {
     		row.add("");
     	}
-        List<Long> aggs = osAssembly.getAggregateValues();
-        if ( aggs != null ) {
-	        for ( Long agg: aggs ) {
-	        	row.add(agg.toString());
+    	if ( assembly.getAggregateResults() != null ) {
+	        for ( AggregateResult result: assembly.getAggregateResults() ) {
+	        	row.add(Long.toString(result.value));
 	        }
-        }
-        List<Double> comps = osAssembly.getComputationValues();
-        if ( comps != null ) {
-	        for ( Double comp: comps ) {
-	        	row.add(comp.toString());
+    	}
+    	if ( assembly.getComputationResults() != null ) {
+	        for ( ComputationResult result: assembly.getComputationResults() ) {
+	        	row.add(Double.toString(result.value));
 	        }
-        }
-        csvResult.add(row);
+    	}
+	    csvResult.add(row);
         return csvResult;
 	}
 
-	public void writeCsv(Writer writer, Assembly osAssembly) throws Exception {
+	public void writeCsv(Writer writer, Assembly assembly) throws Exception {
         
-		List<String> csvHeader = createHeader(osAssembly);
-		List<List<String>> csvBody = createBody(osAssembly);
+		List<String> csvHeader = createHeader(assembly);
+		List<List<String>> csvBody = createBody(assembly);
 		
 		CSVPrinter printer = CSVFormat.DEFAULT.print(writer);
 		printer.printRecord(csvHeader);

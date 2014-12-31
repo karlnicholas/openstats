@@ -8,13 +8,15 @@
 		<jta-data-source>java:jboss/datasources/OpenStatsDS</jta-data-source>
 		<class>openstats.dbmodel.DBGroup</class>
 		<class>openstats.dbmodel.DBGroupInfo</class>
-		<class>openstats.dbmodel.DBInfoItems</class>
+		<class>openstats.dbmodel.DBInfoItem</class>
 		<class>openstats.dbmodel.DBAssembly</class>
 		<class>openstats.dbmodel.DBDistricts</class>
 		<class>openstats.dbmodel.DBDistrict</class>
 		<class>openstats.dbmodel.DBLegislator</class>
-		<class>openstats.dbmodel.AggregateValues</class>
-		<class>openstats.dbmodel.ComputationValues</class>
+		<class>openstats.dbmodel.AggregateResults</class>
+		<class>openstats.dbmodel.ComputationResults</class>
+		<class>openstats.model.AggregateResult</class>
+		<class>openstats.model.ComputationResult</class>
 		<properties>
 			<!-- Properties for Hibernate -->
 			<property name="hibernate.show_sql" value="false" />

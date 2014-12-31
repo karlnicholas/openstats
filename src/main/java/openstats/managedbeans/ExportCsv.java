@@ -8,9 +8,9 @@ import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.inject.Inject;
 
+import openstats.data.AssemblyRepository;
 import openstats.dbmodel.DBAssembly;
 import openstats.dbmodel.DBGroup;
-import openstats.facades.AssemblyFacade;
 import openstats.model.Assembly;
 import openstats.util.AssemblyCsvHandler;
 
@@ -22,9 +22,9 @@ public class ExportCsv implements Serializable {
 	@Inject
     private FacesContext facesContext;
     @Inject
-    private AssemblyFacade assemblyFacade;
+    private AssemblyRepository assemblyRepo;
     
-    private Assembly Assembly = null;
+    private Assembly assembly;
     
 	//
 	private Map<String,Object> assemblyTitles;
@@ -41,7 +41,7 @@ public class ExportCsv implements Serializable {
     @PostConstruct
 	public void postConstruct() {
     	assemblyTitles = new TreeMap<String, Object>();
-		List<DBAssembly> assemblies = assemblyFacade.listAllAssemblies(); 
+		List<DBAssembly> assemblies = assemblyRepo.listAllAssemblies(); 
 		for ( DBAssembly assembly: assemblies ) {
 			assemblyTitles.put(assembly.getState() + " " + assembly.getSession(), assembly.getState() + "-" + assembly.getSession());
 		}
@@ -51,7 +51,7 @@ public class ExportCsv implements Serializable {
     private void loadGroups() {
 		if ( currentAssembly == null || currentAssembly.isEmpty() ) return;
 		String[] keys = currentAssembly.split("-");
-		Set<DBGroup> groups = assemblyFacade.loadGroupsForAssembly(keys[0], keys[1]);
+		Set<DBGroup> groups = assemblyRepo.loadGroupsForAssembly(keys[0], keys[1]);
 		this.allAssemblyGroups = new DBGroup[groups.size()];
 		this.allAssemblyGroups = groups.toArray(allAssemblyGroups);
 	}
@@ -102,18 +102,18 @@ public class ExportCsv implements Serializable {
 	public void exportCsv() throws Exception {
     	AssemblyCsvHandler createCsv = new AssemblyCsvHandler();
     	String[] keys = currentAssembly.split("-");
-    	Assembly Assembly = assemblyFacade.buildAssembly2(Arrays.asList(selectedAssemblyGroups), keys[0], keys[1]);
+    	Assembly assembly = assemblyRepo.buildAssemblyFromGroups(Arrays.asList(selectedAssemblyGroups), keys[0], keys[1]);
 
     	ExternalContext ec = facesContext.getExternalContext();
 
 	    ec.responseReset(); // Some JSF component library or some Filter might have set some headers in the buffer beforehand. We want to get rid of them, else it may collide.
-	    ec.setResponseContentType("text/csv;charset=WINDOWS-1252"); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
-	    ec.setResponseHeader("Content-Dispition","attachment; filename=\""+currentAssembly+".csv\"");
+	    ec.setResponseContentType("text/csv;charset=UTF-8"); // Check http://www.iana.org/assignments/media-types for all types. Use if necessary ExternalContext#getMimeType() for auto-detection based on filename.
+	    ec.setResponseHeader("Content-Disposition","attachment; filename=\""+currentAssembly+".csv\"");
 
 	    Writer writer = new OutputStreamWriter(ec.getResponseOutputStream());
 	    // Now you can write the InputStream of the file to the above OutputStream the usual way.
 	    // ...
-    	createCsv.writeCsv(writer, Assembly );
+    	createCsv.writeCsv(writer, assembly );
     	writer.flush();
 
 	    facesContext.responseComplete(); // Important! Otherwise JSF will attempt to render the response which obviously will fail since it's already written with a file and cled.
@@ -125,11 +125,11 @@ public class ExportCsv implements Serializable {
     }
 	
 	public Assembly getAssembly() throws Exception {
-		if ( Assembly == null ) {
+		if ( assembly == null ) {
 	    	String[] keys = currentAssembly.split("-");
-	    	Assembly = assemblyFacade.buildAssembly2(Arrays.asList(selectedAssemblyGroups), keys[0], keys[1]);
+	    	assembly = assemblyRepo.buildAssemblyFromGroups(Arrays.asList(selectedAssemblyGroups), keys[0], keys[1]);
 		}
-		return Assembly;
+		return assembly;
 	}
 
 }
