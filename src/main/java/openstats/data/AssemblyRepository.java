@@ -21,6 +21,7 @@ import openstats.dbmodel.DBDistrict;
 import openstats.dbmodel.DBDistricts;
 import openstats.dbmodel.DBGroup;
 import openstats.dbmodel.DBGroupHandler;
+import openstats.dbmodel.DBGroupInfo;
 import openstats.dbmodel.OpenStatsException;
 import openstats.model.Assembly;
 
@@ -160,7 +161,6 @@ public class AssemblyRepository {
         root.fetch("computationMap", JoinType.LEFT);
 //        MapJoin<DBAssembly, DBGroup, AggregateResults> aAggregateMap = root.joinMap("aggregateMap");
 //        MapJoin<DBAssembly, DBGroup, ComputationResults> aComputationMap = root.joinMap("computationMap");
-        
 //        assembly.fetch("districts");
         // Swap criteria statements if you would like to try out type-safe criteria queries, a new
         // feature in JPA 2.0
@@ -172,10 +172,13 @@ public class AssemblyRepository {
 //        		aComputationMap.key().in(groupNames) 
         	).distinct(true);
         DBAssembly dbAssembly = em.createQuery(criteria).getSingleResult();
+        System.out.println("root");
 		
 		DBDistricts self = dbAssembly.getDistricts();
         CriteriaQuery<DBDistricts> dCriteria = cb.createQuery(DBDistricts.class);
         Root<DBDistricts> districts = dCriteria.from(DBDistricts.class);
+        MapJoin<DBDistrict, DBGroup, AggregateResults> aggregateGroupMap = districts.joinMap("aggregateGroupMap");
+//        MapJoin<DBDistrict, DBGroup, ComputationResults> computationGroupMap = districts.joinMap("computationGroupMap");
         districts.fetch("aggregateGroupMap", JoinType.LEFT);
         districts.fetch("computationGroupMap", JoinType.LEFT);
         
@@ -184,27 +187,31 @@ public class AssemblyRepository {
         // feature in JPA 2.0
         // criteria.select(member).where(cb.equal(member.get(Member_.email), email));
         dCriteria.select(districts).where(
-        		cb.equal(districts.get("id"), self.getId())
+        		cb.equal(districts.get("id"), self.getId()), 
+        		aggregateGroupMap.key().in(groupNames) 
+//        		computationGroupMap.key().in(groupNames) 
         	).distinct(true);
         dbAssembly.setDistricts( em.createQuery(dCriteria).getSingleResult() );
+        System.out.println("districts");
         
         CriteriaQuery<DBDistrict> distCriteria = cb.createQuery(DBDistrict.class);
         Root<DBDistrict> districtRoot = distCriteria.from(DBDistrict.class);
-        districtRoot.fetch("aggregateMap", JoinType.LEFT);
-        districtRoot.fetch("computationMap", JoinType.LEFT);
-//        MapJoin<DBDistrict, DBGroup, AggregateResults> dAggregateMap = districtRoot.joinMap("aggregateMap");
-//        MapJoin<DBDistrict, DBGroup, ComputationResults> dComputationMap = districtRoot.joinMap("computationMap");
+//        districtRoot.fetch("aggregateMap", JoinType.LEFT);
+//        districtRoot.fetch("computationMap", JoinType.LEFT);
+        MapJoin<DBDistrict, DBGroup, AggregateResults> dAggregateMap = districtRoot.joinMap("aggregateMap");
+        MapJoin<DBDistrict, DBGroup, ComputationResults> dComputationMap = districtRoot.joinMap("computationMap");
 
         for(DBDistrict dbDistrict: dbAssembly.getDistricts().getDistrictList() ) {
             distCriteria.select(districtRoot).where(
-            		cb.equal(districtRoot.get("id"), dbDistrict.getId()) 
-//            		cb.equal( dAggregateMap.key(), groupNames.get(0)) 
-  //          		cb.equal( dComputationMap.key(), groupNames.get(0)) 
+            		cb.equal(districtRoot.get("id"), dbDistrict.getId()),  
+            		dAggregateMap.key().in(groupNames),
+            		dComputationMap.key().in(groupNames) 
             	).distinct(true);
             DBDistrict districtFetch = em.createQuery(distCriteria).getSingleResult();
             dbDistrict.setAggregateMap( districtFetch.getAggregateMap() );
             dbDistrict.setComputationMap( districtFetch.getComputationMap() );
         }
+        System.out.println("districtList");
 
 		Assembly assembly = new Assembly(dbAssembly);
 		for ( DBGroup dbGroup: groupNames ) {

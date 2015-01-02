@@ -7,7 +7,7 @@ import javax.persistence.*;
 
 @SuppressWarnings("serial")
 @Entity public class ComputationResults implements Serializable {
-	@Id @GeneratedValue private Long id;
+	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 	
 	@ElementCollection(fetch=FetchType.EAGER)
 	@OrderColumn

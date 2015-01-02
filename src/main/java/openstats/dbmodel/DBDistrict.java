@@ -10,7 +10,7 @@ import openstats.model.District.CHAMBER;
 
 @SuppressWarnings("serial")
 @Entity public class DBDistrict implements Comparable<DBDistrict>, Serializable {
-	@Id @GeneratedValue private Long id;
+	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 	
 	@Column(length=3)
 	private String district;

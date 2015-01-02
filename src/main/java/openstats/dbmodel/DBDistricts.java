@@ -11,9 +11,9 @@ import openstats.model.District.CHAMBER;
 @SuppressWarnings("serial")
 @Entity
 public class DBDistricts implements Serializable {
-	@Id @GeneratedValue private Long id;
+	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<DBDistrict> districtList = new ArrayList<DBDistrict>();
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)

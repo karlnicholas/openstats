@@ -10,7 +10,7 @@ import openstats.model.InfoItem;
 
 @SuppressWarnings("serial")
 @Entity public class DBGroupInfo implements Serializable {
-	@Id @GeneratedValue private Long id;
+	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@OrderColumn

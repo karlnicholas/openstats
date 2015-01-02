@@ -5,13 +5,14 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import openstats.model.InfoItem;
 
 @SuppressWarnings("serial")
 @Entity public class DBInfoItem implements Serializable {
-	@Id @GeneratedValue private Long id;
+	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 	
 	private String Label;
 	@Column(length=1023)

@@ -11,7 +11,7 @@ import openstats.model.*;
 @SuppressWarnings("serial")
 @XmlRootElement
 @Entity public class DBAssembly implements Comparable<DBAssembly>, Serializable {
-	@Id @GeneratedValue private Long id;
+	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
 	private String state;
 	private String session;

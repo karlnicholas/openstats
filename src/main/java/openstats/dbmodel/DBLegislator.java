@@ -7,7 +7,7 @@ import javax.persistence.*;
 @SuppressWarnings("serial")
 @Entity
 public class DBLegislator implements Serializable {
-	@Id @GeneratedValue private Long id;
+	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 	
 	private String name;
 	private String party;
