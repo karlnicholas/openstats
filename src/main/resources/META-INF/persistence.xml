@@ -15,8 +15,6 @@
 		<class>openstats.dbmodel.DBLegislator</class>
 		<class>openstats.dbmodel.AggregateResults</class>
 		<class>openstats.dbmodel.ComputationResults</class>
-		<class>openstats.model.AggregateResult</class>
-		<class>openstats.model.ComputationResult</class>
 		<properties>
 			<!-- Properties for Hibernate -->
 			<property name="hibernate.show_sql" value="false" />
