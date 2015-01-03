@@ -17,13 +17,20 @@ public class DBAssemblyHandler {
 		if ( handler.assemblyMap == null ) {
 			handler.assemblyMap = new TreeMap<String, Assembly>();
 	        CriteriaBuilder cb = em.getCriteriaBuilder();
-	        CriteriaQuery<DBAssembly> criteria = cb.createQuery(DBAssembly.class);
-	        Root<DBAssembly> assemblyRoot = criteria.from(DBAssembly.class);
-	        for( DBAssembly dbAssembly: em.createQuery(criteria.select(assemblyRoot)).getResultList() ) {
+	        CriteriaQuery<DBAssembly> assemblyCriteria = cb.createQuery(DBAssembly.class);
+	        Root<DBAssembly> assemblyRoot = assemblyCriteria.from(DBAssembly.class);
+	        assemblyRoot.fetch("districts");
+	        //
+	        CriteriaQuery<DBDistricts> districtsCriteria = cb.createQuery(DBDistricts.class);
+	        Root<DBDistricts> districtsRoot = districtsCriteria.from(DBDistricts.class);
+			districtsRoot.fetch("districtList");
+			ParameterExpression<Long> idParameter = cb.parameter(Long.class, "id");
+			districtsCriteria.select(districtsRoot).where( cb.equal( districtsRoot.get("id"), idParameter ));
+	        //
+	        for( DBAssembly dbAssembly: em.createQuery(assemblyCriteria.select(assemblyRoot)).getResultList() ) {
 				String key = dbAssembly.getState()+'-'+dbAssembly.getSession();
-				
+				dbAssembly.setDistricts( em.createQuery(districtsCriteria).setParameter("id", dbAssembly.getDistricts().getId()).getSingleResult() );
 				Assembly assembly = new Assembly(dbAssembly);
-				
 	        	handler.assemblyMap.put(key, assembly);
 	        }
 		}

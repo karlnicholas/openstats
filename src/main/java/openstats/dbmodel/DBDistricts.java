@@ -9,19 +9,32 @@ import openstats.model.*;
 import openstats.model.District.CHAMBER;
 
 @SuppressWarnings("serial")
+@NamedQueries({ 
+	@NamedQuery(name = DBDistricts.districtsAggregateGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.aggregateGroupMap m where d = ?1 and key(m) in( ?2 )"),  
+	@NamedQuery(name = DBDistricts.districtsComputationGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.computationGroupMap m where d = ?1 and key(m) in( ?2 )")  
+})
 @Entity
 public class DBDistricts implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
+	
+	public static final String districtsAggregateGroupMapQuery = "DBDistricts.districtsAggregateGroupMapQuery";  
+	public static final String districtsComputationGroupMapQuery = "DBDistricts.districtsComputationGroupMapQuery";  
 
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<DBDistrict> districtList = new ArrayList<DBDistrict>();
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="DBDistricts_aggregateGroupMap")
+	@JoinTable(name="DBDistricts_aggregateGroupMap",
+	    joinColumns=@JoinColumn(name="DBDistricts"),
+	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
+	@MapKeyJoinColumn(name="DBGroup")
 	private Map<DBGroup, DBGroupInfo> aggregateGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="DBDistricts_computationGroupMap")
+	@JoinTable(name="DBDistricts_computationGroupMap",
+	    joinColumns=@JoinColumn(name="DBDistricts"),
+	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
+	@MapKeyJoinColumn(name="DBGroup")
 	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	public DBDistricts() {}

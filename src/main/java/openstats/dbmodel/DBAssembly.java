@@ -10,27 +10,52 @@ import openstats.model.*;
 
 @SuppressWarnings("serial")
 @XmlRootElement
+@NamedQueries({
+	@NamedQuery(name = DBAssembly.getAggregateGroupMap, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBAssembly a join a.aggregateGroupMap m where a = ?1 and key(m) in( ?2 )"),
+	@NamedQuery(name = DBAssembly.getComputationGroupMap, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBAssembly a join a.computationGroupMap m where a = ?1 and key(m) in( ?2 )" ), 
+	@NamedQuery(name = DBAssembly.getAggregateMap, query = "select new openstats.data.AssemblyRepository$AggregateMapEntry(key(m), value(m)) from DBAssembly a join a.aggregateMap m where a = ?1 and key(m) in( ?2 )"), 
+	@NamedQuery(name = DBAssembly.getComputationMap, query = "select new openstats.data.AssemblyRepository$ComputationMapEntry(key(m), value(m)) from DBAssembly a join a.computationMap m where a = ?1 and key(m) in( ?2 )")	
+})
 @Entity public class DBAssembly implements Comparable<DBAssembly>, Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
+	
+	public static final String getAggregateGroupMap = "DBAssembly.getAggregateGroupMap";
+	public static final String getComputationGroupMap = "DBAssembly.getComputationGroupMap";
+	public static final String getAggregateMap = "DBAssembly.getAggregateMap";
+	public static final String getComputationMap = "DBAssembly.getComputationMap";
 
 	private String state;
 	private String session;
 	
-	@OneToOne(fetch=FetchType.EAGER, cascade={CascadeType.ALL})
+	@OneToOne(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
 	private DBDistricts districts = new DBDistricts();
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
-	@JoinTable(name="assembly_aggregategroupmap")
+	@JoinTable(name="DBAssembly_aggregateGroupMap",
+	    joinColumns=@JoinColumn(name="DBAssembly"),
+	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
+	@MapKeyJoinColumn(name="DBGroup")
 	private Map<DBGroup, DBGroupInfo> aggregateGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
-	@JoinTable(name="assembly_computationgroupmap")
+	@JoinTable(name="DBAssembly_computationGroupMap",
+	    joinColumns=@JoinColumn(name="DBAssembly"),
+	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
+	@MapKeyJoinColumn(name="DBGroup")
 	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name="DBAssembly_aggregateMap",
+	    joinColumns=@JoinColumn(name="DBAssembly"),
+	    inverseJoinColumns=@JoinColumn(name="AggregateResults"))
+	@MapKeyJoinColumn(name="DBGroup")
 	private Map<DBGroup, AggregateResults> aggregateMap = new LinkedHashMap<DBGroup, AggregateResults>();
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade = CascadeType.ALL)
+	@JoinTable(name="DBAssembly_computationMap",
+	    joinColumns=@JoinColumn(name="DBAssembly"),
+	    inverseJoinColumns=@JoinColumn(name="ComputationResults"))
+	@MapKeyJoinColumn(name="DBGroup")
 	private Map<DBGroup, ComputationResults> computationMap = new LinkedHashMap<DBGroup, ComputationResults>();
 	
 	public DBAssembly() {}
@@ -106,8 +131,14 @@ import openstats.model.*;
 	public Map<DBGroup, AggregateResults> getAggregateMap() {
 		return aggregateMap;
 	}
+	public void setAggregateMap(Map<DBGroup, AggregateResults> aggregateMap) {
+		this.aggregateMap = aggregateMap;
+	}
 	public Map<DBGroup, ComputationResults> getComputationMap() {
 		return computationMap;
+	}
+	public void setComputationMap(Map<DBGroup, ComputationResults> computationMap) {
+		this.computationMap = computationMap;
 	}
 	@Override
 	public int compareTo(DBAssembly dbAssembly) {

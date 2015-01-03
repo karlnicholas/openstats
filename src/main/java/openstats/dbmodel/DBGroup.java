@@ -19,7 +19,7 @@ import openstats.model.Group;
 		this.groupName = osGroup.getGroupName();
 		this.groupDescription = osGroup.getGroupDescription();
 	}
-
+	public Long getId() { return id; }
 	public String getGroupName() {
 		return groupName;
 	}
