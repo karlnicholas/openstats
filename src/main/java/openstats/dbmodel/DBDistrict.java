@@ -9,15 +9,8 @@ import openstats.model.*;
 import openstats.model.District.CHAMBER;
 
 @SuppressWarnings("serial")
-@NamedQueries({
-	@NamedQuery(name = DBDistrict.districtAggregateMapQuery, query = "select new openstats.data.AssemblyRepository$AggregateMapEntry(key(m), value(m)) from DBDistrict d join d.aggregateMap m where d = ?1 and key(m) in( ?2 )"),   
-	@NamedQuery(name = DBDistrict.districtComputationMapQuery, query = "select new openstats.data.AssemblyRepository$ComputationMapEntry(key(m), value(m)) from DBDistrict d join d.computationMap m where d = ?1 and key(m) in( ?2 )")   
-})
 @Entity public class DBDistrict implements Comparable<DBDistrict>, Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
-	
-	public static final String districtAggregateMapQuery = "DBDistrict.districtAggregateMapQuery";
-	public static final String districtComputationMapQuery = "DBDistrict.districtComputationMapQuery";
 	
 	@Column(length=3)
 	private String district;

@@ -10,6 +10,7 @@ import java.util.TreeSet;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.NamedQuery;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -33,8 +34,8 @@ public class AssemblyRepository {
 	@Inject
 	private EntityManager em;
 	
-	private TypedQuery<AggregateMapEntry> districtAggregateMapQuery;
-	private TypedQuery<ComputationMapEntry> districtComputationMapQuery;
+//	private TypedQuery<AggregateMapEntry> districtAggregateMapQuery;
+//	private TypedQuery<ComputationMapEntry> districtComputationMapQuery;
 
 	
 	public AssemblyRepository() {}
@@ -192,7 +193,7 @@ public class AssemblyRepository {
         }
         dbAssembly.setComputationGroupMap(computationGroupMap);
         
-    	TypedQuery<AggregateMapEntry> assemblyAggregateMapQuery = em.createNamedQuery(DBAssembly.getAggregateMap, AggregateMapEntry.class);
+		TypedQuery<AggregateMapEntry> assemblyAggregateMapQuery = em.createNamedQuery(DBAssembly.getAggregateMap, AggregateMapEntry.class);
         List<AggregateMapEntry> aggregateMapEntries = assemblyAggregateMapQuery.setParameter(1, dbAssembly).setParameter(2, dbGroups).getResultList();
         Map<DBGroup, AggregateResults> aggregateMap = new HashMap<DBGroup, AggregateResults>();
         for( AggregateMapEntry entry: aggregateMapEntries) {
@@ -228,24 +229,7 @@ public class AssemblyRepository {
         dbDistricts.setComputationGroupMap(computationGroupMap);
 	}
 
-	private void loadDistrictMaps(DBDistrict dbDistrict, List<DBGroup> dbGroups) {
-        List<AggregateMapEntry> aggregateMapEntries = districtAggregateMapQuery.setParameter(1, dbDistrict).getResultList();
-        Map<DBGroup, AggregateResults> aggregateMap = new HashMap<DBGroup, AggregateResults>();
-        for( AggregateMapEntry entry: aggregateMapEntries) {
-        	aggregateMap.put(entry.key, entry.results);
-        }
-        dbDistrict.setAggregateMap(aggregateMap);
-
-        List<ComputationMapEntry> computationMapEntries = districtComputationMapQuery.setParameter(1, dbDistrict).getResultList();
-        Map<DBGroup, ComputationResults> computationMap = new HashMap<DBGroup, ComputationResults>();
-        for( ComputationMapEntry entry: computationMapEntries ) {
-        	computationMap.put(entry.key, entry.results);
-        }
-        dbDistrict.setComputationMap(computationMap);
-	}
-
-    public Assembly buildAssemblyFromGroups(List<DBGroup> dbGroups, String state, String session) throws OpenStatsException {
-
+	public Assembly buildAssemblyFromGroups(List<DBGroup> dbGroups, String state, String session) throws OpenStatsException {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<DBAssembly> criteria = cb.createQuery(DBAssembly.class);
         Root<DBAssembly> root = criteria.from(DBAssembly.class);
@@ -254,29 +238,22 @@ public class AssemblyRepository {
         		cb.equal(root.get("state"), state), 
         		cb.equal(root.get("session"), session) 
         	).distinct(true);
-        DBAssembly dbAssembly = em.createQuery(criteria).getSingleResult();        
+        DBAssembly dbAssembly = em.createQuery(criteria).getSingleResult();
+
         System.out.println("root");
 //        
         loadAssemblyGroups(dbAssembly, dbGroups);    
 //
-        CriteriaQuery<DBDistricts> d2Criteria = cb.createQuery(DBDistricts.class);
-        Root<DBDistricts> d2istricts = d2Criteria.from(DBDistricts.class);
-        d2istricts.fetch("districtList");        
-        d2Criteria.select(d2istricts).where(
-        		cb.equal(d2istricts.get("id"), dbAssembly.getDistricts().getId()) 
-        	).distinct(true);        
-        dbAssembly.setDistricts( em.createQuery(d2Criteria).getSingleResult() );
         System.out.println("d2istricts groups");
-//
+//        
         loadDistrictsGroupMaps(dbAssembly.getDistricts(), dbGroups);
 //
         System.out.println("start districtList");
-        districtAggregateMapQuery = em.createNamedQuery( DBDistrict.districtAggregateMapQuery, AggregateMapEntry.class).setParameter(2, dbGroups);
-        districtComputationMapQuery = em.createNamedQuery( DBDistrict.districtComputationMapQuery, ComputationMapEntry.class).setParameter(2, dbGroups);
-        for ( DBDistrict dbDistrict: dbAssembly.getDistricts().getDistrictList() ) {
-        	loadDistrictMaps(dbDistrict, dbGroups);        	
-        }
-        System.out.println("end districtList");
+
+        List<DBDistrict> districtList = em.createNamedQuery(DBDistricts.districtListQuery, DBDistrict.class).setParameter(1, dbAssembly.getDistricts()).setParameter(2, dbGroups).setParameter(3, dbGroups).getResultList();
+    	dbAssembly.getDistricts().setDistrictList(districtList);
+
+    	System.out.println("end districtList");
 
 		Assembly assembly = new Assembly(dbAssembly);
 

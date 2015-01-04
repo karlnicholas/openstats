@@ -11,7 +11,8 @@ import openstats.model.District.CHAMBER;
 @SuppressWarnings("serial")
 @NamedQueries({ 
 	@NamedQuery(name = DBDistricts.districtsAggregateGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.aggregateGroupMap m where d = ?1 and key(m) in( ?2 )"),  
-	@NamedQuery(name = DBDistricts.districtsComputationGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.computationGroupMap m where d = ?1 and key(m) in( ?2 )")  
+	@NamedQuery(name = DBDistricts.districtsComputationGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.computationGroupMap m where d = ?1 and key(m) in( ?2 )"),
+	@NamedQuery(name = DBDistricts.districtListQuery, query = "select d from DBDistricts s join s.districtList d join fetch d.aggregateMap m join fetch d.computationMap c where s = ?1 and key(m) in( ?2 ) and key(c) in( ?3 )" )		
 })
 @Entity
 public class DBDistricts implements Serializable {
@@ -19,6 +20,7 @@ public class DBDistricts implements Serializable {
 	
 	public static final String districtsAggregateGroupMapQuery = "DBDistricts.districtsAggregateGroupMapQuery";  
 	public static final String districtsComputationGroupMapQuery = "DBDistricts.districtsComputationGroupMapQuery";  
+	public static final String districtListQuery = "DBDistricts.districtListQuery";
 
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<DBDistrict> districtList = new ArrayList<DBDistrict>();
