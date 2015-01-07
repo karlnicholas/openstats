@@ -62,7 +62,6 @@ public class DBDistricts implements Serializable {
 		}
 		return null;
 	}
-	public Long getId() { return id; }
 	public List<DBDistrict> getDistrictList() {
 		return districtList;
 	}

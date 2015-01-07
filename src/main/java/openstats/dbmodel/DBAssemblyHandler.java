@@ -24,12 +24,12 @@ public class DBAssemblyHandler {
 	        CriteriaQuery<DBDistricts> districtsCriteria = cb.createQuery(DBDistricts.class);
 	        Root<DBDistricts> districtsRoot = districtsCriteria.from(DBDistricts.class);
 			districtsRoot.fetch("districtList");
-			ParameterExpression<Long> idParameter = cb.parameter(Long.class, "id");
-			districtsCriteria.select(districtsRoot).where( cb.equal( districtsRoot.get("id"), idParameter ));
+			ParameterExpression<DBDistricts> districtsParameter = cb.parameter(DBDistricts.class, "dbDistricts");
+			districtsCriteria.select(districtsRoot).where( cb.equal( districtsRoot, districtsParameter ));
 	        //
 	        for( DBAssembly dbAssembly: em.createQuery(assemblyCriteria.select(assemblyRoot)).getResultList() ) {
 				String key = dbAssembly.getState()+'-'+dbAssembly.getSession();
-				dbAssembly.setDistricts( em.createQuery(districtsCriteria).setParameter("id", dbAssembly.getDistricts().getId()).getSingleResult() );
+				dbAssembly.setDistricts( em.createQuery(districtsCriteria).setParameter("dbDistricts", dbAssembly.getDistricts()).getSingleResult() );
 				Assembly assembly = new Assembly(dbAssembly);
 	        	handler.assemblyMap.put(key, assembly);
 	        }

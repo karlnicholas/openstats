@@ -11,8 +11,8 @@
       <h4>Export Available for #{exportCsv.currentAssembly}.</h4>
       <p>Group Chosen: #{exportCsv.assembly.group.groupName}</p>
       <p>
-      <h:dataTable value="#{exportCsv.assembly.aggregateGroupInfo.infoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.assembly.aggregateGroupInfo.infoItems}">
+      <h:dataTable value="#{exportCsv.assembly.aggregateInfoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.aggregateInfoItems}">
         <f:facet name="header">
           <h:outputText value="Assembly Aggregates"/>
         </f:facet>
@@ -27,8 +27,8 @@
       </h:dataTable>
       </p>
       <p>
-      <h:dataTable value="#{exportCsv.assembly.computationGroupInfo.infoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.assembly.computationGroupInfo.infoItems}" >
+      <h:dataTable value="#{exportCsv.assembly.computeInfoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.computeInfoItems}" >
         <f:facet name="header">
           <h:outputText value="Assembly Computations"/>
         </f:facet>
@@ -43,8 +43,8 @@
       </h:dataTable>
       </p>
       <p>
-      <h:dataTable value="#{exportCsv.assembly.districts.aggregateGroupInfo.infoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.assembly.districts.aggregateGroupInfo.infoItems}" >
+      <h:dataTable value="#{exportCsv.assembly.districts.aggregateInfoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.districts.aggregateInfoItems}" >
         <f:facet name="header">
           <h:outputText value="District Aggregates"/>
         </f:facet>
@@ -59,8 +59,8 @@
       </h:dataTable>
       </p>
       <p>
-      <h:dataTable value="#{exportCsv.assembly.districts.computationGroupInfo.infoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.assembly.districts.computationGroupInfo.infoItems}" >
+      <h:dataTable value="#{exportCsv.assembly.districts.computeInfoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.districts.computeInfoItems}" >
         <f:facet name="header">
           <h:outputText value="District Computations"/>
         </f:facet>

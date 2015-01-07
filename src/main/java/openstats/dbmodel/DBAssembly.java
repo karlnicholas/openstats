@@ -74,10 +74,6 @@ import openstats.model.*;
 		districts.removeGroup(dbGroup);
 	}
 
-	@XmlTransient
-	public Long getId() {
-		return id;
-	}
 	public String getState() {
 		return state;
 	}

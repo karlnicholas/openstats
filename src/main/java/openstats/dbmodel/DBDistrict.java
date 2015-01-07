@@ -46,7 +46,6 @@ import openstats.model.District.CHAMBER;
 		groupResultsMap.remove(dbGroup);
 	}
 
-	public Long getId() { return id; }
 	public String getDistrict() {
 		return district;
 	}

@@ -11,12 +11,12 @@ import openstats.model.InfoItem;
 @Entity public class DBGroupInfo implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name="DBGroupInfo_aggregateGroupItems")
 	@OrderColumn
 	private List<DBInfoItem> aggregateGroupItems = new ArrayList<DBInfoItem>();
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name="DBGroupInfo_computeGroupItems")
 	@OrderColumn
 	private List<DBInfoItem> computeGroupItems = new ArrayList<DBInfoItem>();
