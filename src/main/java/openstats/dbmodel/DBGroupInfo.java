@@ -5,28 +5,41 @@ import java.util.*;
 
 import javax.persistence.*;
 
-import openstats.model.GroupInfo;
 import openstats.model.InfoItem;
 
 @SuppressWarnings("serial")
 @Entity public class DBGroupInfo implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="DBGroupInfo_aggregateGroupItems")
 	@OrderColumn
-	private List<DBInfoItem> groupItems = new ArrayList<DBInfoItem>();
+	private List<DBInfoItem> aggregateGroupItems = new ArrayList<DBInfoItem>();
 	
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinTable(name="DBGroupInfo_computeGroupItems")
+	@OrderColumn
+	private List<DBInfoItem> computeGroupItems = new ArrayList<DBInfoItem>();
+
 	public DBGroupInfo() {}
-	public DBGroupInfo(GroupInfo osGroupInfo) {
-		for ( InfoItem infoItem: osGroupInfo.getInfoItems()) {
-			groupItems.add(new DBInfoItem(infoItem));
+	public DBGroupInfo(List<InfoItem> aggregateInfoItems, List<InfoItem> computeInfoItems ) {
+		for ( InfoItem infoItem: aggregateInfoItems) {
+			aggregateGroupItems.add(new DBInfoItem(infoItem));
+		}
+		for ( InfoItem infoItem: computeInfoItems) {
+			computeGroupItems.add(new DBInfoItem(infoItem));
 		}
 	}
-	public List<DBInfoItem> getGroupItems() {
-		return groupItems;
+	public List<DBInfoItem> getAggregateGroupItems() {
+		return aggregateGroupItems;
 	}
-	public void setGroupItems(List<DBInfoItem> groupItems) {
-		this.groupItems = groupItems;
+	public void setAggregateGroupItems(List<DBInfoItem> aggregateGroupItems) {
+		this.aggregateGroupItems = aggregateGroupItems;
 	}
-	
+	public List<DBInfoItem> getComputeGroupItems() {
+		return computeGroupItems;
+	}
+	public void setComputeGroupItems(List<DBInfoItem> computeGroupItems) {
+		this.computeGroupItems = computeGroupItems;
+	}
 }

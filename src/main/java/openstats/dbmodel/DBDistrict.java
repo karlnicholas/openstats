@@ -20,20 +20,13 @@ import openstats.model.District.CHAMBER;
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<DBLegislator> legislators = new ArrayList<DBLegislator>();
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="DBDistrict_aggregateMap",
+	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
+	@JoinTable(name="DBDistrict_groupResultsMap",
 	    joinColumns=@JoinColumn(name="DBDistrict"),
-	    inverseJoinColumns=@JoinColumn(name="AggregateResults"))
+	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))
 	@MapKeyJoinColumn(name="DBGroup")
-	private Map<DBGroup, AggregateResults> aggregateMap = new LinkedHashMap<DBGroup, AggregateResults>();
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="DBDistrict_computationMap",
-	    joinColumns=@JoinColumn(name="DBDistrict"),
-	    inverseJoinColumns=@JoinColumn(name="ComputationResults"))
-	@MapKeyJoinColumn(name="DBGroup")
-	private Map<DBGroup, ComputationResults> computationMap = new LinkedHashMap<DBGroup, ComputationResults>();
-	
+	private Map<DBGroup, DBGroupResults> groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();
+		
 	public DBDistrict() {}
 	public DBDistrict(District district) {
 		this.district = district.getDistrict();
@@ -42,24 +35,15 @@ import openstats.model.District.CHAMBER;
 	}
 	public DBDistrict copyGroup(DBGroup dbGroup, District district) {
 		// skip legislators for now
-		if ( district.getAggregateResults() != null ) {
-			aggregateMap.put(dbGroup, new AggregateResults(district.getAggregateResults()) );
-		}
-		if ( district.getComputationResults() != null ) {
-			computationMap.put(dbGroup, new ComputationResults(district.getComputationResults()) );
-		}
+		// copy even if blank
+		groupResultsMap.put(dbGroup, new DBGroupResults(district.getAggregateResults(), district.getComputeResults()) );
 		// useful for chaining
 		return this;
 	}
 
 	public void removeGroup(DBGroup dbGroup) {
 		// skip legislators for now
-		if ( aggregateMap.containsKey(dbGroup) ) {
-			aggregateMap.remove(dbGroup);
-		}
-		if ( computationMap.containsKey(dbGroup) ) {
-			computationMap.remove(dbGroup);
-		}
+		groupResultsMap.remove(dbGroup);
 	}
 
 	public Long getId() { return id; }
@@ -86,22 +70,13 @@ import openstats.model.District.CHAMBER;
 	}
 	public void setLegislators(List<DBLegislator> legislators) {
 		this.legislators = legislators;
+	}	
+	public Map<DBGroup, DBGroupResults> getGroupResultsMap() {
+		return groupResultsMap;
 	}
-	public Map<DBGroup, AggregateResults> getAggregateMap() {
-		return aggregateMap;
+	public void setGroupResultsMap(Map<DBGroup, DBGroupResults> groupResultsMap) {
+		this.groupResultsMap = groupResultsMap;
 	}
-	public void setAggregateMap(Map<DBGroup, AggregateResults> aggregateMap) {
-		this.aggregateMap = aggregateMap;
-	}
-
-	public Map<DBGroup, ComputationResults> getComputationMap() {
-		return computationMap;
-	}
-
-	public void setComputationMap(Map<DBGroup, ComputationResults> computationMap) {
-		this.computationMap = computationMap;
-	}
-
 	@Override
 	public int compareTo(DBDistrict o) {
 		if ( !chamber.equals(o.chamber)) return chamber.compareTo(o.chamber);

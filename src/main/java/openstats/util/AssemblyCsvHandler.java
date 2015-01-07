@@ -6,7 +6,7 @@ import java.util.*;
 import org.apache.commons.csv.*;
 
 import openstats.dbmodel.AggregateResult;
-import openstats.dbmodel.ComputationResult;
+import openstats.dbmodel.ComputeResult;
 import openstats.model.*;
 
 public class AssemblyCsvHandler {
@@ -20,31 +20,20 @@ public class AssemblyCsvHandler {
         csvHeader.add("Chamber");
 //			Aggregate aggregate = districts.getAggregate(GROUPLABEL);
 
-    	GroupInfo groupInfo = districts.getAggregateGroupInfo();
-    	if ( groupInfo != null ) {
-	        for ( InfoItem infoItem: districts.getAggregateGroupInfo().getInfoItems() ) {
-	        	csvHeader.add(infoItem.getLabel());
-	        }
-    	}
-    	groupInfo = districts.getComputationGroupInfo();
-    	if ( groupInfo != null ) {
-	        for ( InfoItem infoItem: districts.getComputationGroupInfo().getInfoItems()) {
-	        	csvHeader.add(infoItem.getLabel());
-	        }
-    	}
+        for ( InfoItem infoItem: districts.getAggregateInfoItems()  ) {
+        	csvHeader.add(infoItem.getLabel());
+        }
+        for ( InfoItem infoItem: districts.getComputeInfoItems()) {
+        	csvHeader.add(infoItem.getLabel());
+        }
 
-    	groupInfo = assembly.getAggregateGroupInfo();
-    	if ( groupInfo != null ) {
-	        for ( InfoItem infoItem: groupInfo.getInfoItems()) {
-	        	csvHeader.add(infoItem.getLabel());
-	        }
-    	}
-    	groupInfo = assembly.getComputationGroupInfo();
-    	if ( groupInfo != null ) {
-	        for ( InfoItem infoItem: groupInfo.getInfoItems()) {
-	        	csvHeader.add(infoItem.getLabel());
-	        }
-    	}
+        for ( InfoItem infoItem: assembly.getAggregateInfoItems()  ) {
+        	csvHeader.add(infoItem.getLabel());
+        }
+        for ( InfoItem infoItem: assembly.getComputeInfoItems()) {
+        	csvHeader.add(infoItem.getLabel());
+        }
+
         return csvHeader;
 	}
 
@@ -63,16 +52,12 @@ public class AssemblyCsvHandler {
         	row = new ArrayList<String>();
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber().toString());
-        	if ( dist.getAggregateResults() != null ) {
-		        for ( AggregateResult result: dist.getAggregateResults() ) {
-		        	row.add(Long.toString(result.value));
-		        }
-        	}
-        	if ( dist.getComputationResults() != null ) {
-		        for ( ComputationResult comp: dist.getComputationResults() ) {
-		        	row.add(Double.toString(comp.value));
-		        }
-        	}
+	        for ( AggregateResult result: dist.getAggregateResults() ) {
+	        	row.add(Long.toString(result.value));
+	        }
+	        for ( ComputeResult comp: dist.getComputeResults() ) {
+	        	row.add(Double.toString(comp.value));
+	        }
 	        csvResult.add(row);
         }
         rowOffset = row.size();
@@ -81,16 +66,12 @@ public class AssemblyCsvHandler {
     	for ( int i=0; i<rowOffset; ++i ) {
     		row.add("");
     	}
-    	if ( assembly.getAggregateResults() != null ) {
-	        for ( AggregateResult result: assembly.getAggregateResults() ) {
-	        	row.add(Long.toString(result.value));
-	        }
-    	}
-    	if ( assembly.getComputationResults() != null ) {
-	        for ( ComputationResult result: assembly.getComputationResults() ) {
-	        	row.add(Double.toString(result.value));
-	        }
-    	}
+        for ( AggregateResult result: assembly.getAggregateResults() ) {
+        	row.add(Long.toString(result.value));
+        }
+        for ( ComputeResult result: assembly.getComputeResults() ) {
+        	row.add(Double.toString(result.value));
+        }
 	    csvResult.add(row);
         return csvResult;
 	}
@@ -104,6 +85,5 @@ public class AssemblyCsvHandler {
 		printer.printRecord(csvHeader);
 		printer.printRecords(csvBody);
 	}
-		
 
 }

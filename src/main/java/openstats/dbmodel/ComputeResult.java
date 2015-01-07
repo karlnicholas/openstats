@@ -3,11 +3,11 @@ package openstats.dbmodel;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ComputationResult {
+public class ComputeResult {
 	public double value;
 	public double error;
-	public ComputationResult() {}
-	public ComputationResult(double value, double error) {
+	public ComputeResult() {}
+	public ComputeResult(double value, double error) {
 		this.value = value;
 		this.error = error;
 	}

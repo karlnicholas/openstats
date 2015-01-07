@@ -118,12 +118,12 @@ public class AssemblyResourceRESTService {
 
     @PUT
     @Consumes(value={MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-    public Response updateAssembly(@Context UriInfo ui, Assembly Assembly ) {
+    public Response updateAssembly(@Context UriInfo ui, Assembly assembly ) {
 
         Response.ResponseBuilder builder = null;
 
         try {
-        	assemblyFacade.writeAssembly(Assembly);
+        	assemblyFacade.writeAssembly(assembly);
             // Create an "created" response
             builder = Response.ok();
         } catch (Exception e) {

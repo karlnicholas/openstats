@@ -18,9 +18,9 @@ import openstats.model.InfoItem;
 	@Column(length=1023)
 	private String description;
 	public DBInfoItem() {}
-	public DBInfoItem(InfoItem osInfoItem) {
-		this.Label = osInfoItem.getLabel();
-		this.description = osInfoItem.getDescription();
+	public DBInfoItem(InfoItem infoItem) {
+		this.Label = infoItem.getLabel();
+		this.description = infoItem.getDescription();
 	}
 	public String getLabel() {
 		return Label;

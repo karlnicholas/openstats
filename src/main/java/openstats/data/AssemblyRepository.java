@@ -17,8 +17,6 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
-import openstats.dbmodel.AggregateResults;
-import openstats.dbmodel.ComputationResults;
 import openstats.dbmodel.DBAssembly;
 import openstats.dbmodel.DBAssemblyHandler;
 import openstats.dbmodel.DBDistrict;
@@ -112,10 +110,7 @@ public class AssemblyRepository {
         		cb.equal(assembly.get("session"), session)
         	).distinct(true);
         DBAssembly dbAssembly = em.createQuery(criteria).getSingleResult();
-		for ( DBGroup key: dbAssembly.getAggregateGroupMap().keySet() ) {
-			groups.add( key );
-		}
-		for ( DBGroup key: dbAssembly.getComputationGroupMap().keySet() ) {
+		for ( DBGroup key: dbAssembly.getGroupInfoMap().keySet() ) {
 			groups.add( key );
 		}
 		
@@ -132,10 +127,7 @@ public class AssemblyRepository {
         dCriteria.select(districts).where(cb.equal(districts.get("id"), self.getId())).distinct(true);
         DBDistricts dbDistricts = em.createQuery(dCriteria).getSingleResult();
 
-        for ( DBGroup key: dbDistricts.getAggregateGroupMap().keySet() ) {
-			groups.add(key);
-		}
-		for ( DBGroup key: dbDistricts.getComputationGroupMap().keySet() ) {
+        for ( DBGroup key: dbDistricts.getGroupInfoMap().keySet() ) {
 			groups.add(key);
 		}
 		return groups;
@@ -158,25 +150,8 @@ public class AssemblyRepository {
 		}
 	}
 
-	public static class AggregateMapEntry {
-		public DBGroup key;
-		public AggregateResults results;
-		public AggregateMapEntry(DBGroup key, AggregateResults results) {
-			this.key = key;
-			this.results = results;
-		}
-	}
-
-	public static class ComputationMapEntry {
-		public DBGroup key;
-		public ComputationResults results;
-		public ComputationMapEntry(DBGroup key, ComputationResults results) {
-			this.key = key;
-			this.results = results;
-		}
-	}
-
-	private void loadAssemblyGroups(DBAssembly dbAssembly, List<DBGroup> dbGroups) {        
+	private void loadAssemblyGroups(DBAssembly dbAssembly, List<DBGroup> dbGroups) {
+/*		
     	TypedQuery<GroupMapEntry> assemblyAggregateGroupMapQuery = em.createNamedQuery(DBAssembly.getAggregateGroupMap, GroupMapEntry.class);
         List<GroupMapEntry> groupMapEntries = assemblyAggregateGroupMapQuery.setParameter(1, dbAssembly).setParameter(2, dbGroups).getResultList();
         Map<DBGroup, DBGroupInfo> aggregateGroupMap = new HashMap<DBGroup, DBGroupInfo>();
@@ -192,26 +167,11 @@ public class AssemblyRepository {
         	computationGroupMap.put(entry.key, entry.value);
         }
         dbAssembly.setComputationGroupMap(computationGroupMap);
-        
-		TypedQuery<AggregateMapEntry> assemblyAggregateMapQuery = em.createNamedQuery(DBAssembly.getAggregateMap, AggregateMapEntry.class);
-        List<AggregateMapEntry> aggregateMapEntries = assemblyAggregateMapQuery.setParameter(1, dbAssembly).setParameter(2, dbGroups).getResultList();
-        Map<DBGroup, AggregateResults> aggregateMap = new HashMap<DBGroup, AggregateResults>();
-        for( AggregateMapEntry entry: aggregateMapEntries) {
-        	aggregateMap.put(entry.key, entry.results);
-        }
-        dbAssembly.setAggregateMap(aggregateMap);
-
-    	TypedQuery<ComputationMapEntry> assemblyComputationMapQuery = em.createNamedQuery(DBAssembly.getComputationMap, ComputationMapEntry.class);
-        List<ComputationMapEntry> computationMapEntries = assemblyComputationMapQuery.setParameter(1, dbAssembly).setParameter(2, dbGroups).getResultList();
-        Map<DBGroup, ComputationResults> computationMap = new HashMap<DBGroup, ComputationResults>();
-        for( ComputationMapEntry entry: computationMapEntries ) {
-        	computationMap.put(entry.key, entry.results);
-        }
-        dbAssembly.setComputationMap(computationMap);
+*/      
 	}
 
 	private void loadDistrictsGroupMaps(DBDistricts dbDistricts, List<DBGroup> dbGroups) {
-
+/*
         TypedQuery<GroupMapEntry> districtsAggregateGroupMapQuery = em.createNamedQuery( DBDistricts.districtsAggregateGroupMapQuery, GroupMapEntry.class);
         List<GroupMapEntry> groupMapEntries = districtsAggregateGroupMapQuery.setParameter(1, dbDistricts).setParameter(2, dbGroups).getResultList();
         Map<DBGroup, DBGroupInfo> aggregateGroupMap = new HashMap<DBGroup, DBGroupInfo>();
@@ -227,6 +187,7 @@ public class AssemblyRepository {
         	computationGroupMap.put(entry.key, entry.value);
         }
         dbDistricts.setComputationGroupMap(computationGroupMap);
+*/        
 	}
 
 	public Assembly buildAssemblyFromGroups(List<DBGroup> dbGroups, String state, String session) throws OpenStatsException {
@@ -250,8 +211,8 @@ public class AssemblyRepository {
 //
         System.out.println("start districtList");
 
-        List<DBDistrict> districtList = em.createNamedQuery(DBDistricts.districtListQuery, DBDistrict.class).setParameter(1, dbAssembly.getDistricts()).setParameter(2, dbGroups).setParameter(3, dbGroups).getResultList();
-    	dbAssembly.getDistricts().setDistrictList(districtList);
+//        List<DBDistrict> districtList = em.createNamedQuery(DBDistricts.districtListQuery, DBDistrict.class).setParameter(1, dbAssembly.getDistricts()).setParameter(2, dbGroups).setParameter(3, dbGroups).getResultList();
+//    	dbAssembly.getDistricts().setDistrictList(districtList);
 
     	System.out.println("end districtList");
 

@@ -1,11 +1,8 @@
 package openstats.facades;
 
-import java.util.*;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
 
 import openstats.data.AssemblyRepository;
 import openstats.dbmodel.*;
@@ -28,6 +25,7 @@ public class AssemblyFacade {
     // for testing
     public AssemblyFacade(EntityManager em) {
     	this.em = em;
+    	assemblyRepo = new AssemblyRepository(em);
     }
 
 	

@@ -9,35 +9,28 @@ import openstats.model.*;
 import openstats.model.District.CHAMBER;
 
 @SuppressWarnings("serial")
-@NamedQueries({ 
-	@NamedQuery(name = DBDistricts.districtsAggregateGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.aggregateGroupMap m where d = ?1 and key(m) in( ?2 )"),  
-	@NamedQuery(name = DBDistricts.districtsComputationGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.computationGroupMap m where d = ?1 and key(m) in( ?2 )"),
-	@NamedQuery(name = DBDistricts.districtListQuery, query = "select d from DBDistricts s join s.districtList d join fetch d.aggregateMap m join fetch d.computationMap c where s = ?1 and key(m) in( ?2 ) and key(c) in( ?3 )" )		
-})
 @Entity
 public class DBDistricts implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
-	
+/*	
+	@NamedQueries({ 
+		@NamedQuery(name = DBDistricts.districtsAggregateGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.aggregateGroupMap m where d = ?1 and key(m) in( ?2 )"),  
+		@NamedQuery(name = DBDistricts.districtsComputationGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.computationGroupMap m where d = ?1 and key(m) in( ?2 )"),
+		@NamedQuery(name = DBDistricts.districtListQuery, query = "select d from DBDistricts s join s.districtList d join fetch d.aggregateMap m join fetch d.computationMap c where s = ?1 and key(m) in( ?2 ) and key(c) in( ?3 )" )		
+	})
 	public static final String districtsAggregateGroupMapQuery = "DBDistricts.districtsAggregateGroupMapQuery";  
 	public static final String districtsComputationGroupMapQuery = "DBDistricts.districtsComputationGroupMapQuery";  
 	public static final String districtListQuery = "DBDistricts.districtListQuery";
-
+*/
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<DBDistrict> districtList = new ArrayList<DBDistrict>();
 	
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="DBDistricts_aggregateGroupMap",
+	@JoinTable(name="DBDistricts_groupInfoMap",
 	    joinColumns=@JoinColumn(name="DBDistricts"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
 	@MapKeyJoinColumn(name="DBGroup")
-	private Map<DBGroup, DBGroupInfo> aggregateGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
-	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
-	@JoinTable(name="DBDistricts_computationGroupMap",
-	    joinColumns=@JoinColumn(name="DBDistricts"),
-	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
-	@MapKeyJoinColumn(name="DBGroup")
-	private Map<DBGroup, DBGroupInfo> computationGroupMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
+	private Map<DBGroup, DBGroupInfo> groupInfoMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	public DBDistricts() {}
 
@@ -51,23 +44,15 @@ public class DBDistricts implements Serializable {
 			findDistrict(district.getChamber(), district.getDistrict())
 			.copyGroup(dbGroup, district);
 		}
-		if ( districts.getAggregateGroupInfo() != null ) {
-			aggregateGroupMap.put(dbGroup, new DBGroupInfo(districts.getAggregateGroupInfo()));
-		}
-		if ( districts.getComputationGroupInfo() != null ) {
-			computationGroupMap.put(dbGroup, new DBGroupInfo(districts.getComputationGroupInfo()));
-		}
+		groupInfoMap.put(dbGroup, new DBGroupInfo(districts.getAggregateInfoItems(), districts.getComputeInfoItems()));
 	}
 	
 	public void removeGroup(DBGroup dbGroup) {
 		for ( DBDistrict dbDistrict: districtList ) {			
 			dbDistrict.removeGroup(dbGroup);
 		}
-		if ( aggregateGroupMap.containsKey(dbGroup) ) {
-			aggregateGroupMap.remove(dbGroup);
-		}
-		if ( computationGroupMap.containsKey(dbGroup) ) {
-			computationGroupMap.remove(dbGroup);
+		if ( groupInfoMap.containsKey(dbGroup) ) {
+			groupInfoMap.remove(dbGroup);
 		}
 	}
 
@@ -84,17 +69,10 @@ public class DBDistricts implements Serializable {
 	public void setDistrictList(List<DBDistrict> districtList) {
 		this.districtList = districtList;
 	}
-	public Map<DBGroup, DBGroupInfo> getComputationGroupMap() {
-		return computationGroupMap;
+	public Map<DBGroup, DBGroupInfo> getGroupInfoMap() {
+		return groupInfoMap;
 	}
-	public void setComputationGroupMap(Map<DBGroup, DBGroupInfo> computationGroupMap) {
-		this.computationGroupMap = computationGroupMap;
+	public void setGroupInfoMap(Map<DBGroup, DBGroupInfo> groupInfoMap) {
+		this.groupInfoMap = groupInfoMap;
 	}
-	public Map<DBGroup, DBGroupInfo> getAggregateGroupMap() {
-		return aggregateGroupMap;
-	}
-	public void setAggregateGroupMap(Map<DBGroup, DBGroupInfo> aggregateGroupMap) {
-		this.aggregateGroupMap = aggregateGroupMap;
-	}
-
 }

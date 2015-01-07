@@ -7,43 +7,45 @@ import openstats.model.District.CHAMBER;
 
 public class Districts {
 
-	private GroupInfo aggregateGroupInfo; 
-	private GroupInfo computationGroupInfo; 
-	private List<District> districtList = new ArrayList<District>();
+	private List<District> districtList;
+	private List<InfoItem> aggregateInfoItems;
+	private List<InfoItem> computeInfoItems;
 	
 	public Districts() {
-		aggregateGroupInfo = null; 
-		computationGroupInfo = null; 
+		aggregateInfoItems = new ArrayList<InfoItem>();
+		computeInfoItems = new ArrayList<InfoItem>();
+		districtList = new ArrayList<District>();
 	}
+
+	// empty, for templates
 	public Districts(DBDistricts dbDistricts) {
+		aggregateInfoItems = new ArrayList<InfoItem>();
+		computeInfoItems = new ArrayList<InfoItem>();
+		districtList = new ArrayList<District>();
 		for ( DBDistrict dbDistrict: dbDistricts.getDistrictList()) {
 			districtList.add(new District(dbDistrict));
 		}
 	}
 	public Districts(Districts districts) {
-		if ( districts.getAggregateGroupInfo() != null )
-			aggregateGroupInfo = new GroupInfo( districts.getAggregateGroupInfo() );
-
-		if (districts.getComputationGroupInfo() != null )
-			computationGroupInfo = new GroupInfo( districts.getComputationGroupInfo() );
-
+		aggregateInfoItems = new ArrayList<InfoItem>();
+		for( InfoItem infoItem: districts.getAggregateInfoItems() ) {
+			aggregateInfoItems.add(new InfoItem(infoItem));
+		}
+		computeInfoItems = new ArrayList<InfoItem>();
+		for( InfoItem infoItem: districts.getComputeInfoItems() ) {
+			computeInfoItems.add(new InfoItem(infoItem));
+		}
+		districtList = new ArrayList<District>();
 		for ( District district: districts.getDistrictList()) {
 			districtList.add(new District(district));
 		}
 	}
 	public void copyGroup(DBGroup dbGroup, DBDistricts dbDistricts) {
-		if ( dbDistricts.getAggregateGroupMap().containsKey(dbGroup) ) {
-			if ( aggregateGroupInfo == null )
-				aggregateGroupInfo = new GroupInfo( dbDistricts.getAggregateGroupMap().get(dbGroup) );
-			else 
-				aggregateGroupInfo.mergeGroupInfo(dbDistricts.getAggregateGroupMap().get(dbGroup));
+		for( DBInfoItem dbInfoItem: dbDistricts.getGroupInfoMap().get(dbGroup).getAggregateGroupItems() ) {
+			aggregateInfoItems.add(new InfoItem(dbInfoItem));
 		}
-		if ( dbDistricts.getComputationGroupMap().containsKey(dbGroup) ) {
-			if (computationGroupInfo == null )
-				computationGroupInfo = new GroupInfo( dbDistricts.getComputationGroupMap().get(dbGroup) );
-			else 
-				computationGroupInfo.mergeGroupInfo( dbDistricts.getComputationGroupMap().get(dbGroup) );
-				
+		for( DBInfoItem dbInfoItem: dbDistricts.getGroupInfoMap().get(dbGroup).getComputeGroupItems() ) {
+			computeInfoItems.add(new InfoItem(dbInfoItem));
 		}
 		for ( DBDistrict dbDistrict: dbDistricts.getDistrictList()) {
 			District district = findDistrict(dbDistrict.getChamber(), dbDistrict.getDistrict());
@@ -51,17 +53,17 @@ public class Districts {
 		}
 	}
 
-	public GroupInfo getAggregateGroupInfo() {
-		return aggregateGroupInfo;
+	public List<InfoItem> getAggregateInfoItems() {
+		return aggregateInfoItems;
 	}
-	public void setAggregateGroupInfo(GroupInfo aggregateGroupInfo) {
-		this.aggregateGroupInfo = aggregateGroupInfo;
+	public void setAggregateInfoItems(List<InfoItem> aggregateInfoItems) {
+		this.aggregateInfoItems = aggregateInfoItems;
 	}
-	public GroupInfo getComputationGroupInfo() {
-		return computationGroupInfo;
+	public List<InfoItem> getComputeInfoItems() {
+		return computeInfoItems;
 	}
-	public void setComputationGroupInfo(GroupInfo computationGroupInfo) {
-		this.computationGroupInfo = computationGroupInfo;
+	public void setComputeInfoItems(List<InfoItem> computeInfoItems) {
+		this.computeInfoItems = computeInfoItems;
 	}
 	public List<District> getDistrictList() {
 		return districtList;
