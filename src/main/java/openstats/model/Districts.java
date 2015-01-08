@@ -8,32 +8,25 @@ import openstats.model.District.CHAMBER;
 public class Districts {
 
 	private List<District> districtList;
-	private List<InfoItem> aggregateInfoItems;
-	private List<InfoItem> computeInfoItems;
+	private List<InfoItem> infoItems;
 	
 	public Districts() {
-		aggregateInfoItems = new ArrayList<InfoItem>();
-		computeInfoItems = new ArrayList<InfoItem>();
+		infoItems = new ArrayList<InfoItem>();
 		districtList = new ArrayList<District>();
 	}
 
 	// empty, for templates
 	public Districts(DBDistricts dbDistricts) {
-		aggregateInfoItems = new ArrayList<InfoItem>();
-		computeInfoItems = new ArrayList<InfoItem>();
+		infoItems = new ArrayList<InfoItem>();
 		districtList = new ArrayList<District>();
 		for ( DBDistrict dbDistrict: dbDistricts.getDistrictList()) {
 			districtList.add(new District(dbDistrict));
 		}
 	}
 	public Districts(Districts districts) {
-		aggregateInfoItems = new ArrayList<InfoItem>();
-		for( InfoItem infoItem: districts.getAggregateInfoItems() ) {
-			aggregateInfoItems.add(new InfoItem(infoItem));
-		}
-		computeInfoItems = new ArrayList<InfoItem>();
-		for( InfoItem infoItem: districts.getComputeInfoItems() ) {
-			computeInfoItems.add(new InfoItem(infoItem));
+		infoItems = new ArrayList<InfoItem>();
+		for( InfoItem infoItem: districts.getInfoItems() ) {
+			infoItems.add(new InfoItem(infoItem));
 		}
 		districtList = new ArrayList<District>();
 		for ( District district: districts.getDistrictList()) {
@@ -41,11 +34,8 @@ public class Districts {
 		}
 	}
 	public void copyGroup(DBGroup dbGroup, DBDistricts dbDistricts) {
-		for( DBInfoItem dbInfoItem: dbDistricts.getGroupInfoMap().get(dbGroup).getAggregateGroupItems() ) {
-			aggregateInfoItems.add(new InfoItem(dbInfoItem));
-		}
-		for( DBInfoItem dbInfoItem: dbDistricts.getGroupInfoMap().get(dbGroup).getComputeGroupItems() ) {
-			computeInfoItems.add(new InfoItem(dbInfoItem));
+		for( DBInfoItem dbInfoItem: dbDistricts.getGroupInfoMap().get(dbGroup).getGroupItems() ) {
+			infoItems.add(new InfoItem(dbInfoItem));
 		}
 		for ( DBDistrict dbDistrict: dbDistricts.getDistrictList()) {
 			District district = findDistrict(dbDistrict.getChamber(), dbDistrict.getDistrict());
@@ -53,17 +43,11 @@ public class Districts {
 		}
 	}
 
-	public List<InfoItem> getAggregateInfoItems() {
-		return aggregateInfoItems;
+	public List<InfoItem> getInfoItems() {
+		return infoItems;
 	}
-	public void setAggregateInfoItems(List<InfoItem> aggregateInfoItems) {
-		this.aggregateInfoItems = aggregateInfoItems;
-	}
-	public List<InfoItem> getComputeInfoItems() {
-		return computeInfoItems;
-	}
-	public void setComputeInfoItems(List<InfoItem> computeInfoItems) {
-		this.computeInfoItems = computeInfoItems;
+	public void setInfoItems(List<InfoItem> InfoItems) {
+		this.infoItems = InfoItems;
 	}
 	public List<District> getDistrictList() {
 		return districtList;

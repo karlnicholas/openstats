@@ -11,32 +11,19 @@ import javax.persistence.*;
 
 	@ElementCollection(fetch=FetchType.EAGER)
 	@OrderColumn
-	private List<AggregateResult> aggregateResults;
-	
-	@ElementCollection(fetch=FetchType.EAGER)
-	@OrderColumn
-	private List<ComputeResult> computeResults;
+	private List<Result> Results;
 	
 	public DBGroupResults() {
-		aggregateResults = new ArrayList<AggregateResult>();
-		computeResults  = new ArrayList<ComputeResult>();
+		Results = new ArrayList<Result>();
 	}
-	public DBGroupResults(List<AggregateResult> aggregateResults, List<ComputeResult> computeResults ) {
-		this.aggregateResults = aggregateResults;
-		this.computeResults = computeResults;
+	public DBGroupResults(List<Result> Results) {
+		this.Results = Results;
 	}
 
-	public List<AggregateResult> getAggregateResults() {
-		return aggregateResults;
+	public List<Result> getResults() {
+		return Results;
 	}
-	public void setAggregateResult( List<AggregateResult> aggregateResults) {
-		this.aggregateResults = aggregateResults;
+	public void setResult( List<Result> Results) {
+		this.Results = Results;
 	}
-	public List<ComputeResult> getComputeResults() {
-		return computeResults;
-	}
-	public void setComputeResult(List<ComputeResult> computeResults) {
-		this.computeResults = computeResults;
-	}
-
 }

@@ -5,8 +5,7 @@ import java.util.*;
 
 import org.apache.commons.csv.*;
 
-import openstats.dbmodel.AggregateResult;
-import openstats.dbmodel.ComputeResult;
+import openstats.dbmodel.Result;
 import openstats.model.*;
 
 public class AssemblyCsvHandler {
@@ -18,19 +17,13 @@ public class AssemblyCsvHandler {
         // the header elements are used to map the bean valueList to each column (names must match)
         csvHeader.add("District");
         csvHeader.add("Chamber");
-//			Aggregate aggregate = districts.getAggregate(GROUPLABEL);
+//			  = districts.get(GROUPLABEL);
 
-        for ( InfoItem infoItem: districts.getAggregateInfoItems()  ) {
-        	csvHeader.add(infoItem.getLabel());
-        }
-        for ( InfoItem infoItem: districts.getComputeInfoItems()) {
+        for ( InfoItem infoItem: districts.getInfoItems()  ) {
         	csvHeader.add(infoItem.getLabel());
         }
 
-        for ( InfoItem infoItem: assembly.getAggregateInfoItems()  ) {
-        	csvHeader.add(infoItem.getLabel());
-        }
-        for ( InfoItem infoItem: assembly.getComputeInfoItems()) {
+        for ( InfoItem infoItem: assembly.getInfoItems()  ) {
         	csvHeader.add(infoItem.getLabel());
         }
 
@@ -52,11 +45,8 @@ public class AssemblyCsvHandler {
         	row = new ArrayList<String>();
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber().toString());
-	        for ( AggregateResult result: dist.getAggregateResults() ) {
-	        	row.add(Long.toString(result.value));
-	        }
-	        for ( ComputeResult comp: dist.getComputeResults() ) {
-	        	row.add(Double.toString(comp.value));
+	        for ( Result result: dist.getResults() ) {
+	        	row.add(result.value.toString());
 	        }
 	        csvResult.add(row);
         }
@@ -66,11 +56,8 @@ public class AssemblyCsvHandler {
     	for ( int i=0; i<rowOffset; ++i ) {
     		row.add("");
     	}
-        for ( AggregateResult result: assembly.getAggregateResults() ) {
-        	row.add(Long.toString(result.value));
-        }
-        for ( ComputeResult result: assembly.getComputeResults() ) {
-        	row.add(Double.toString(result.value));
+        for ( Result result: assembly.getResults() ) {
+        	row.add(result.value.toString());
         }
 	    csvResult.add(row);
         return csvResult;

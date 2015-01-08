@@ -15,14 +15,14 @@ import openstats.model.*;
 
 /*
 	@NamedQueries({
-		@NamedQuery(name = DBAssembly.getAggregateGroupMap, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBAssembly a join a.aggregateGroupMap m where a = ?1 and key(m) in( ?2 )"),
+		@NamedQuery(name = DBAssembly.getGroupMap, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBAssembly a join a.GroupMap m where a = ?1 and key(m) in( ?2 )"),
 		@NamedQuery(name = DBAssembly.getComputationGroupMap, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBAssembly a join a.computationGroupMap m where a = ?1 and key(m) in( ?2 )" ), 
-		@NamedQuery(name = DBAssembly.getAggregateMap, query = "select new openstats.data.AssemblyRepository$AggregateMapEntry(key(m), value(m)) from DBAssembly a join a.aggregateMap m where a = ?1 and key(m) in( ?2 )"), 
+		@NamedQuery(name = DBAssembly.getMap, query = "select new openstats.data.AssemblyRepository$MapEntry(key(m), value(m)) from DBAssembly a join a.Map m where a = ?1 and key(m) in( ?2 )"), 
 		@NamedQuery(name = DBAssembly.getComputationMap, query = "select new openstats.data.AssemblyRepository$ComputationMapEntry(key(m), value(m)) from DBAssembly a join a.computationMap m where a = ?1 and key(m) in( ?2 )")	
 	})
-	public static final String getAggregateGroupMap = "DBAssembly.getAggregateGroupMap";
+	public static final String getGroupMap = "DBAssembly.getGroupMap";
 	public static final String getComputationGroupMap = "DBAssembly.getComputationGroupMap";
-	public static final String getAggregateMap = "DBAssembly.getAggregateMap";
+	public static final String getMap = "DBAssembly.getMap";
 	public static final String getComputationMap = "DBAssembly.getComputationMap";
 */
 	private String state;
@@ -61,8 +61,8 @@ import openstats.model.*;
 	}
 	
 	public void copyGroup(DBGroup dbGroup, Assembly assembly) {
-		groupInfoMap.put(dbGroup, new DBGroupInfo(assembly.getAggregateInfoItems(), assembly.getComputeInfoItems()));
-		groupResultsMap.put(dbGroup, new DBGroupResults(assembly.getAggregateResults(), assembly.getComputeResults()) );
+		groupInfoMap.put(dbGroup, new DBGroupInfo(assembly.getInfoItems()));
+		groupResultsMap.put(dbGroup, new DBGroupResults(assembly.getResults()) );
 
 		districts.copyGroup(dbGroup, assembly.getDistricts());
 	}

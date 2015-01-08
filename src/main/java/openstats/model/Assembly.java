@@ -13,25 +13,19 @@ public class Assembly implements Comparable<Assembly> {
 	private String session;
 	private Group group;
 	private Districts districts;
-	private List<InfoItem> aggregateInfoItems;
-	private List<InfoItem> computeInfoItems;
-	private List<AggregateResult> aggregateResults;
-	private List<ComputeResult> computeResults;
+	private List<InfoItem> infoItems;
+	private List<Result> results;
 	
 	public Assembly() {
-		aggregateInfoItems = new ArrayList<InfoItem>();
-		computeInfoItems = new ArrayList<InfoItem>();
-		aggregateResults = new ArrayList<AggregateResult>();
-		computeResults = new ArrayList<ComputeResult>();
+		infoItems = new ArrayList<InfoItem>();
+		results = new ArrayList<Result>();
 	}
 	public Assembly(String state, String session) {
 		this.state = state;
 		this.session = session;
 		this.districts = new Districts();
-		aggregateInfoItems = new ArrayList<InfoItem>();
-		computeInfoItems = new ArrayList<InfoItem>();
-		aggregateResults = new ArrayList<AggregateResult>();
-		computeResults = new ArrayList<ComputeResult>();
+		infoItems = new ArrayList<InfoItem>();
+		results = new ArrayList<Result>();
 	}
 
 	// empty, for templates
@@ -39,10 +33,8 @@ public class Assembly implements Comparable<Assembly> {
 		state = assembly.getState();
 		session = assembly.getSession();
 		districts = new Districts(assembly.getDistricts());
-		aggregateInfoItems = new ArrayList<InfoItem>();
-		computeInfoItems = new ArrayList<InfoItem>();
-		aggregateResults = new ArrayList<AggregateResult>();
-		computeResults = new ArrayList<ComputeResult>();
+		infoItems = new ArrayList<InfoItem>();
+		results = new ArrayList<Result>();
 	}
 
 	
@@ -50,10 +42,8 @@ public class Assembly implements Comparable<Assembly> {
 		state = dbAssembly.getState();
 		session = dbAssembly.getSession();
 		districts = new Districts(dbAssembly.getDistricts());
-		aggregateInfoItems = new ArrayList<InfoItem>();
-		computeInfoItems = new ArrayList<InfoItem>();
-		aggregateResults = new ArrayList<AggregateResult>();
-		computeResults = new ArrayList<ComputeResult>();
+		infoItems = new ArrayList<InfoItem>();
+		results = new ArrayList<Result>();
 	}
 
 	public void copyGroup(DBGroup dbGroup, DBAssembly dbAssembly) {
@@ -61,17 +51,11 @@ public class Assembly implements Comparable<Assembly> {
 		group = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());
 		districts.copyGroup(dbGroup, dbAssembly.getDistricts());
 
-		for( DBInfoItem dbInfoItem: dbAssembly.getGroupInfoMap().get(dbGroup).getAggregateGroupItems() ) {
-			aggregateInfoItems.add(new InfoItem(dbInfoItem));
+		for( DBInfoItem dbInfoItem: dbAssembly.getGroupInfoMap().get(dbGroup).getGroupItems() ) {
+			infoItems.add(new InfoItem(dbInfoItem));
 		}
-		for( DBInfoItem dbInfoItem: dbAssembly.getGroupInfoMap().get(dbGroup).getComputeGroupItems() ) {
-			computeInfoItems.add(new InfoItem(dbInfoItem));
-		}
-		for ( AggregateResult aggregateResult: dbAssembly.getGroupResultsMap().get(dbGroup).getAggregateResults()) {
-			aggregateResults.add(aggregateResult);
-		}
-		for ( ComputeResult computeResult: dbAssembly.getGroupResultsMap().get(dbGroup).getComputeResults()) {
-			computeResults.add(computeResult);
+		for ( Result Result: dbAssembly.getGroupResultsMap().get(dbGroup).getResults()) {
+			results.add(Result);
 		}
 
 	}
@@ -100,29 +84,17 @@ public class Assembly implements Comparable<Assembly> {
 	public void setDistricts(Districts districts) {
 		this.districts = districts;
 	}
-	public List<InfoItem> getAggregateInfoItems() {
-		return aggregateInfoItems;
+	public List<InfoItem> getInfoItems() {
+		return infoItems;
 	}
-	public void setAggregateInfoItems(List<InfoItem> aggregateInfoItems) {
-		this.aggregateInfoItems = aggregateInfoItems;
+	public void setInfoItems(List<InfoItem> InfoItems) {
+		this.infoItems = InfoItems;
 	}
-	public List<InfoItem> getComputeInfoItems() {
-		return computeInfoItems;
+	public List<Result> getResults() {
+		return results;
 	}
-	public void setComputeInfoItems(List<InfoItem> computeInfoItems) {
-		this.computeInfoItems = computeInfoItems;
-	}
-	public List<AggregateResult> getAggregateResults() {
-		return aggregateResults;
-	}
-	public void setAggregateResults(List<AggregateResult> aggregateResults) {
-		this.aggregateResults = aggregateResults;
-	}
-	public List<ComputeResult> getComputeResults() {
-		return computeResults;
-	}
-	public void setComputeResults(List<ComputeResult> computeResults) {
-		this.computeResults = computeResults;
+	public void setResults(List<Result> Results) {
+		this.results = Results;
 	}
 	@Override
 	public int compareTo(Assembly assembly) {

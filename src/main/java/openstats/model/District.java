@@ -10,8 +10,7 @@ public class District {
 	private String district;
 	private CHAMBER chamber;
 	private String description;
-	private List<AggregateResult> aggregateResults;
-	private List<ComputeResult> computeResults;
+	private List<Result> results;
 
 	public District() {}
 	
@@ -19,31 +18,25 @@ public class District {
 		this.district = district;
 		this.chamber = chamber;
 		description = null;
-		aggregateResults = new ArrayList<AggregateResult>();
-		computeResults = new ArrayList<ComputeResult>();
+		results = new ArrayList<Result>();
 	}
 	// empty, for templates
 	public District(DBDistrict dbDistrict) {
 		district = dbDistrict.getDistrict();
 		chamber = dbDistrict.getChamber();
 		description = dbDistrict.getDescription();
-		aggregateResults = new ArrayList<AggregateResult>();
-		computeResults = new ArrayList<ComputeResult>();
+		results = new ArrayList<Result>();
 	}
 	// deep copy constructor
 	public District(District district) {
 		this.district = district.getDistrict();
 		this.chamber = district.getChamber();
 		this.description = district.getDescription();
-		this.aggregateResults = new ArrayList<AggregateResult>(district.getAggregateResults());
-		this.computeResults = new ArrayList<ComputeResult>(district.getComputeResults());
+		this.results = new ArrayList<Result>(district.getResults());
 	}
 	public void copyGroup(DBGroup dbGroup, DBDistrict dbDistrict) {
-		for ( AggregateResult aggregateResult: dbDistrict.getGroupResultsMap().get(dbGroup).getAggregateResults()) {
-			aggregateResults.add(aggregateResult);
-		}
-		for ( ComputeResult computeResult: dbDistrict.getGroupResultsMap().get(dbGroup).getComputeResults()) {
-			computeResults.add(computeResult);
+		for ( Result Result: dbDistrict.getGroupResultsMap().get(dbGroup).getResults()) {
+			results.add(Result);
 		}
 	}
 	public String getDistrict() {
@@ -64,17 +57,11 @@ public class District {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	public List<AggregateResult> getAggregateResults() {
-		return aggregateResults;
+	public List<Result> getResults() {
+		return results;
 	}
-	public void setAggregateResults(List<AggregateResult> aggregateResults) {
-		this.aggregateResults = aggregateResults;
-	}
-	public List<ComputeResult> getComputeResults() {
-		return computeResults;
-	}
-	public void setComputeResults(List<ComputeResult> computeResults) {
-		this.computeResults = computeResults;
+	public void setResults(List<Result> Results) {
+		this.results = Results;
 	}
 
 }

@@ -11,10 +11,10 @@
       <h4>Export Available for #{exportCsv.currentAssembly}.</h4>
       <p>Group Chosen: #{exportCsv.assembly.group.groupName}</p>
       <p>
-      <h:dataTable value="#{exportCsv.assembly.aggregateInfoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.assembly.aggregateInfoItems}">
+      <h:dataTable value="#{exportCsv.assembly.infoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.infoItems}">
         <f:facet name="header">
-          <h:outputText value="Assembly Aggregates"/>
+          <h:outputText value="Assembly Info Items"/>
         </f:facet>
         <h:column>
           <f:facet name="header">Label</f:facet>
@@ -27,42 +27,10 @@
       </h:dataTable>
       </p>
       <p>
-      <h:dataTable value="#{exportCsv.assembly.computeInfoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.assembly.computeInfoItems}" >
-        <f:facet name="header">
-          <h:outputText value="Assembly Computations"/>
-        </f:facet>
-        <h:column>
-          <f:facet name="header">Label</f:facet>
-          <h:outputText value="#{infoItem.label}" />
-        </h:column>
-        <h:column>
-          <f:facet name="header">Description</f:facet>
-          <h:outputText value="#{infoItem.description}" />
-        </h:column>
-      </h:dataTable>
-      </p>
-      <p>
-      <h:dataTable value="#{exportCsv.assembly.districts.aggregateInfoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.assembly.districts.aggregateInfoItems}" >
+      <h:dataTable value="#{exportCsv.assembly.districts.infoItems}" var="infoItem"
+        rendered="#{!empty exportCsv.assembly.districts.infoItems}" >
         <f:facet name="header">
           <h:outputText value="District Aggregates"/>
-        </f:facet>
-        <h:column>
-          <f:facet name="header">Label</f:facet>
-          <h:outputText value="#{infoItem.label}" />
-        </h:column>
-        <h:column>
-          <f:facet name="header">Description</f:facet>
-          <h:outputText value="#{infoItem.description}" />
-        </h:column>
-      </h:dataTable>
-      </p>
-      <p>
-      <h:dataTable value="#{exportCsv.assembly.districts.computeInfoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.assembly.districts.computeInfoItems}" >
-        <f:facet name="header">
-          <h:outputText value="District Computations"/>
         </f:facet>
         <h:column>
           <f:facet name="header">Label</f:facet>

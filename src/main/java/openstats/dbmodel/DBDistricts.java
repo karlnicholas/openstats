@@ -14,11 +14,11 @@ public class DBDistricts implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 /*	
 	@NamedQueries({ 
-		@NamedQuery(name = DBDistricts.districtsAggregateGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.aggregateGroupMap m where d = ?1 and key(m) in( ?2 )"),  
+		@NamedQuery(name = DBDistricts.districtsGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.GroupMap m where d = ?1 and key(m) in( ?2 )"),  
 		@NamedQuery(name = DBDistricts.districtsComputationGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.computationGroupMap m where d = ?1 and key(m) in( ?2 )"),
-		@NamedQuery(name = DBDistricts.districtListQuery, query = "select d from DBDistricts s join s.districtList d join fetch d.aggregateMap m join fetch d.computationMap c where s = ?1 and key(m) in( ?2 ) and key(c) in( ?3 )" )		
+		@NamedQuery(name = DBDistricts.districtListQuery, query = "select d from DBDistricts s join s.districtList d join fetch d.Map m join fetch d.computationMap c where s = ?1 and key(m) in( ?2 ) and key(c) in( ?3 )" )		
 	})
-	public static final String districtsAggregateGroupMapQuery = "DBDistricts.districtsAggregateGroupMapQuery";  
+	public static final String districtsGroupMapQuery = "DBDistricts.districtsGroupMapQuery";  
 	public static final String districtsComputationGroupMapQuery = "DBDistricts.districtsComputationGroupMapQuery";  
 	public static final String districtListQuery = "DBDistricts.districtListQuery";
 */
@@ -44,7 +44,7 @@ public class DBDistricts implements Serializable {
 			findDistrict(district.getChamber(), district.getDistrict())
 			.copyGroup(dbGroup, district);
 		}
-		groupInfoMap.put(dbGroup, new DBGroupInfo(districts.getAggregateInfoItems(), districts.getComputeInfoItems()));
+		groupInfoMap.put(dbGroup, new DBGroupInfo(districts.getInfoItems()));
 	}
 	
 	public void removeGroup(DBGroup dbGroup) {

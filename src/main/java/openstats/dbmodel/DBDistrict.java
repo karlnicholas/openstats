@@ -36,7 +36,7 @@ import openstats.model.District.CHAMBER;
 	public DBDistrict copyGroup(DBGroup dbGroup, District district) {
 		// skip legislators for now
 		// copy even if blank
-		groupResultsMap.put(dbGroup, new DBGroupResults(district.getAggregateResults(), district.getComputeResults()) );
+		groupResultsMap.put(dbGroup, new DBGroupResults(district.getResults()) );
 		// useful for chaining
 		return this;
 	}

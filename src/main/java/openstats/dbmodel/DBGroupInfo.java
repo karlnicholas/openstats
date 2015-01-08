@@ -12,34 +12,20 @@ import openstats.model.InfoItem;
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
 	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name="DBGroupInfo_aggregateGroupItems")
+	@JoinTable(name="DBGroupInfo_GroupItems")
 	@OrderColumn
-	private List<DBInfoItem> aggregateGroupItems = new ArrayList<DBInfoItem>();
+	private List<DBInfoItem> GroupItems = new ArrayList<DBInfoItem>();
 	
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name="DBGroupInfo_computeGroupItems")
-	@OrderColumn
-	private List<DBInfoItem> computeGroupItems = new ArrayList<DBInfoItem>();
-
 	public DBGroupInfo() {}
-	public DBGroupInfo(List<InfoItem> aggregateInfoItems, List<InfoItem> computeInfoItems ) {
-		for ( InfoItem infoItem: aggregateInfoItems) {
-			aggregateGroupItems.add(new DBInfoItem(infoItem));
-		}
-		for ( InfoItem infoItem: computeInfoItems) {
-			computeGroupItems.add(new DBInfoItem(infoItem));
+	public DBGroupInfo(List<InfoItem> InfoItems) {
+		for ( InfoItem infoItem: InfoItems) {
+			GroupItems.add(new DBInfoItem(infoItem));
 		}
 	}
-	public List<DBInfoItem> getAggregateGroupItems() {
-		return aggregateGroupItems;
+	public List<DBInfoItem> getGroupItems() {
+		return GroupItems;
 	}
-	public void setAggregateGroupItems(List<DBInfoItem> aggregateGroupItems) {
-		this.aggregateGroupItems = aggregateGroupItems;
-	}
-	public List<DBInfoItem> getComputeGroupItems() {
-		return computeGroupItems;
-	}
-	public void setComputeGroupItems(List<DBInfoItem> computeGroupItems) {
-		this.computeGroupItems = computeGroupItems;
+	public void setGroupItems(List<DBInfoItem> GroupItems) {
+		this.GroupItems = GroupItems;
 	}
 }
