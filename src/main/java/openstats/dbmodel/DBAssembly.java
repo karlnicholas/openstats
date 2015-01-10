@@ -10,15 +10,20 @@ import openstats.model.*;
 
 @SuppressWarnings("serial")
 @XmlRootElement
+@NamedQueries({
+	@NamedQuery(name = DBAssembly.getAssemblyGroup, query = "select a from DBAssembly a join fetch a.groupInfoMap agim join fetch a.groupResultsMap agrm join fetch a.districts d where a.state = ?1 and a.session = ?2 and key(agim) in (?3) and key(agrm) in (?4)" )
+		
+})
 @Entity public class DBAssembly implements Comparable<DBAssembly>, Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
+	public static final String getAssemblyGroup = "DBAssembly.getAssemblyGroup";
 /*
 	@NamedQueries({
 		@NamedQuery(name = DBAssembly.getGroupMap, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBAssembly a join a.GroupMap m where a = ?1 and key(m) in( ?2 )"),
 		@NamedQuery(name = DBAssembly.getComputationGroupMap, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBAssembly a join a.computationGroupMap m where a = ?1 and key(m) in( ?2 )" ), 
 		@NamedQuery(name = DBAssembly.getMap, query = "select new openstats.data.AssemblyRepository$MapEntry(key(m), value(m)) from DBAssembly a join a.Map m where a = ?1 and key(m) in( ?2 )"), 
-		@NamedQuery(name = DBAssembly.getComputationMap, query = "select new openstats.data.AssemblyRepository$ComputationMapEntry(key(m), value(m)) from DBAssembly a join a.computationMap m where a = ?1 and key(m) in( ?2 )")	
+		@NamedQuery(name = DBAssembly.getComputationMap, query = "select new openstats.data.AssemblyRepository$ComputationMapEntry(key(m), value(m)) from DBAssembly a join a.computationMap m where a = ?1 and key(m) in( ?2 )")
 	})
 	public static final String getGroupMap = "DBAssembly.getGroupMap";
 	public static final String getComputationGroupMap = "DBAssembly.getComputationGroupMap";

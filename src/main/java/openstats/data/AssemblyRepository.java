@@ -19,7 +19,6 @@ import openstats.dbmodel.DBAssemblyHandler;
 import openstats.dbmodel.DBDistricts;
 import openstats.dbmodel.DBGroup;
 import openstats.dbmodel.DBGroupHandler;
-import openstats.dbmodel.DBGroupInfo;
 import openstats.dbmodel.OpenStatsException;
 import openstats.model.Assembly;
 
@@ -134,106 +133,29 @@ public class AssemblyRepository {
 		}
 		return buildAssemblyFromGroups(dbGroupNames, state, session);
 	}
-	
-	public static class GroupMapEntry {
-		public DBGroup key;
-		public DBGroupInfo value;
-		public GroupMapEntry(DBGroup key, DBGroupInfo value) {
-			this.key = key;
-			this.value = value;
-		}
-	}
-
-	private void loadAssemblyGroups(DBAssembly dbAssembly, List<DBGroup> dbGroups) {
-/*		
-    	TypedQuery<GroupMapEntry> assemblyAggregateGroupMapQuery = em.createNamedQuery(DBAssembly.getAggregateGroupMap, GroupMapEntry.class);
-        List<GroupMapEntry> groupMapEntries = assemblyAggregateGroupMapQuery.setParameter(1, dbAssembly).setParameter(2, dbGroups).getResultList();
-        Map<DBGroup, DBGroupInfo> aggregateGroupMap = new HashMap<DBGroup, DBGroupInfo>();
-        for( GroupMapEntry entry: groupMapEntries) {
-        	aggregateGroupMap.put(entry.key, entry.value);
-        }
-        dbAssembly.setAggregateGroupMap(aggregateGroupMap);
-
-    	TypedQuery<GroupMapEntry> assemblyComputationGroupMapQuery = em.createNamedQuery(DBAssembly.getComputationGroupMap, GroupMapEntry.class);
-        groupMapEntries = assemblyComputationGroupMapQuery.setParameter(1, dbAssembly).setParameter(2, dbGroups).getResultList();
-        Map<DBGroup, DBGroupInfo> computationGroupMap = new HashMap<DBGroup, DBGroupInfo>();
-        for( GroupMapEntry entry: groupMapEntries) {
-        	computationGroupMap.put(entry.key, entry.value);
-        }
-        dbAssembly.setComputationGroupMap(computationGroupMap);
-*/      
-	}
-
-	private void loadDistrictsGroupMaps(DBDistricts dbDistricts, List<DBGroup> dbGroups) {
-/*
-        TypedQuery<GroupMapEntry> districtsAggregateGroupMapQuery = em.createNamedQuery( DBDistricts.districtsAggregateGroupMapQuery, GroupMapEntry.class);
-        List<GroupMapEntry> groupMapEntries = districtsAggregateGroupMapQuery.setParameter(1, dbDistricts).setParameter(2, dbGroups).getResultList();
-        Map<DBGroup, DBGroupInfo> aggregateGroupMap = new HashMap<DBGroup, DBGroupInfo>();
-        for( GroupMapEntry entry: groupMapEntries) {
-        	aggregateGroupMap.put(entry.key, entry.value);
-        }
-        dbDistricts.setAggregateGroupMap(aggregateGroupMap);
-
-        TypedQuery<GroupMapEntry> districtsComputationGroupMapQuery = em.createNamedQuery( DBDistricts.districtsComputationGroupMapQuery, GroupMapEntry.class);
-        groupMapEntries = districtsComputationGroupMapQuery.setParameter(1, dbDistricts).setParameter(2, dbGroups).getResultList();
-        Map<DBGroup, DBGroupInfo> computationGroupMap = new HashMap<DBGroup, DBGroupInfo>();
-        for( GroupMapEntry entry: groupMapEntries) {
-        	computationGroupMap.put(entry.key, entry.value);
-        }
-        dbDistricts.setComputationGroupMap(computationGroupMap);
-*/        
-	}
 
 	public Assembly buildAssemblyFromGroups(List<DBGroup> dbGroups, String state, String session) throws OpenStatsException {
-/*		
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<DBAssembly> criteria = cb.createQuery(DBAssembly.class);
-        Root<DBAssembly> root = criteria.from(DBAssembly.class);
-        root.fetch("districts");
-        criteria.select(root).where(
-        		cb.equal(root.get("state"), state), 
-        		cb.equal(root.get("session"), session) 
-        	).distinct(true);
-        DBAssembly dbAssembly = em.createQuery(criteria).getSingleResult();
-*/
-        System.out.println("root");
-
-		TypedQuery<DBAssembly> qAssembly = em.createQuery(
-			"select a from DBAssembly a"
-			+ " join fetch a.groupInfoMap agim"
-			+ " join fetch a.groupResultsMap agrm"
-			+ " join fetch a.districts d"
-			+ " where a.state = ?1 and a.session = ?2 and key(agim) in (?3) and key(agrm) in (?4)", DBAssembly.class );
-		DBAssembly dbAssembly = qAssembly
+		
+		DBAssembly dbAssembly = em.createNamedQuery(DBAssembly.getAssemblyGroup, DBAssembly.class)
 				.setParameter(1, state)
 				.setParameter(2, session)
 				.setParameter(3, dbGroups)
 				.setParameter(4, dbGroups)
 				.getSingleResult();
 //        
-//        loadAssemblyGroups(dbAssembly, dbGroups);    
+		dbAssembly.setDistricts( 
+				em.createNamedQuery(DBDistricts.districtListQuery, DBDistricts.class )
+				.setParameter(1, dbAssembly.getDistricts())
+				.setParameter(2, dbGroups)
+				.setParameter(3, dbGroups)
+				.getSingleResult()
+			);        
 //
-        System.out.println("d2istricts groups");
-//        
-//        loadDistrictsGroupMaps(dbAssembly.getDistricts(), dbGroups);
-		TypedQuery<DBDistricts> qDistricts = em.createQuery("select d from DBDistricts d join fetch d.districtList dList join fetch d.groupInfoMap dgim join fetch dList.groupResultsMap dListgrm where d = ?1 and key(dgim) in (?2) and key(dListgrm) in (?3)", DBDistricts.class );
-		dbAssembly.setDistricts( qDistricts.setParameter(1, dbAssembly.getDistricts()).setParameter(2, dbGroups).setParameter(3, dbGroups).getSingleResult() );
-        
-//
-
-//        System.out.println("start districtList");
-//        List<DBDistrict> districtList = em.createNamedQuery(DBDistricts.districtListQuery, DBDistrict.class).setParameter(1, dbAssembly.getDistricts()).setParameter(2, dbGroups).setParameter(3, dbGroups).getResultList();
-//    	dbAssembly.getDistricts().setDistrictList(districtList);
-    	System.out.println("end districtList");
-
-
 		Assembly assembly = new Assembly(dbAssembly);
 
-		System.out.println("begin copy");
 		for ( DBGroup dbGroup: dbGroups ) {
 			assembly.copyGroup(dbGroup, dbAssembly);
 		}
-		System.out.println("end copy");
 
 		return assembly;
 	}
