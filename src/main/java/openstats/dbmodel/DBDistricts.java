@@ -10,12 +10,16 @@ import openstats.model.District.CHAMBER;
 
 @SuppressWarnings("serial")
 @NamedQueries({ 
-	@NamedQuery(name = DBDistricts.districtListQuery, query = "select d from DBDistricts d join fetch d.districtList dList join fetch d.groupInfoMap dgim join fetch dList.groupResultsMap dListgrm where d = ?1 and key(dgim) in (?2) and key(dListgrm) in (?3)" )
+	@NamedQuery(name = DBDistricts.districtsGroupMapQuery, query = "select d from DBDistricts d join fetch d.groupInfoMap dgim where d = ?1 and key(dgim) in (?2)" ), 
+	@NamedQuery(name = DBDistricts.districtsListQuery, query = "select d from DBDistricts d join fetch d.districtList where d = ?1" ), 
+	@NamedQuery(name = DBDistricts.districtsResultsQuery, query = "select d from DBDistricts d join fetch d.districtList dList join fetch dList.groupResultsMap dListgrm where d = ?1 and key(dListgrm) in (?2)" )
 })
 @Entity
 public class DBDistricts implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
-	public static final String districtListQuery = "DBDistricts.districtListQuery";
+	public static final String districtsGroupMapQuery = "DBDistricts.districstGroupMapQuery";
+	public static final String districtsListQuery = "DBDistricts.districtsListQuery";
+	public static final String districtsResultsQuery = "DBDistricts.districtsResultsQuery";
 /*	
 	@NamedQueries({ 
 		@NamedQuery(name = DBDistricts.districtsGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.GroupMap m where d = ?1 and key(m) in( ?2 )"),  

@@ -7,10 +7,13 @@ import javax.persistence.*;
 
 import openstats.model.*;
 import openstats.model.District.CHAMBER;
-
+@NamedQueries({ 
+	@NamedQuery(name = DBDistrict.districtResultsQuery, query = "select d from DBDistrict d join fetch d.groupResultsMap dListgrm where d = ?1 and key(dListgrm) in (?2)" )
+})
 @SuppressWarnings("serial")
 @Entity public class DBDistrict implements Comparable<DBDistrict>, Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
+	public static final String districtResultsQuery = "DBDistrict.districtResultsQuery";
 	
 	@Column(length=3)
 	private String district;
@@ -20,7 +23,7 @@ import openstats.model.District.CHAMBER;
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<DBLegislator> legislators = new ArrayList<DBLegislator>();
 	
-	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
+	@OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
 	@JoinTable(name="DBDistrict_groupResultsMap",
 	    joinColumns=@JoinColumn(name="DBDistrict"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))

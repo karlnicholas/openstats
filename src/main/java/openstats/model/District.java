@@ -34,6 +34,9 @@ public class District {
 		this.description = district.getDescription();
 		this.results = new ArrayList<Result>(district.getResults());
 	}
+	public void addResults(List<Result> results) {
+		this.results.addAll(results);
+	}
 	public void copyGroup(DBGroup dbGroup, DBDistrict dbDistrict) {
 		for ( Result Result: dbDistrict.getGroupResultsMap().get(dbGroup).getResults()) {
 			results.add(Result);
@@ -60,8 +63,8 @@ public class District {
 	public List<Result> getResults() {
 		return results;
 	}
-	public void setResults(List<Result> Results) {
-		this.results = Results;
+	public void setResults(List<Result> results) {
+		this.results = results;
 	}
 
 }

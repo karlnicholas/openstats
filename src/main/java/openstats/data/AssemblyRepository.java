@@ -14,12 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
-import openstats.dbmodel.DBAssembly;
-import openstats.dbmodel.DBAssemblyHandler;
-import openstats.dbmodel.DBDistricts;
-import openstats.dbmodel.DBGroup;
-import openstats.dbmodel.DBGroupHandler;
-import openstats.dbmodel.OpenStatsException;
+import openstats.dbmodel.*;
 import openstats.model.Assembly;
 
 @ApplicationScoped
@@ -144,13 +139,24 @@ public class AssemblyRepository {
 				.getSingleResult();
 //        
 		dbAssembly.setDistricts( 
-				em.createNamedQuery(DBDistricts.districtListQuery, DBDistricts.class )
+				em.createNamedQuery(DBDistricts.districtsGroupMapQuery, DBDistricts.class )
 				.setParameter(1, dbAssembly.getDistricts())
 				.setParameter(2, dbGroups)
-				.setParameter(3, dbGroups)
 				.getSingleResult()
-			);        
-//
+			);
+		dbAssembly.getDistricts().setDistrictList( 
+				em.createNamedQuery(DBDistricts.districtsListQuery, DBDistricts.class )
+				.setParameter(1, dbAssembly.getDistricts())
+				.getSingleResult().getDistrictList()
+			);
+		TypedQuery<DBDistrict> districtResultsQuery = em.createNamedQuery(DBDistrict.districtResultsQuery, DBDistrict.class )
+				.setParameter(2, dbGroups);
+
+		for ( DBDistrict dbDistrict: dbAssembly.getDistricts().getDistrictList() ) {
+			DBDistrict results = districtResultsQuery.setParameter(1, dbDistrict).getSingleResult();
+			dbDistrict.setGroupResultsMap(results.getGroupResultsMap());
+		}
+
 		Assembly assembly = new Assembly(dbAssembly);
 
 		for ( DBGroup dbGroup: dbGroups ) {

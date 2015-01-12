@@ -46,6 +46,14 @@ public class Assembly implements Comparable<Assembly> {
 		results = new ArrayList<Result>();
 	}
 
+	public void addInfoItems(List<InfoItem> infoItems) {
+		this.infoItems.addAll(infoItems);
+	}
+
+	public void addResults(List<Result> results) {
+		this.results.addAll(results);
+	}
+
 	public void copyGroup(DBGroup dbGroup, DBAssembly dbAssembly) {
 
 		group = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());
@@ -93,8 +101,8 @@ public class Assembly implements Comparable<Assembly> {
 	public List<Result> getResults() {
 		return results;
 	}
-	public void setResults(List<Result> Results) {
-		this.results = Results;
+	public void setResults(List<Result> results) {
+		this.results = results;
 	}
 	@Override
 	public int compareTo(Assembly assembly) {

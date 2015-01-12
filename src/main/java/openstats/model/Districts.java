@@ -33,6 +33,9 @@ public class Districts {
 			districtList.add(new District(district));
 		}
 	}
+	public void addInfoItems(List<InfoItem> infoItems) {
+		this.infoItems.addAll(infoItems);
+	}
 	public void copyGroup(DBGroup dbGroup, DBDistricts dbDistricts) {
 		for( DBInfoItem dbInfoItem: dbDistricts.getGroupInfoMap().get(dbGroup).getGroupItems() ) {
 			infoItems.add(new InfoItem(dbInfoItem));
@@ -46,8 +49,8 @@ public class Districts {
 	public List<InfoItem> getInfoItems() {
 		return infoItems;
 	}
-	public void setInfoItems(List<InfoItem> InfoItems) {
-		this.infoItems = InfoItems;
+	public void setInfoItems(List<InfoItem> infoItems) {
+		this.infoItems = infoItems;
 	}
 	public List<District> getDistrictList() {
 		return districtList;
