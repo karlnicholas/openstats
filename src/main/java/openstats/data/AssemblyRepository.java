@@ -24,7 +24,6 @@ public class AssemblyRepository {
 	
 //	private TypedQuery<AggregateMapEntry> districtAggregateMapQuery;
 //	private TypedQuery<ComputationMapEntry> districtComputationMapQuery;
-
 	
 	public AssemblyRepository() {}
     // for testing
