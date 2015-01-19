@@ -20,17 +20,7 @@ public class DBDistricts implements Serializable {
 	public static final String districtsGroupMapQuery = "DBDistricts.districstGroupMapQuery";
 	public static final String districtsListQuery = "DBDistricts.districtsListQuery";
 	public static final String districtsResultsQuery = "DBDistricts.districtsResultsQuery";
-/*	
-	@NamedQueries({ 
-		@NamedQuery(name = DBDistricts.districtsGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.GroupMap m where d = ?1 and key(m) in( ?2 )"),  
-		@NamedQuery(name = DBDistricts.districtsComputationGroupMapQuery, query = "select new openstats.data.AssemblyRepository$GroupMapEntry(key(m), value(m)) from DBDistricts d join d.computationGroupMap m where d = ?1 and key(m) in( ?2 )"),
-		@NamedQuery(name = DBDistricts.districtListQuery, query = "select d from DBDistricts s join s.districtList d join fetch d.Map m join fetch d.computationMap c where s = ?1 and key(m) in( ?2 ) and key(c) in( ?3 )" )
-				"select d from DBDistricts d join fetch d.districtList dList join fetch d.groupInfoMap dgim join fetch dList.groupResultsMap dListgrm where d = ?1 and key(dgim) in (?2) and key(dListgrm) in (?3)", DBDistricts.class
-	})
-	public static final String districtsGroupMapQuery = "DBDistricts.districtsGroupMapQuery";  
-	public static final String districtsComputationGroupMapQuery = "DBDistricts.districtsComputationGroupMapQuery";  
-	public static final String districtListQuery = "DBDistricts.districtListQuery";
-*/
+
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<DBDistrict> districtList = new ArrayList<DBDistrict>();
 	

@@ -11,6 +11,7 @@ public class District {
 	private CHAMBER chamber;
 	private String description;
 	private List<Result> results;
+	private List<Legislator> legislators;
 
 	public District() {}
 	
@@ -19,6 +20,7 @@ public class District {
 		this.chamber = chamber;
 		description = null;
 		results = new ArrayList<Result>();
+		legislators = new ArrayList<Legislator>();
 	}
 	// empty, for templates
 	public District(DBDistrict dbDistrict) {
@@ -26,6 +28,7 @@ public class District {
 		chamber = dbDistrict.getChamber();
 		description = dbDistrict.getDescription();
 		results = new ArrayList<Result>();
+		legislators = new ArrayList<Legislator>();
 	}
 	// deep copy constructor
 	public District(District district) {
@@ -33,6 +36,7 @@ public class District {
 		this.chamber = district.getChamber();
 		this.description = district.getDescription();
 		this.results = new ArrayList<Result>(district.getResults());
+		legislators = new ArrayList<Legislator>(district.getLegislators());
 	}
 	public void addResults(List<Result> results) {
 		this.results.addAll(results);
@@ -41,6 +45,9 @@ public class District {
 		for ( Result Result: dbDistrict.getGroupResultsMap().get(dbGroup).getResults()) {
 			results.add(Result);
 		}
+//		for(Legislator legislator: legislators) {
+//			legislator.copyGroup(dbGroup, dbLegislator);
+//		}
 	}
 	public String getDistrict() {
 		return district;
@@ -66,5 +73,10 @@ public class District {
 	public void setResults(List<Result> results) {
 		this.results = results;
 	}
-
+	public List<Legislator> getLegislators() {
+		return legislators;
+	}
+	public void setLegislators(List<Legislator> legislators) {
+		this.legislators = legislators;
+	}
 }
