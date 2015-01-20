@@ -7,7 +7,6 @@
 	<persistence-unit name="openstats">
 		<jta-data-source>java:jboss/datasources/OpenStatsDS</jta-data-source>
 		<class>openstats.dbmodel.DBAssembly</class>
-		<class>openstats.dbmodel.DBDistricts</class>
 		<class>openstats.dbmodel.DBDistrict</class>
 		<class>openstats.dbmodel.DBLegislator</class>
 		<class>openstats.dbmodel.DBGroup</class>

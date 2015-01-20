@@ -86,7 +86,6 @@ public class AssemblyRepository {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<DBAssembly> criteria = cb.createQuery(DBAssembly.class);
         Root<DBAssembly> assembly = criteria.from(DBAssembly.class);
-        assembly.fetch("districts");
         assembly.fetch("groupInfoMap", JoinType.LEFT);
         
 //        assembly.fetch(1);
@@ -102,21 +101,6 @@ public class AssemblyRepository {
 			groups.add( key );
 		}
 		
-		DBDistricts self = dbAssembly.getDistricts();
-        CriteriaQuery<DBDistricts> dCriteria = cb.createQuery(DBDistricts.class);
-        Root<DBDistricts> districts = dCriteria.from(DBDistricts.class);
-        districts.fetch("groupInfoMap", JoinType.LEFT);
-        
-//        assembly.fetch(1);
-        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
-        // feature in JPA 2.0
-        // criteria.select(member).where(cb.equal(member.get(Member_.email), email));
-        dCriteria.select(districts).where(cb.equal(districts, self)).distinct(true);
-        DBDistricts dbDistricts = em.createQuery(dCriteria).getSingleResult();
-
-        for ( DBGroup key: dbDistricts.getGroupInfoMap().keySet() ) {
-			groups.add(key);
-		}
 		return groups;
 	}
 
@@ -130,30 +114,28 @@ public class AssemblyRepository {
 
 	public Assembly buildAssemblyFromGroups(List<DBGroup> dbGroups, String state, String session) throws OpenStatsException {
 		
-		DBAssembly dbAssembly = em.createNamedQuery(DBAssembly.getAssemblyGroup, DBAssembly.class)
+		DBAssembly dbAssembly = em.createNamedQuery(DBAssembly.assemblyResults, DBAssembly.class)
 				.setParameter(1, state)
 				.setParameter(2, session)
 				.setParameter(3, dbGroups)
 				.setParameter(4, dbGroups)
 				.getSingleResult();
+		
 //        
-		dbAssembly.setDistricts( 
-				em.createNamedQuery(DBDistricts.districtsGroupMapQuery, DBDistricts.class )
-				.setParameter(1, dbAssembly.getDistricts())
-				.setParameter(2, dbGroups)
-				.getSingleResult()
-			);
-		dbAssembly.getDistricts().setDistrictList( 
-				em.createNamedQuery(DBDistricts.districtsListQuery, DBDistricts.class )
-				.setParameter(1, dbAssembly.getDistricts())
-				.getSingleResult().getDistrictList()
-			);
 		TypedQuery<DBDistrict> districtResultsQuery = em.createNamedQuery(DBDistrict.districtResultsQuery, DBDistrict.class )
 				.setParameter(2, dbGroups);
 
-		for ( DBDistrict dbDistrict: dbAssembly.getDistricts().getDistrictList() ) {
-			DBDistrict results = districtResultsQuery.setParameter(1, dbDistrict).getSingleResult();
-			dbDistrict.setGroupResultsMap(results.getGroupResultsMap());
+		TypedQuery<DBLegislator> legislatorResultsQuery = em.createNamedQuery(DBLegislator.legislatorResultsQuery, DBLegislator.class )
+				.setParameter(2, dbGroups);
+
+		for ( DBDistrict dbDistrict: dbAssembly.getDistrictList() ) {
+			DBDistrict rDistrict = districtResultsQuery.setParameter(1, dbDistrict).getSingleResult();
+			dbDistrict.setGroupResultsMap(rDistrict.getGroupResultsMap());
+			dbDistrict.setLegislators(rDistrict.getLegislators());
+			for ( DBLegislator dbLegislator: dbDistrict.getLegislators()) {
+				DBLegislator lResults = legislatorResultsQuery.setParameter(1, dbLegislator).getSingleResult();
+				dbLegislator.setGroupResultsMap(lResults.getGroupResultsMap());
+			}	
 		}
 
 		Assembly assembly = new Assembly(dbAssembly);

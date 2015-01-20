@@ -5,6 +5,7 @@ import java.util.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
 import openstats.dbmodel.*;
+import openstats.model.District.CHAMBER;
 
 @XmlRootElement
 public class Assembly implements Comparable<Assembly> {
@@ -12,18 +13,19 @@ public class Assembly implements Comparable<Assembly> {
 	private String state;
 	private String session;
 	private Group group;
-	private Districts districts;
+	private List<District> districtList;
 	private List<InfoItem> infoItems;
 	private List<Result> results;
 	
 	public Assembly() {
 		infoItems = new ArrayList<InfoItem>();
 		results = new ArrayList<Result>();
+		districtList = new ArrayList<District>();
 	}
 	public Assembly(String state, String session) {
 		this.state = state;
 		this.session = session;
-		this.districts = new Districts();
+		districtList = new ArrayList<District>();
 		infoItems = new ArrayList<InfoItem>();
 		results = new ArrayList<Result>();
 	}
@@ -32,7 +34,10 @@ public class Assembly implements Comparable<Assembly> {
 	public Assembly(Assembly assembly) {
 		state = assembly.getState();
 		session = assembly.getSession();
-		districts = new Districts(assembly.getDistricts());
+		districtList = new ArrayList<District>();
+		for ( District district: assembly.getDistrictList()) {
+			districtList.add(new District(district));
+		}
 		infoItems = new ArrayList<InfoItem>();
 		results = new ArrayList<Result>();
 	}
@@ -41,7 +46,10 @@ public class Assembly implements Comparable<Assembly> {
 	public Assembly(DBAssembly dbAssembly) {
 		state = dbAssembly.getState();
 		session = dbAssembly.getSession();
-		districts = new Districts(dbAssembly.getDistricts());
+		districtList = new ArrayList<District>();
+		for ( DBDistrict dbDistrict: dbAssembly.getDistrictList()) {
+			districtList.add(new District(dbDistrict));
+		}
 		infoItems = new ArrayList<InfoItem>();
 		results = new ArrayList<Result>();
 	}
@@ -57,7 +65,10 @@ public class Assembly implements Comparable<Assembly> {
 	public void copyGroup(DBGroup dbGroup, DBAssembly dbAssembly) {
 
 		group = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());
-		districts.copyGroup(dbGroup, dbAssembly.getDistricts());
+		for ( DBDistrict dbDistrict: dbAssembly.getDistrictList()) {
+			District district = findDistrict(dbDistrict.getChamber(), dbDistrict.getDistrict());
+			district.copyGroup(dbGroup, dbDistrict);
+		}
 
 		for( DBInfoItem dbInfoItem: dbAssembly.getGroupInfoMap().get(dbGroup).getGroupItems() ) {
 			infoItems.add(new InfoItem(dbInfoItem));
@@ -86,12 +97,19 @@ public class Assembly implements Comparable<Assembly> {
 	public void setGroup(Group group) {
 		this.group = group;
 	}
-	public Districts getDistricts() {
-		return districts;
+	public List<District> getDistrictList() {
+		return districtList;
 	}
-	public void setDistricts(Districts districts) {
-		this.districts = districts;
+	public void setDistrictList(List<District> districtList) {
+		this.districtList = districtList;
 	}
+	public District findDistrict(CHAMBER chamber, String district) {
+		for ( District d: districtList ) {
+			if ( d.getChamber()== chamber && d.getDistrict().equals(district)) return d; 
+		}
+		return null;
+	}
+	
 	public List<InfoItem> getInfoItems() {
 		return infoItems;
 	}

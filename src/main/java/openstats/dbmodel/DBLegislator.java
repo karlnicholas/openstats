@@ -5,10 +5,16 @@ import java.util.*;
 
 import javax.persistence.*;
 
+import openstats.model.*;
+
 @SuppressWarnings("serial")
+@NamedQueries({ 
+	@NamedQuery(name = DBLegislator.legislatorResultsQuery, query = "select l from DBLegislator l join fetch l.groupResultsMap lListgrm where l = ?1 and key(lListgrm) in (?2)" )
+})
 @Entity
 public class DBLegislator implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
+	public static final String legislatorResultsQuery = "DBLegislator.legislatorResultsQuery";
 	
 	private String name;
 	private String party;
@@ -17,21 +23,30 @@ public class DBLegislator implements Serializable {
 	private Date startDate;
 	@Temporal(value = TemporalType.DATE)
 	private Date endDate;
-
-	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
-	@JoinTable(name="DBAssembly_groupInfoMap",
-	    joinColumns=@JoinColumn(name="DBAssembly"),
-	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
-	@MapKeyJoinColumn(name="DBGroup")
-	private Map<DBGroup, DBGroupInfo> groupInfoMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
 	
 	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
-	@JoinTable(name="DBAssembly_groupResultsMap",
-	    joinColumns=@JoinColumn(name="DBAssembly"),
+	@JoinTable(name="DBLegislator_groupResultsMap",
+	    joinColumns=@JoinColumn(name="DBLegislator"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))
 	@MapKeyJoinColumn(name="DBGroup")
 	private Map<DBGroup, DBGroupResults> groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();
 		
+	public DBLegislator() {}
+	public DBLegislator(Legislator legislator) {
+		name = legislator.getName();
+		party = legislator.getParty();
+		term = legislator.getTerm();
+		startDate = legislator.getStartDate();
+		endDate = legislator.getEndDate();
+	}
+
+	public DBLegislator copyGroup(DBGroup dbGroup, Legislator legislator) {
+		// skip legislators for now
+		groupResultsMap.put(dbGroup, new DBGroupResults(legislator.getResults()) );
+		// useful for chaining
+		return this;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -49,12 +64,6 @@ public class DBLegislator implements Serializable {
 	}
 	public void setTerm(String term) {
 		this.term = term;
-	}
-	public Map<DBGroup, DBGroupInfo> getGroupInfoMap() {
-		return groupInfoMap;
-	}
-	public void setGroupInfoMap(Map<DBGroup, DBGroupInfo> groupInfoMap) {
-		this.groupInfoMap = groupInfoMap;
 	}
 	public Map<DBGroup, DBGroupResults> getGroupResultsMap() {
 		return groupResultsMap;

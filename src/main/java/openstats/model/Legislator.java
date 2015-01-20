@@ -14,18 +14,15 @@ public class Legislator implements Comparable<Legislator> {
 	private String term;
 	private Date startDate;
 	private Date endDate;
-	private List<InfoItem> infoItems;
 	private List<Result> results;
 	
 	public Legislator() {
-		infoItems = new ArrayList<InfoItem>();
 		results = new ArrayList<Result>();
 	}
 	public Legislator(String name, String party, String term) {
 		this.name = name;
 		this.party = party;
 		this.term = term;
-		infoItems = new ArrayList<InfoItem>();
 		results = new ArrayList<Result>();
 	}
 
@@ -34,7 +31,6 @@ public class Legislator implements Comparable<Legislator> {
 		name = legislator.getName();
 		party = legislator.getParty();
 		term = legislator.getTerm();
-		infoItems = new ArrayList<InfoItem>();
 		results = new ArrayList<Result>();
 	}
 
@@ -43,12 +39,7 @@ public class Legislator implements Comparable<Legislator> {
 		name = dbLegislator.getName();
 		party = dbLegislator.getParty();
 		term = dbLegislator.getTerm();
-		infoItems = new ArrayList<InfoItem>();
 		results = new ArrayList<Result>();
-	}
-
-	public void addInfoItems(List<InfoItem> infoItems) {
-		this.infoItems.addAll(infoItems);
 	}
 
 	public void addResults(List<Result> results) {
@@ -57,9 +48,6 @@ public class Legislator implements Comparable<Legislator> {
 
 	public void copyGroup(DBGroup dbGroup, DBLegislator dbLegislator) {
 
-		for( DBInfoItem dbInfoItem: dbLegislator.getGroupInfoMap().get(dbGroup).getGroupItems() ) {
-			infoItems.add(new InfoItem(dbInfoItem));
-		}
 		for ( Result Result: dbLegislator.getGroupResultsMap().get(dbGroup).getResults()) {
 			results.add(Result);
 		}
@@ -95,12 +83,6 @@ public class Legislator implements Comparable<Legislator> {
 	}
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
-	}
-	public List<InfoItem> getInfoItems() {
-		return infoItems;
-	}
-	public void setInfoItems(List<InfoItem> InfoItems) {
-		this.infoItems = InfoItems;
 	}
 	public List<Result> getResults() {
 		return results;

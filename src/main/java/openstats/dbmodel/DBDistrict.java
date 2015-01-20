@@ -1,14 +1,16 @@
 package openstats.dbmodel;
 
 import java.io.Serializable;
+
 import java.util.*;
 
 import javax.persistence.*;
 
 import openstats.model.*;
 import openstats.model.District.CHAMBER;
+
 @NamedQueries({ 
-	@NamedQuery(name = DBDistrict.districtResultsQuery, query = "select d from DBDistrict d join fetch d.groupResultsMap dListgrm where d = ?1 and key(dListgrm) in (?2)" )
+	@NamedQuery(name = DBDistrict.districtResultsQuery, query = "select d from DBDistrict d join fetch d.groupResultsMap dListgrm join fetch d.legislators where d = ?1 and key(dListgrm) in (?2)" )
 })
 @SuppressWarnings("serial")
 @Entity public class DBDistrict implements Comparable<DBDistrict>, Serializable {
@@ -40,8 +42,23 @@ import openstats.model.District.CHAMBER;
 		// skip legislators for now
 		// copy even if blank
 		groupResultsMap.put(dbGroup, new DBGroupResults(district.getResults()) );
+		for ( Legislator legislator: district.getLegislators() ) {
+			DBLegislator dbLegislator = findLegislator(legislator);
+			if ( dbLegislator == null ) {
+				dbLegislator = new DBLegislator(legislator);
+				legislators.add(dbLegislator);
+			}
+			dbLegislator.copyGroup(dbGroup, legislator);
+		}
 		// useful for chaining
 		return this;
+	}
+	
+	public DBLegislator findLegislator(Legislator legislator) {
+		for ( DBLegislator tLeg: legislators ) {
+			if ( tLeg.getName().equals( legislator.getName() ) ) return tLeg;
+		}
+		return null;
 	}
 
 	public void removeGroup(DBGroup dbGroup) {

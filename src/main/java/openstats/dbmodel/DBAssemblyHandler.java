@@ -19,17 +19,10 @@ public class DBAssemblyHandler {
 	        CriteriaBuilder cb = em.getCriteriaBuilder();
 	        CriteriaQuery<DBAssembly> assemblyCriteria = cb.createQuery(DBAssembly.class);
 	        Root<DBAssembly> assemblyRoot = assemblyCriteria.from(DBAssembly.class);
-	        assemblyRoot.fetch("districts");
-	        //
-	        CriteriaQuery<DBDistricts> districtsCriteria = cb.createQuery(DBDistricts.class);
-	        Root<DBDistricts> districtsRoot = districtsCriteria.from(DBDistricts.class);
-			districtsRoot.fetch("districtList");
-			ParameterExpression<DBDistricts> districtsParameter = cb.parameter(DBDistricts.class, "dbDistricts");
-			districtsCriteria.select(districtsRoot).where( cb.equal( districtsRoot, districtsParameter ));
+	        assemblyRoot.fetch("districtList");
 	        //
 	        for( DBAssembly dbAssembly: em.createQuery(assemblyCriteria.select(assemblyRoot)).getResultList() ) {
 				String key = dbAssembly.getState()+'-'+dbAssembly.getSession();
-				dbAssembly.setDistricts( em.createQuery(districtsCriteria).setParameter("dbDistricts", dbAssembly.getDistricts()).getSingleResult() );
 				Assembly assembly = new Assembly(dbAssembly);
 	        	handler.assemblyMap.put(key, assembly);
 	        }

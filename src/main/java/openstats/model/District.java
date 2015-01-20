@@ -45,9 +45,11 @@ public class District {
 		for ( Result Result: dbDistrict.getGroupResultsMap().get(dbGroup).getResults()) {
 			results.add(Result);
 		}
-//		for(Legislator legislator: legislators) {
-//			legislator.copyGroup(dbGroup, dbLegislator);
-//		}
+		for(DBLegislator dbLegislator: dbDistrict.getLegislators()) {
+			Legislator legislator = new Legislator(dbLegislator);
+			legislator.copyGroup(dbGroup, dbLegislator);
+			legislators.add(legislator);
+		}
 	}
 	public String getDistrict() {
 		return district;

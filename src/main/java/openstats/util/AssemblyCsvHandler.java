@@ -13,15 +13,10 @@ public class AssemblyCsvHandler {
 	public List<String> createHeader(Assembly assembly) throws Exception {
 		List<String> csvHeader = new ArrayList<String>();
 
-        Districts districts = assembly.getDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         csvHeader.add("District");
         csvHeader.add("Chamber");
 //			  = districts.get(GROUPLABEL);
-
-        for ( InfoItem infoItem: districts.getInfoItems()  ) {
-        	csvHeader.add(infoItem.getLabel());
-        }
 
         for ( InfoItem infoItem: assembly.getInfoItems()  ) {
         	csvHeader.add(infoItem.getLabel());
@@ -35,13 +30,12 @@ public class AssemblyCsvHandler {
 		List<List<String>> csvResult = new ArrayList<List<String>>();
 		int rowOffset = 0;
 
-        Districts districts = assembly.getDistricts();
         // the header elements are used to map the bean valueList to each column (names must match)
         List<String> row = new ArrayList<String>();
 
 
         // write data for districts 
-        for ( final District dist: districts.getDistrictList()) {
+        for ( final District dist: assembly.getDistrictList()) {
         	row = new ArrayList<String>();
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber().toString());

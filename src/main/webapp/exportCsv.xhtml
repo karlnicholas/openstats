@@ -26,22 +26,6 @@
         </h:column>
       </h:dataTable>
       </p>
-      <p>
-      <h:dataTable value="#{exportCsv.assembly.districts.infoItems}" var="infoItem"
-        rendered="#{!empty exportCsv.assembly.districts.infoItems}" >
-        <f:facet name="header">
-          <h:outputText value="District Aggregates"/>
-        </f:facet>
-        <h:column>
-          <f:facet name="header">Label</f:facet>
-          <h:outputText value="#{infoItem.label}" />
-        </h:column>
-        <h:column>
-          <f:facet name="header">Description</f:facet>
-          <h:outputText value="#{infoItem.description}" />
-        </h:column>
-      </h:dataTable>
-      </p>
     </h:panelGroup>
     <h:form rendered="#{empty exportCsv.currentAssembly and !exportCsv.groupsSelected}">
       <h:selectOneMenu value="#{exportCsv.currentAssembly}">
