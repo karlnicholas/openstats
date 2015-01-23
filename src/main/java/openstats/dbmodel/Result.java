@@ -2,20 +2,39 @@ package openstats.dbmodel;
 
 import java.math.BigDecimal;
 
-import javax.persistence.Embeddable;
+import javax.persistence.*;
 
 @Embeddable
 public class Result {
-	public BigDecimal value;
-	public BigDecimal error;
+	
+	private String value;
+	private String error;
 	public Result() {}
 	public Result(BigDecimal value, BigDecimal error) {
-		this.value = value;
-		this.error = error;
+		this.value = value.toString();
+		this.error = error.toString();
 	}
 	public Result add(Result result) {
-		value.add(result.value);
-		error.add(result.error);	// not the right way to do this.
+		BigDecimal tVal = new BigDecimal(value);
+		tVal.add(result.getValue());
+		value = tVal.toString();
+
+		BigDecimal tErr = new BigDecimal(error);
+		tErr.add(result.getValue());
+		error = tErr.toString();
+
 		return this;
+	}
+	public BigDecimal getValue() {
+		return new BigDecimal(value);
+	}
+	public void setValue(BigDecimal value) {
+		this.value = value.toString(); 
+	}
+	public BigDecimal getError() {
+		return new BigDecimal(error);
+	}
+	public void setError(BigDecimal error) {
+		this.error = error.toString(); 
 	}
 }

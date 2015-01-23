@@ -66,7 +66,7 @@ public class Assembly implements Comparable<Assembly> {
 
 		group = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());
 		for ( DBDistrict dbDistrict: dbAssembly.getDistrictList()) {
-			District district = findDistrict(dbDistrict.getChamber(), dbDistrict.getDistrict());
+			District district = findDistrict(dbDistrict);
 			district.copyGroup(dbGroup, dbDistrict);
 		}
 
@@ -78,7 +78,17 @@ public class Assembly implements Comparable<Assembly> {
 		}
 
 	}
-	
+	public District findDistrict(DBDistrict dbDistrict) {
+		CHAMBER chamber = dbDistrict.getChamber();
+		String district = dbDistrict.getDistrict();
+		return findDistrict(chamber, district);
+	}
+	public District findDistrict(CHAMBER chamber, String district) {
+		for ( District d: districtList ) {
+			if ( d.getChamber() == chamber && d.getDistrict().equals(district)) return d; 
+		}
+		return null;
+	}
 	public String getState() {
 		return state;
 	}
@@ -102,19 +112,12 @@ public class Assembly implements Comparable<Assembly> {
 	}
 	public void setDistrictList(List<District> districtList) {
 		this.districtList = districtList;
-	}
-	public District findDistrict(CHAMBER chamber, String district) {
-		for ( District d: districtList ) {
-			if ( d.getChamber()== chamber && d.getDistrict().equals(district)) return d; 
-		}
-		return null;
-	}
-	
+	}	
 	public List<InfoItem> getInfoItems() {
 		return infoItems;
 	}
-	public void setInfoItems(List<InfoItem> InfoItems) {
-		this.infoItems = InfoItems;
+	public void setInfoItems(List<InfoItem> infoItems) {
+		this.infoItems = infoItems;
 	}
 	public List<Result> getResults() {
 		return results;

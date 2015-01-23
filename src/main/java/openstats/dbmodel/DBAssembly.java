@@ -12,13 +12,19 @@ import openstats.model.District.CHAMBER;
 @SuppressWarnings("serial")
 @XmlRootElement
 @NamedQueries({
+	@NamedQuery(name = DBAssembly.assemblyTemplate, query = "select a from DBAssembly a join fetch a.districtList where a.state = ?1 and a.session = ?2" ), 
 	@NamedQuery(name = DBAssembly.assemblyGroup, query = "select a from DBAssembly a join fetch a.groupInfoMap agim where a.state = ?1 and a.session = ?2 and key(agim) in (?3)" ), 
-	@NamedQuery(name = DBAssembly.assemblyResults, query = "select a from DBAssembly a join fetch a.groupInfoMap agim join fetch a.groupResultsMap agrm join fetch a.districtList d where a.state = ?1 and a.session = ?2 and key(agim) in (?3) and key(agrm) in (?4) " )
+	@NamedQuery(name = DBAssembly.assemblyBase, query = "select a from DBAssembly a join fetch a.groupInfoMap agim where a.state = ?1 and a.session = ?2 and key(agim) in (?3)" ), 
+	@NamedQuery(name = DBAssembly.assemblyDistrictList, query = "select a from DBAssembly a join fetch a.districtList where a = ?1 " ), 
+	@NamedQuery(name = DBAssembly.assemblyResults, query = "select a from DBAssembly a join fetch a.groupResultsMap agrm where a = ?1 and key(agrm) in (?2)" )
 })
 @Entity public class DBAssembly implements Comparable<DBAssembly>, Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
-	public static final String assemblyGroup = "DBAssembly.getAssemblyGroup";
+	public static final String assemblyTemplate = "DBAssembly.assemblyTemplate";
+	public static final String assemblyGroup = "DBAssembly.assemblyGroup";
+	public static final String assemblyBase = "DBAssembly.getAssemblyBase";
+	public static final String assemblyDistrictList = "DBAssembly.assemblyDistrictList";
 	public static final String assemblyResults = "DBAssembly.assemblyResults";
 	private String state;
 	private String session;
@@ -26,19 +32,19 @@ import openstats.model.District.CHAMBER;
 	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	private List<DBDistrict> districtList;
 		
-	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY )
 	@JoinTable(name="DBAssembly_groupInfoMap",
 	    joinColumns=@JoinColumn(name="DBAssembly"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
 	@MapKeyJoinColumn(name="DBGroup")
-	private Map<DBGroup, DBGroupInfo> groupInfoMap = new LinkedHashMap<DBGroup, DBGroupInfo>();
+	private Map<DBGroup, DBGroupInfo> groupInfoMap;
 	
-	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY )
 	@JoinTable(name="DBAssembly_groupResultsMap",
 	    joinColumns=@JoinColumn(name="DBAssembly"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))
 	@MapKeyJoinColumn(name="DBGroup")
-	private Map<DBGroup, DBGroupResults> groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();
+	private Map<DBGroup, DBGroupResults> groupResultsMap;
 		
 	public DBAssembly() {
 		districtList = new ArrayList<DBDistrict>();
@@ -97,6 +103,9 @@ import openstats.model.District.CHAMBER;
 	}
 	public void setGroupResultsMap(Map<DBGroup, DBGroupResults> groupResultsMap) {
 		this.groupResultsMap = groupResultsMap;
+	}
+	public void clearGroupResultsMap() {
+		groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();
 	}
 	public DBDistrict findDistrict(CHAMBER chamber, String district) {
 		for ( DBDistrict d: districtList ) {

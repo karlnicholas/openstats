@@ -29,15 +29,18 @@ public class DBLegislator implements Serializable {
 	    joinColumns=@JoinColumn(name="DBLegislator"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))
 	@MapKeyJoinColumn(name="DBGroup")
-	private Map<DBGroup, DBGroupResults> groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();
+	private Map<DBGroup, DBGroupResults> groupResultsMap;
 		
-	public DBLegislator() {}
+	public DBLegislator() {
+		groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();		
+	}
 	public DBLegislator(Legislator legislator) {
 		name = legislator.getName();
 		party = legislator.getParty();
 		term = legislator.getTerm();
 		startDate = legislator.getStartDate();
 		endDate = legislator.getEndDate();
+		groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();		
 	}
 
 	public DBLegislator copyGroup(DBGroup dbGroup, Legislator legislator) {
@@ -70,6 +73,9 @@ public class DBLegislator implements Serializable {
 	}
 	public void setGroupResultsMap(Map<DBGroup, DBGroupResults> groupResultsMap) {
 		this.groupResultsMap = groupResultsMap;
+	}
+	public void clearGroupResultsMap() {
+		groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();		
 	}
 	public Date getStartDate() {
 		return startDate;

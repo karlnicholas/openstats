@@ -47,11 +47,9 @@ public class Legislator implements Comparable<Legislator> {
 	}
 
 	public void copyGroup(DBGroup dbGroup, DBLegislator dbLegislator) {
-
 		for ( Result Result: dbLegislator.getGroupResultsMap().get(dbGroup).getResults()) {
 			results.add(Result);
 		}
-
 	}
 	
 	public String getName() {

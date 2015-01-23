@@ -2,35 +2,23 @@ package openstats.dbmodel;
 
 import java.util.*;
 
-import javax.persistence.EntityManager;
-import javax.persistence.criteria.*;
+import javax.persistence.*;
 
 import openstats.model.Assembly;
 
 public class DBAssemblyHandler {
-
+	private TreeMap<String, DBAssembly> assemblyMap = null;
+	
 	private DBAssemblyHandler() {}
 	private static class SingletonHelper {
 		private static final DBAssemblyHandler INSTANCE = new DBAssemblyHandler();
 	}
 	private static void checkInit(DBAssemblyHandler handler, EntityManager em) {
 		if ( handler.assemblyMap == null ) {
-			handler.assemblyMap = new TreeMap<String, Assembly>();
-	        CriteriaBuilder cb = em.getCriteriaBuilder();
-	        CriteriaQuery<DBAssembly> assemblyCriteria = cb.createQuery(DBAssembly.class);
-	        Root<DBAssembly> assemblyRoot = assemblyCriteria.from(DBAssembly.class);
-	        assemblyRoot.fetch("districtList");
-	        //
-	        for( DBAssembly dbAssembly: em.createQuery(assemblyCriteria.select(assemblyRoot)).getResultList() ) {
-				String key = dbAssembly.getState()+'-'+dbAssembly.getSession();
-				Assembly assembly = new Assembly(dbAssembly);
-	        	handler.assemblyMap.put(key, assembly);
-	        }
+			handler.assemblyMap = new TreeMap<String, DBAssembly>();
 		}
 	}
 
-	private TreeMap<String, Assembly> assemblyMap = null;
-	
 	public static void createAssembly(Assembly assembly, EntityManager em) throws OpenStatsException {
 		DBAssemblyHandler handler = SingletonHelper.INSTANCE;
 		synchronized(handler) {
@@ -39,7 +27,7 @@ public class DBAssemblyHandler {
 			if ( handler.assemblyMap.containsKey(key) ) throw new OpenStatsException("Assembly already created: " + key);
 			DBAssembly dbAssembly = new DBAssembly(assembly);
 			em.persist(dbAssembly);
-			handler.assemblyMap.put(key, assembly);
+			handler.assemblyMap.put(key, dbAssembly);
 		}
 	}
 
@@ -47,8 +35,42 @@ public class DBAssemblyHandler {
 		DBAssemblyHandler handler = SingletonHelper.INSTANCE;
 		synchronized(handler) {
 			checkInit(handler, em);
-			String key = state+'-'+session;
-			return handler.assemblyMap.get(key);
+			return loadAssembly(state, session, em);
 		}
+	}
+
+	public static DBAssembly getDBAssembly(String state, String session, EntityManager em) {
+		DBAssemblyHandler handler = SingletonHelper.INSTANCE;
+		synchronized(handler) {
+			checkInit(handler, em);
+			return loadDBAssembly(state, session, em);
+		}
+	}
+
+	private static DBAssembly loadDBAssembly(String state, String session, EntityManager em) {
+		DBAssemblyHandler handler = SingletonHelper.INSTANCE;
+		DBAssembly dbAssembly;
+		String key = state+'-'+session;
+		if ( !handler.assemblyMap.containsKey(key) ) {
+			dbAssembly = em.createNamedQuery(DBAssembly.assemblyTemplate, DBAssembly.class)
+					.setParameter(1, state)
+					.setParameter(2, session)
+					.getSingleResult();
+		    //
+			TypedQuery<DBDistrict> districtLegislatorsQuery = em.createNamedQuery(DBDistrict.districtLegislatorsQuery, DBDistrict.class );
+			//
+			for ( DBDistrict dbDistrict: dbAssembly.getDistrictList()) {
+				DBDistrict rDistrict = districtLegislatorsQuery.setParameter(1, dbDistrict).getSingleResult();
+				dbDistrict.setLegislators(rDistrict.getLegislators());
+			}
+			handler.assemblyMap.put(key, dbAssembly);
+		} else {
+			dbAssembly = handler.assemblyMap.get(key);
+		}
+		return dbAssembly;
+	}
+
+	private static Assembly loadAssembly(String state, String session, EntityManager em) {
+		return new Assembly(loadDBAssembly(state, session, em));
 	}
 }

@@ -40,7 +40,7 @@ public class AssemblyCsvHandler {
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber().toString());
 	        for ( Result result: dist.getResults() ) {
-	        	row.add(result.value.toString());
+	        	row.add(result.getValue().toString());
 	        }
 	        csvResult.add(row);
         }
@@ -51,7 +51,7 @@ public class AssemblyCsvHandler {
     		row.add("");
     	}
         for ( Result result: assembly.getResults() ) {
-        	row.add(result.value.toString());
+        	row.add(result.getValue().toString());
         }
 	    csvResult.add(row);
         return csvResult;

@@ -29,6 +29,9 @@ public class District {
 		description = dbDistrict.getDescription();
 		results = new ArrayList<Result>();
 		legislators = new ArrayList<Legislator>();
+		for ( DBLegislator dbLegislator: dbDistrict.getLegislators() ) {
+			legislators.add( new Legislator(dbLegislator));
+		}
 	}
 	// deep copy constructor
 	public District(District district) {
@@ -46,11 +49,18 @@ public class District {
 			results.add(Result);
 		}
 		for(DBLegislator dbLegislator: dbDistrict.getLegislators()) {
-			Legislator legislator = new Legislator(dbLegislator);
+			Legislator legislator = findLegislator(dbLegislator);
 			legislator.copyGroup(dbGroup, dbLegislator);
-			legislators.add(legislator);
 		}
 	}
+	public Legislator findLegislator(DBLegislator dbLegislator) {
+		String name = dbLegislator.getName();
+		for ( Legislator l: legislators ) {
+			if ( l.getName().equals(name) ) return l; 
+		}
+		return null;
+	}
+	
 	public String getDistrict() {
 		return district;
 	}

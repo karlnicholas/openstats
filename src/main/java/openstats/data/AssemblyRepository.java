@@ -45,21 +45,6 @@ public class AssemblyRepository {
 		return DBAssemblyHandler.getAssembly( state, session, em );
     }
     
-    public DBAssembly findByStateSession(String state, String session) {
-        CriteriaBuilder cb = em.getCriteriaBuilder();
-        CriteriaQuery<DBAssembly> criteria = cb.createQuery(DBAssembly.class);
-        Root<DBAssembly> assembly = criteria.from(DBAssembly.class);
-        // Swap criteria statements if you would like to try out type-safe criteria queries, a new
-        // feature in JPA 2.0
-        // criteria.select(member).where(cb.equal(member.get(Member_.email), email));
-        criteria.select(assembly).where(
-        		cb.equal(assembly.get("state"), state), 
-        		cb.equal(assembly.get("session"), session)
-        	);
-        return em.createQuery(criteria).getSingleResult();
-        
-    }
-
     public Long checkByStateSession(String state, String session) {
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<Long> criteria = cb.createQuery(Long.class);
@@ -114,27 +99,51 @@ public class AssemblyRepository {
 
 	public Assembly buildAssemblyFromGroups(List<DBGroup> dbGroups, String state, String session) throws OpenStatsException {
 		
-		DBAssembly dbAssembly = em.createNamedQuery(DBAssembly.assemblyResults, DBAssembly.class)
+		DBAssembly dbAssembly = em.createNamedQuery(DBAssembly.assemblyBase, DBAssembly.class)
 				.setParameter(1, state)
 				.setParameter(2, session)
 				.setParameter(3, dbGroups)
-				.setParameter(4, dbGroups)
 				.getSingleResult();
 		
+		dbAssembly.setDistrictList( em.createNamedQuery(DBAssembly.assemblyDistrictList, DBAssembly.class)
+				.setParameter(1, dbAssembly)
+				.getSingleResult().getDistrictList() );
+		
+		List<DBAssembly> rAssembly = em.createNamedQuery(DBAssembly.assemblyResults, DBAssembly.class)
+				.setParameter(1, dbAssembly)
+				.setParameter(2, dbGroups)
+				.getResultList();
+		if ( rAssembly.size() > 0 ) {
+			dbAssembly.setGroupResultsMap(rAssembly.get(0).getGroupResultsMap());
+		} else {
+			dbAssembly.clearGroupResultsMap();				
+		}
 //        
 		TypedQuery<DBDistrict> districtResultsQuery = em.createNamedQuery(DBDistrict.districtResultsQuery, DBDistrict.class )
 				.setParameter(2, dbGroups);
+
+		TypedQuery<DBDistrict> districtLegislators = em.createNamedQuery(DBDistrict.districtLegislatorsQuery, DBDistrict.class );
 
 		TypedQuery<DBLegislator> legislatorResultsQuery = em.createNamedQuery(DBLegislator.legislatorResultsQuery, DBLegislator.class )
 				.setParameter(2, dbGroups);
 
 		for ( DBDistrict dbDistrict: dbAssembly.getDistrictList() ) {
-			DBDistrict rDistrict = districtResultsQuery.setParameter(1, dbDistrict).getSingleResult();
-			dbDistrict.setGroupResultsMap(rDistrict.getGroupResultsMap());
-			dbDistrict.setLegislators(rDistrict.getLegislators());
+			List<DBDistrict> rDistrict = districtResultsQuery.setParameter(1, dbDistrict).getResultList();
+			if ( rDistrict.size() > 0 ) {
+				dbDistrict.setGroupResultsMap(rDistrict.get(0).getGroupResultsMap());
+			} else {
+				dbDistrict.clearGroupResultsMap();				
+			}
+			
+			dbDistrict.setLegislators( districtLegislators.setParameter(1, dbDistrict).getSingleResult().getLegislators() );
+			
 			for ( DBLegislator dbLegislator: dbDistrict.getLegislators()) {
-				DBLegislator lResults = legislatorResultsQuery.setParameter(1, dbLegislator).getSingleResult();
-				dbLegislator.setGroupResultsMap(lResults.getGroupResultsMap());
+				List<DBLegislator> rLegislator = legislatorResultsQuery.setParameter(1, dbLegislator).getResultList();
+				if ( rLegislator.size() > 0 ) {
+					dbLegislator.setGroupResultsMap(rLegislator.get(0).getGroupResultsMap());
+				} else {
+					dbLegislator.clearGroupResultsMap();
+				}
 			}	
 		}
 
