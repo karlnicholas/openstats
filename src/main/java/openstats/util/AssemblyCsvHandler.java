@@ -14,8 +14,12 @@ public class AssemblyCsvHandler {
 		List<String> csvHeader = new ArrayList<String>();
 
         // the header elements are used to map the bean valueList to each column (names must match)
+        csvHeader.add("State");
+        csvHeader.add("Session");
         csvHeader.add("District");
         csvHeader.add("Chamber");
+        csvHeader.add("Legislator");
+        csvHeader.add("Party");
 //			  = districts.get(GROUPLABEL);
 
         for ( InfoItem infoItem: assembly.getInfoItems()  ) {
@@ -34,11 +38,31 @@ public class AssemblyCsvHandler {
         List<String> row = new ArrayList<String>();
 
 
+        // write data for Legislators 
+        for ( final District dist: assembly.getDistrictList()) {
+            for ( final Legislator legislator: dist.getLegislators()) {
+            	row = new ArrayList<String>();
+            	row.add(assembly.getState());
+            	row.add(assembly.getSession());
+            	row.add("");
+            	row.add("");
+            	row.add(legislator.getName());
+            	row.add(legislator.getParty());
+    	        for ( Result result: legislator.getResults() ) {
+    	        	row.add(result.getValue().toString());
+    	        }
+    	        csvResult.add(row);
+            }
+        }
         // write data for districts 
         for ( final District dist: assembly.getDistrictList()) {
         	row = new ArrayList<String>();
+        	row.add(assembly.getState());
+        	row.add(assembly.getSession());
         	row.add(dist.getDistrict());
         	row.add(dist.getChamber().toString());
+        	row.add("");
+        	row.add("");
 	        for ( Result result: dist.getResults() ) {
 	        	row.add(result.getValue().toString());
 	        }
@@ -47,9 +71,17 @@ public class AssemblyCsvHandler {
         rowOffset = row.size();
         // write data for assembly
     	row = new ArrayList<String>();
+    	row.add(assembly.getState());
+    	row.add(assembly.getSession());
+    	row.add("");
+    	row.add("");
+    	row.add("");
+    	row.add("");
+/*    	
     	for ( int i=0; i<rowOffset; ++i ) {
     		row.add("");
     	}
+*/    	
         for ( Result result: assembly.getResults() ) {
         	row.add(result.getValue().toString());
         }

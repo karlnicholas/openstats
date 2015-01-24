@@ -14,14 +14,18 @@ public class Result {
 		this.value = value.toString();
 		this.error = error.toString();
 	}
+	// deep clone
+	public Result(Result result) {
+		value = result.getValue().toString();
+		error = result.getError().toString();
+	}
+
 	public Result add(Result result) {
 		BigDecimal tVal = new BigDecimal(value);
-		tVal.add(result.getValue());
-		value = tVal.toString();
+		value = tVal.add(result.getValue()).toString();
 
 		BigDecimal tErr = new BigDecimal(error);
-		tErr.add(result.getValue());
-		error = tErr.toString();
+		error = tErr.add(result.getError()).toString();
 
 		return this;
 	}
