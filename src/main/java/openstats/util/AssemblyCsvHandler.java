@@ -44,8 +44,8 @@ public class AssemblyCsvHandler {
             	row = new ArrayList<String>();
             	row.add(assembly.getState());
             	row.add(assembly.getSession());
-            	row.add("");
-            	row.add("");
+            	row.add(dist.getDistrict());
+            	row.add(dist.getChamber().toString());
             	row.add(legislator.getName());
             	row.add(legislator.getParty());
     	        for ( Result result: legislator.getResults() ) {

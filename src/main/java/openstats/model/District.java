@@ -54,13 +54,15 @@ public class District {
 		}
 	}
 	public Legislator findLegislator(DBLegislator dbLegislator) {
-		String name = dbLegislator.getName();
+		return findLegislator(dbLegislator.getName());
+	}
+	
+	public Legislator findLegislator(String name) {
 		for ( Legislator l: legislators ) {
 			if ( l.getName().equals(name) ) return l; 
 		}
 		return null;
 	}
-	
 	public String getDistrict() {
 		return district;
 	}

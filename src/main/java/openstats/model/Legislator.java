@@ -11,7 +11,6 @@ public class Legislator implements Comparable<Legislator> {
 
 	private String name;
 	private String party;
-	private String term;
 	private Date startDate;
 	private Date endDate;
 	private List<Result> results;
@@ -19,10 +18,9 @@ public class Legislator implements Comparable<Legislator> {
 	public Legislator() {
 		results = new ArrayList<Result>();
 	}
-	public Legislator(String name, String party, String term) {
+	public Legislator(String name, String party) {
 		this.name = name;
 		this.party = party;
-		this.term = term;
 		results = new ArrayList<Result>();
 	}
 
@@ -30,7 +28,6 @@ public class Legislator implements Comparable<Legislator> {
 	public Legislator(Legislator legislator) {
 		name = legislator.getName();
 		party = legislator.getParty();
-		term = legislator.getTerm();
 		results = new ArrayList<Result>();
 	}
 
@@ -38,7 +35,6 @@ public class Legislator implements Comparable<Legislator> {
 	public Legislator(DBLegislator dbLegislator) {
 		name = dbLegislator.getName();
 		party = dbLegislator.getParty();
-		term = dbLegislator.getTerm();
 		results = new ArrayList<Result>();
 	}
 
@@ -63,12 +59,6 @@ public class Legislator implements Comparable<Legislator> {
 	}
 	public void setParty(String party) {
 		this.party = party;
-	}
-	public String getTerm() {
-		return term;
-	}
-	public void setTerm(String term) {
-		this.term = term;
 	}
 	public Date getStartDate() {
 		return startDate;

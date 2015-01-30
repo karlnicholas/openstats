@@ -18,7 +18,6 @@ public class DBLegislator implements Serializable {
 	
 	private String name;
 	private String party;
-	private String term;
 	@Temporal(value = TemporalType.DATE)
 	private Date startDate;
 	@Temporal(value = TemporalType.DATE)
@@ -37,7 +36,6 @@ public class DBLegislator implements Serializable {
 	public DBLegislator(Legislator legislator) {
 		name = legislator.getName();
 		party = legislator.getParty();
-		term = legislator.getTerm();
 		startDate = legislator.getStartDate();
 		endDate = legislator.getEndDate();
 		groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();		
@@ -61,12 +59,6 @@ public class DBLegislator implements Serializable {
 	}
 	public void setParty(String party) {
 		this.party = party;
-	}
-	public String getTerm() {
-		return term;
-	}
-	public void setTerm(String term) {
-		this.term = term;
 	}
 	public Map<DBGroup, DBGroupResults> getGroupResultsMap() {
 		return groupResultsMap;
