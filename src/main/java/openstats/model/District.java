@@ -44,6 +44,10 @@ public class District {
 	public void addResults(List<Result> results) {
 		this.results.addAll(results);
 	}
+	public void addResult(Result result) {
+		this.results.add(result);
+	}
+
 	public void copyGroup(DBGroup dbGroup, DBDistrict dbDistrict) {
 		for ( Result Result: dbDistrict.getGroupResultsMap().get(dbGroup).getResults()) {
 			results.add(Result);

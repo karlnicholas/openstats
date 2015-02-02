@@ -61,7 +61,9 @@ public class Assembly implements Comparable<Assembly> {
 	public void addResults(List<Result> results) {
 		this.results.addAll(results);
 	}
-
+	public void addResult(Result result) {
+		this.results.add(result);
+	}
 	public void copyGroup(DBGroup dbGroup, DBAssembly dbAssembly) {
 
 		group = new Group(dbGroup.getGroupName(), dbGroup.getGroupDescription());

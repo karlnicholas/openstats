@@ -1,13 +1,94 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <ui:composition template="/WEB-INF/templates/default.xhtml"
   xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:b="http://bootsfaces.net/ui"
   xmlns:f="http://xmlns.jcp.org/jsf/core"
   xmlns:h="http://xmlns.jcp.org/jsf/html"
   xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
   <ui:define name="content">
-    <p>Welcome to the wonderful world of main pages.</p>
-    <p>
-      <h:link outcome="exportCsv">Select an Assembly for export</h:link>.
-    </p>
+  <h:outputStylesheet name="css/index.css" />
+<b:navBar brand="Legislative Aggregation" brandHref="" fixed="top">
+   <b:navbarLinks pull="right">
+   <b:dropMenu value="Application">
+     <b:navLink value="Court Opinions" href="http://op-cacode.rhcloud.com" />
+     <b:navLink value="Guided Search" href="http://gs-cacode.rhcloud.com" />
+     <b:navLink value="Legislative Aggregation" href="http://lag-cacode.rhcloud.com" />
+   </b:dropMenu>
+   </b:navbarLinks>
+</b:navBar>
+    <p>Legislative Aggregation takes data from state legislatures and loads it into a database. Users must first select a state and session. After that, select any number of data sets that have been loaded. This application will combine them and export the result as a .CSV file</p>
+      <b:container rendered="#{!empty exportCsv.currentAssembly and exportCsv.groupsSelected}">
+      <b:panelGrid colSpans="2,10">
+        <b:row>
+        <b:column span="2"></b:column>
+          <h:form >
+            <h:commandButton action="#{exportCsv.exportCsv()}" value="Export Csv" />
+            <h:commandButton action="#{exportCsv.goToIndex()}" value="Clear" />
+          </h:form>
+        </b:row>
+        <b:row>
+        <b:column span="2"></b:column>
+          <h4>Export Available for #{exportCsv.currentAssembly}.</h4>
+          <p>Group Created: #{exportCsv.assembly.group.groupName}</p>
+        </b:row>
+        <b:row>
+        <b:column span="2"></b:column>
+          <h:dataTable value="#{exportCsv.assembly.infoItems}" var="infoItem" rendered="#{!empty exportCsv.assembly.infoItems}" columnClasses="first,second">
+            <f:facet name="header">
+              <h:outputText value="Information for Group(s) Chosen."/>
+            </f:facet>
+            <h:column>
+              <f:facet name="header">Label</f:facet>
+              <h:outputText value="#{infoItem.label}" />
+            </h:column>
+            <h:column>
+              <f:facet name="header">Description</f:facet>
+              <h:outputText value="#{infoItem.description}" />
+            </h:column>
+          </h:dataTable>
+        </b:row>
+      </b:panelGrid>
+      </b:container>
+      <h:form rendered="#{empty exportCsv.currentAssembly and !exportCsv.groupsSelected}" >
+      <b:panelGrid colSpans="2,10">
+        <b:row>
+        <b:column span="2"></b:column>
+          <p><b>Select a State and Session combination.</b></p>
+        </b:row>
+        <b:row>
+        <b:column span="2"></b:column>
+          <h:selectOneMenu value="#{exportCsv.currentAssembly}">
+            <f:selectItems value="#{exportCsv.assemblyTitles}" />
+          </h:selectOneMenu>
+        </b:row>
+        <b:row>
+        <b:column span="2"></b:column>
+          <h:commandButton type="submit" value="Select" />
+        </b:row>
+      </b:panelGrid>
+    </h:form>
+    <h:form rendered="#{!empty exportCsv.currentAssembly and !exportCsv.groupsSelected}">
+      <b:panelGrid colSpans="2,8,2">
+        <b:row>
+        <b:column span="2"></b:column>
+          <p><b>Select One or More Data Groups.</b></p>
+        </b:row>
+        <b:row>
+        <b:column span="2"></b:column>
+          <h:message for="groupitems" style="color:red"/>
+        </b:row>
+        <b:row>
+        <b:column span="2"></b:column>
+          <h:selectManyListbox value="#{exportCsv.selectedAssemblyGroups}" id="groupitems" converter="#{groupNameConverterBean}"
+            required="true" requiredMessage="#{msg['groups.required']}">
+            <f:selectItems value="#{exportCsv.allAssemblyGroups}" var="groupName" itemLabel="#{groupName}" itemValue="#{groupName}" />
+          </h:selectManyListbox>
+        </b:row>
+        <b:row>
+        <b:column span="2"></b:column>
+          <h:commandButton type="submit" value="Select" />
+        </b:row>
+      </b:panelGrid>
+    </h:form>
   </ui:define>
 </ui:composition>

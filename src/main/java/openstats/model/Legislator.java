@@ -41,7 +41,9 @@ public class Legislator implements Comparable<Legislator> {
 	public void addResults(List<Result> results) {
 		this.results.addAll(results);
 	}
-
+	public void addResult(Result result) {
+		this.results.add(result);
+	}
 	public void copyGroup(DBGroup dbGroup, DBLegislator dbLegislator) {
 		for ( Result Result: dbLegislator.getGroupResultsMap().get(dbGroup).getResults()) {
 			results.add(Result);
