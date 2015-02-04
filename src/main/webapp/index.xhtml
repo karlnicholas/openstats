@@ -13,7 +13,16 @@
           </div>
           <div class="col-xs-8">
             <h4>Export Available for #{exportCsv.currentAssembly}.</h4>
-            <p>Group Chosen: #{exportCsv.assembly.group.groupName}</p>
+            <ul class="list-group">
+              <ui:repeat var="name" value="#{exportCsv.assembly.group.splitNames()}">
+              <li class="list-group-item"><h:outputText value="#{name}" /></li>
+              </ui:repeat>
+            </ul>
+            <ul class="list-group">
+              <ui:repeat var="description" value="#{exportCsv.assembly.group.splitDescriptions()}">
+              <li class="list-group-item"><h:outputText value="#{description}" /></li>
+              </ui:repeat>
+            </ul>
             <h:dataTable value="#{exportCsv.assembly.infoItems}" var="infoItem"
               rendered="#{!empty exportCsv.assembly.infoItems}" styleClass="table table-bordered">
               <f:facet name="header">

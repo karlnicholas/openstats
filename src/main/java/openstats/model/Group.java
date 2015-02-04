@@ -1,5 +1,7 @@
 package openstats.model;
 
+import java.util.*;
+
 public class Group implements Comparable<Group> {
 	private String groupName;
 	private String groupDescription;
@@ -9,6 +11,14 @@ public class Group implements Comparable<Group> {
 	public Group(String groupName, String groupDescription) {
 		this.groupName = groupName;
 		this.groupDescription = groupDescription;
+	}
+	
+	public List<String> splitNames() {
+		return Arrays.asList(groupName.split("\\n"));
+	}
+
+	public List<String> splitDescriptions() {
+		return Arrays.asList(groupDescription.split("\\n"));
 	}
 
 	public String getGroupName() {
@@ -25,6 +35,7 @@ public class Group implements Comparable<Group> {
 	public void setGroupDescription(String groupDescription) {
 		this.groupDescription = groupDescription;
 	}
+
 	@Override
 	public int compareTo(Group o) {
 		return groupName.compareTo(o.groupName);

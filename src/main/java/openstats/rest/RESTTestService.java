@@ -35,9 +35,9 @@ import openstats.model.Assembly;
  * <p/>
  * This class produces a RESTful service to read/write the contents of the assemblies table.
  */
-@Path("")
+@Path("/test")
 @RequestScoped
-public class AssemblyResourceRESTService {
+public class RESTTestService {
 	
 	@Inject
 	private Logger log;
@@ -117,19 +117,9 @@ public class AssemblyResourceRESTService {
     }
 
     @PUT
-    @Consumes(value={MediaType.APPLICATION_JSON})
-    public Response updateAssembly(Assembly assembly) {
-
-        Response.ResponseBuilder builder = null;
-        try {
-//        	assemblyFacade.writeAssembly(assembly);
-            // Create an "created" response
-            builder = Response.ok();
-        } catch (Exception e) {
-            // Handle generic exceptions
-            builder = Response.status(Response.Status.BAD_REQUEST).header("error", e.getMessage());
-        }
-        return builder.build();
+    public Response updateAssembly(String value) {
+    	System.out.println("test value:" + value);
+        return Response.ok().build();
     }
 
     @DELETE

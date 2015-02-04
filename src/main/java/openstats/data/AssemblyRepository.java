@@ -15,7 +15,7 @@ import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Root;
 
 import openstats.dbmodel.*;
-import openstats.model.Assembly;
+import openstats.model.*;
 
 @ApplicationScoped
 public class AssemblyRepository {
@@ -149,10 +149,15 @@ public class AssemblyRepository {
 
 		Assembly assembly = new Assembly(dbAssembly);
 
+		Group finalGroup = new Group();
+		finalGroup.setGroupName("");
+		finalGroup.setGroupDescription("");
 		for ( DBGroup dbGroup: dbGroups ) {
 			assembly.copyGroup(dbGroup, dbAssembly);
+			finalGroup.setGroupName(finalGroup.getGroupName()+"\n"+dbGroup.getGroupName());
+			finalGroup.setGroupDescription(finalGroup.getGroupDescription()+"\n"+dbGroup.getGroupDescription());
 		}
-
+		assembly.setGroup(finalGroup);
 		return assembly;
 	}
 
