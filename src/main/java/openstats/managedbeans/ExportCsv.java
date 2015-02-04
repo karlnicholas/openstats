@@ -134,7 +134,7 @@ public class ExportCsv implements Serializable {
     	facesContext.getExternalContext().redirect("");
     }
 	
-	public Assembly getAssembly() throws Exception {
+    public Assembly getAssembly() throws Exception {
 		if ( assembly == null ) {
 	    	String[] keys = currentAssembly.split("-");
 	    	assembly = assemblyRepo.buildAssemblyFromGroups(Arrays.asList(selectedAssemblyGroups), keys[0], keys[1]);
