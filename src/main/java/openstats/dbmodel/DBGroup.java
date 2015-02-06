@@ -34,10 +34,6 @@ import openstats.model.Group;
 		this.groupDescription = groupDescription;
 	}
 	@Override
-	public String toString() {
-		return groupName;
-	}
-	@Override
 	public int compareTo(DBGroup o) {
 		return groupName.compareTo(o.groupName);
 	}

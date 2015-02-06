@@ -13,12 +13,34 @@ public class Group implements Comparable<Group> {
 		this.groupDescription = groupDescription;
 	}
 	
-	public List<String> splitNames() {
-		return Arrays.asList(groupName.split("\\n"));
+	public class TableRow {
+		private String name;
+		private String desciption;
+		public TableRow(String name, String desciption) {
+			this.name = name;
+			this.desciption = desciption;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public String getDesciption() {
+			return desciption;
+		}
+		public void setDesciption(String desciption) {
+			this.desciption = desciption;
+		}
 	}
-
-	public List<String> splitDescriptions() {
-		return Arrays.asList(groupDescription.split("\\n"));
+	public List<TableRow> makeTableRows() {
+		String[] names = groupName.split("\\n");
+		String[] descrips = groupDescription.split("\\n");
+		List<TableRow> tableRows = new ArrayList<TableRow>();
+		for ( int i=0; i< names.length; ++i) {
+			tableRows.add(new TableRow(names[i], descrips[i]));
+		}
+		return tableRows;
 	}
 
 	public String getGroupName() {

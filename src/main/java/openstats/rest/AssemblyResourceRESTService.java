@@ -122,7 +122,7 @@ public class AssemblyResourceRESTService {
 
         Response.ResponseBuilder builder = null;
         try {
-//        	assemblyFacade.writeAssembly(assembly);
+        	assemblyFacade.writeAssembly(assembly);
             // Create an "created" response
             builder = Response.ok();
         } catch (Exception e) {
