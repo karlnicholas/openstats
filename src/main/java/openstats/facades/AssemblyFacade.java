@@ -5,7 +5,6 @@ import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
 
-import openstats.data.AssemblyRepository;
 import openstats.dbmodel.*;
 import openstats.model.Assembly;
 
@@ -19,14 +18,10 @@ public class AssemblyFacade {
 	@Inject
 	private EntityManager em;
 	
-	@Inject
-	private AssemblyRepository assemblyRepo;
-
 	public AssemblyFacade() {}
     // for testing
     public AssemblyFacade(EntityManager em) {
     	this.em = em;
-//  	assemblyRepo = new AssemblyRepository(em);
     }
 
 	
@@ -39,7 +34,6 @@ public class AssemblyFacade {
 
     public void writeAssembly(Assembly assembly) throws OpenStatsException {
 		DBGroup dbGroup = DBGroupHandler.createDBGroup(assembly.getGroup(), em);
-//		DBAssembly dbAssembly = assemblyRepo.findByStateSession(assembly.getState(), assembly.getSession());
         CriteriaBuilder cb = em.getCriteriaBuilder();
         CriteriaQuery<DBAssembly> criteria = cb.createQuery(DBAssembly.class);
         Root<DBAssembly> rAssembly = criteria.from(DBAssembly.class);
@@ -63,7 +57,6 @@ public class AssemblyFacade {
 	 */
 	public void deleteAssemblyGroup(String groupName, String state, String session) throws OpenStatsException {
 		// maybe someday delete the group if nothing references it.
-//		DBAssembly dbAssembly = assemblyRepo.findByStateSession(state, session);
 		DBAssembly dbAssembly = DBAssemblyHandler.getDBAssembly(state, session, em);
 		dbAssembly.removeGroup(DBGroupHandler.getDBGroup(groupName, em));
 		em.merge(dbAssembly);

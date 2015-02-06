@@ -1,7 +1,7 @@
 package openstats.dbmodel;
 
 import java.io.Serializable;
-
+import java.math.BigDecimal;
 import java.util.*;
 
 import javax.persistence.*;
@@ -50,10 +50,11 @@ import openstats.model.District.CHAMBER;
 			legislators.add(new DBLegislator(legislator));
 		}
 	}
-	public DBDistrict copyGroup(DBGroup dbGroup, District district) {
+	public void copyGroup(DBGroup dbGroup, District district) {
 		// skip legislators for now
 		// copy even if blank
 		getGroupResultsMap().put(dbGroup, new DBGroupResults(district.getResults()) );
+/*		
 		for ( Legislator legislator: district.getLegislators() ) {
 			DBLegislator dbLegislator = findLegislator(legislator);
 			if ( dbLegislator == null ) {
@@ -62,8 +63,27 @@ import openstats.model.District.CHAMBER;
 			}
 			dbLegislator.copyGroup(dbGroup, legislator);
 		}
-		// useful for chaining
-		return this;
+*/
+		for ( DBLegislator dbLegislator: legislators) {
+			Legislator legislator = district.findLegislator(dbLegislator);
+			// work on fillers
+			if ( legislator == null ) {
+				// create legislator with blank results for filler
+				legislator = new Legislator(dbLegislator);
+				List<Result> results = new ArrayList<Result>();
+				for ( int i=0, j = district.getResults().size(); i<j; ++i ) {
+					results.add(new Result(BigDecimal.ZERO, BigDecimal.ZERO));
+				}
+				legislator.addResults(results);
+			} else if ( legislator.getResults().size() < district.getResults().size() ) {
+				List<Result> results = new ArrayList<Result>();
+				for ( int i=legislator.getResults().size(), j = district.getResults().size(); i<j; ++i ) {
+					results.add(new Result(BigDecimal.ZERO, BigDecimal.ZERO));
+				}
+				legislator.addResults(results);
+			}
+			dbLegislator.copyGroup(dbGroup, legislator);
+		}
 	}
 	
 	public DBLegislator findLegislator(Legislator legislator) {

@@ -1,6 +1,7 @@
 package openstats.dbmodel;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.*;
 
 import javax.persistence.*;
@@ -67,11 +68,32 @@ import openstats.model.District.CHAMBER;
 	public void copyGroup(DBGroup dbGroup, Assembly assembly) {
 		groupInfoMap.put(dbGroup, new DBGroupInfo(assembly.getInfoItems()));
 		groupResultsMap.put(dbGroup, new DBGroupResults(assembly.getResults()) );
-
+/*
 		for ( District district: assembly.getDistrictList() ) {
 			findDistrict(district.getChamber(), district.getDistrict())
 				.copyGroup(dbGroup, district);
 		}
+*/
+		for ( DBDistrict dbDistrict: districtList ) {
+			District district = assembly.findDistrict(dbDistrict);
+			if ( district == null ) {
+				// create district w/ empty results for filler
+				district = new District(dbDistrict);
+				List<Result> results = new ArrayList<Result>();
+				for (int i=0, j=assembly.getResults().size(); i<j; ++i ) {
+					results.add(new Result(BigDecimal.ZERO, BigDecimal.ZERO));
+				}
+				district.addResults(results);
+			} else if (district.getResults().size() < assembly.getResults().size()) {
+				List<Result> results = new ArrayList<Result>();
+				for (int i=district.getResults().size(), j=assembly.getResults().size(); i<j; ++i ) {
+					results.add(new Result(BigDecimal.ZERO, BigDecimal.ZERO));
+				}
+				district.addResults(results);
+			}
+			dbDistrict.copyGroup(dbGroup, district);
+		}
+		
 	}
 	
 	public void removeGroup(DBGroup dbGroup) {
