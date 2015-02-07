@@ -5,14 +5,8 @@
     <div class="container-fluid">
       <h:panelGroup layout="block" rendered="#{!empty exportCsv.currentAssembly and exportCsv.groupsSelected}">
         <div class="row">
-          <div class="col-xs-2">
-            <h:form>
-              <h:commandButton action="#{exportCsv.exportCsv()}" value="Export Csv" styleClass="btn btn-default" />
-              <h:commandButton action="#{exportCsv.goToIndex()}" value="Home" styleClass="btn" />
-            </h:form>
-          </div>
-          <div class="col-xs-8">
-            <h4>Export Available for #{exportCsv.currentAssembly}.</h4>
+          <div class="col-xs-8 col-xs-offset-2">
+            <h4>Export available for #{exportCsv.currentAssembly}.</h4>
             <h:dataTable value="#{exportCsv.assembly.group.makeTableRows()}" var="tableRow" styleClass="table table-bordered">
               <f:facet name="header">
                 <h:outputText value="Groups Selected" />
@@ -45,6 +39,11 @@
       <h:panelGroup layout="block" rendered="#{empty exportCsv.currentAssembly and !exportCsv.groupsSelected}">
         <div class="row">
           <div class="col-xs-8 col-xs-offset-2">
+          <p>Legislative Aggregation is a database and API that supports datasets for state legislatures, broken down by district and representative. Selected datasets are combined and made available for export. First select which state and session combination you want to be exported.</p>  
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-xs-8 col-xs-offset-2">
             <h:form>
               <h:selectOneMenu value="#{exportCsv.currentAssembly}" styleClass="form-control">
                 <f:selectItems value="#{exportCsv.assemblyTitles}" />
@@ -56,6 +55,11 @@
       </h:panelGroup>
       <h:panelGroup layout="block" rendered="#{!empty exportCsv.currentAssembly and !exportCsv.groupsSelected}">
         <div class="row">
+        <div class="row">
+          <div class="col-xs-8 col-xs-offset-2">
+          <p>The currently selected state/session combination is <h:outputText value="#{exportCsv.currentAssembly}" />. Select which datasets you want included in your export.</p>  
+          </div>
+        </div>
           <div class="col-xs-8 col-xs-offset-2">
             <h:form>
               <h:message for="groupitems" />

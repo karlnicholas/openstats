@@ -1,5 +1,5 @@
 <html xmlns="http://www.w3.org/1999/xhtml" 
-    xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
 <ui:composition>
   <div class="navbar navbar-default navbar-fixed-top" role="navigation">
     <div class="container-fluid">
@@ -9,6 +9,11 @@
           <span class="icon-bar"></span>
         </button>
         <a class="navbar-brand" href="">Legislative Aggregation</a>
+      </div>
+      <div class="navbar-nav">
+        <h:form class="navbar-form">
+          <h:commandButton action="#{exportCsv.exportCsv()}" value="Export Csv" styleClass="btn btn-default" disabled="#{empty exportCsv.currentAssembly or !exportCsv.groupsSelected}" />
+        </h:form>
       </div>
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav navbar-right">
