@@ -6,7 +6,7 @@ import openstats.dbmodel.*;
 
 public class District {
 	public static enum CHAMBER {UPPER, LOWER};
-	
+
 	private String district;
 	private CHAMBER chamber;
 	private String description;

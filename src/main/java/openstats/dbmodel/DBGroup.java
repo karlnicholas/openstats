@@ -7,7 +7,9 @@ import javax.persistence.*;
 import openstats.model.Group;
 
 @SuppressWarnings("serial")
-@Entity public class DBGroup implements Comparable<DBGroup>, Serializable {
+@Entity(name = "DBGroup")
+@Table(name = "DBGroup",catalog="lag",schema="public")
+public class DBGroup implements Comparable<DBGroup>, Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 	
 	@Column(unique=true)

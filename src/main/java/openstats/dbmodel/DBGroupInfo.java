@@ -8,11 +8,14 @@ import javax.persistence.*;
 import openstats.model.InfoItem;
 
 @SuppressWarnings("serial")
-@Entity public class DBGroupInfo implements Serializable {
+@Entity(name = "DBGroupInfo")
+@Table(name = "DBGroupInfo",catalog="lag",schema="public")
+public class DBGroupInfo implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
-	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
-	@JoinTable(name="DBGroupInfo_GroupItems")
+	@OneToMany(fetch=FetchType.EAGER)
+	@JoinTable(name="DBGroupInfo_GroupItems",catalog="lag",schema="public",
+			joinColumns=@JoinColumn(name="DBGroupInfo"))
 	@OrderColumn
 	private List<DBInfoItem> GroupItems = new ArrayList<DBInfoItem>();
 	

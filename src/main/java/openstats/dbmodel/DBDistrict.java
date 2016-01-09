@@ -14,7 +14,9 @@ import openstats.model.District.CHAMBER;
 	@NamedQuery(name = DBDistrict.districtLegislatorsQuery, query = "select d from DBDistrict d left outer join fetch d.legislators where d = ?1" )
 })
 @SuppressWarnings("serial")
-@Entity public class DBDistrict implements Comparable<DBDistrict>, Serializable {
+@Entity(name = "DBDistrict")
+@Table(name = "DBDistrict",catalog="lag",schema="public")
+public class DBDistrict implements Comparable<DBDistrict>, Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 	public static final String districtResultsQuery = "DBDistrict.districtResultsQuery";
 	public static final String districtLegislatorsQuery = "DBDistrict.districtLegislatorsQuery";
@@ -23,14 +25,17 @@ import openstats.model.District.CHAMBER;
 	
 	@Column(length=3)
 	private String district;
+	@Enumerated(EnumType.ORDINAL)
 	private CHAMBER chamber;
 	private String description;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(fetch=FetchType.LAZY)
+	@JoinTable(name="DBDistrict_legislators",catalog="lag",schema="public",
+		joinColumns=@JoinColumn(name="DBDistrict"))
 	private List<DBLegislator> legislators;
 	
-	@OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
-	@JoinTable(name="DBDistrict_groupResultsMap",
+	@OneToMany(fetch=FetchType.LAZY)
+	@JoinTable(name="DBDistrict_groupResultsMap",catalog="lag",schema="public",
 	    joinColumns=@JoinColumn(name="DBDistrict"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))
 	@MapKeyJoinColumn(name="DBGroup")

@@ -6,7 +6,9 @@ import java.util.*;
 import javax.persistence.*;
 
 @SuppressWarnings("serial")
-@Entity public class DBGroupResults implements Serializable {
+@Entity(name = "DBGroupResults")
+@Table(name = "DBGroupResults",catalog="lag",schema="public")
+public class DBGroupResults implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
 	@ElementCollection(fetch=FetchType.EAGER)

@@ -8,8 +8,6 @@ import javax.faces.bean.*;
 import javax.faces.context.*;
 import javax.inject.Inject;
 
-import org.codehaus.jackson.map.ObjectMapper;
-
 import openstats.data.AssemblyRepository;
 import openstats.dbmodel.DBAssembly;
 import openstats.dbmodel.DBGroup;

@@ -6,8 +6,9 @@ import javax.persistence.*;
 
 @Embeddable
 public class Result {
-	
+	@Basic
 	private String value;
+	@Basic
 	private String error;
 	public Result() {}
 	public Result(BigDecimal value, BigDecimal error) {

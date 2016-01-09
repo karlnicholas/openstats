@@ -11,7 +11,8 @@ import openstats.model.*;
 @NamedQueries({ 
 	@NamedQuery(name = DBLegislator.legislatorResultsQuery, query = "select l from DBLegislator l join fetch l.groupResultsMap lListgrm where l = ?1 and key(lListgrm) in (?2)" )
 })
-@Entity
+@Entity(name="DBLegislator")
+@Table(name="DBLegislator",catalog="lag",schema="public")
 public class DBLegislator implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 	public static final String legislatorResultsQuery = "DBLegislator.legislatorResultsQuery";
@@ -23,8 +24,8 @@ public class DBLegislator implements Serializable {
 	@Temporal(value = TemporalType.DATE)
 	private Date endDate;
 	
-	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL})
-	@JoinTable(name="DBLegislator_groupResultsMap",
+	@OneToMany(fetch=FetchType.LAZY, cascade={CascadeType.ALL}, targetEntity=openstats.dbmodel.DBGroupResults.class)
+	@JoinTable(name="DBLegislator_groupResultsMap",catalog="lag",schema="public",
 	    joinColumns=@JoinColumn(name="DBLegislator"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))
 	@MapKeyJoinColumn(name="DBGroup")

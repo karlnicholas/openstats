@@ -9,9 +9,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import openstats.model.InfoItem;
+import javax.persistence.Table;
 
 @SuppressWarnings("serial")
-@Entity public class DBInfoItem implements Serializable {
+@Entity(name = "DBInfoItem")
+@Table(name = "DBInfoItem",catalog="lag",schema="public")
+public class DBInfoItem implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 	
 	private String Label;

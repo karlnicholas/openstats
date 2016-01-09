@@ -19,7 +19,9 @@ import openstats.model.District.CHAMBER;
 	@NamedQuery(name = DBAssembly.assemblyDistrictList, query = "select a from DBAssembly a join fetch a.districtList where a = ?1 " ), 
 	@NamedQuery(name = DBAssembly.assemblyResults, query = "select a from DBAssembly a join fetch a.groupResultsMap agrm where a = ?1 and key(agrm) in (?2)" )
 })
-@Entity public class DBAssembly implements Comparable<DBAssembly>, Serializable {
+@Entity(name="DBAssembly")
+@Table(name="DBAssembly",catalog="lag",schema="public")
+public class DBAssembly implements Comparable<DBAssembly>, Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
 	public static final String assemblyTemplate = "DBAssembly.assemblyTemplate";
@@ -30,18 +32,20 @@ import openstats.model.District.CHAMBER;
 	private String state;
 	private String session;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
+	@OneToMany(fetch=FetchType.LAZY)
+	@JoinTable(name="DBAssembly_districtList",catalog="lag",schema="public",
+		joinColumns=@JoinColumn(name="DBAssembly"))
 	private List<DBDistrict> districtList;
 		
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY )
-	@JoinTable(name="DBAssembly_groupInfoMap",
+	@OneToMany(fetch=FetchType.LAZY )
+	@JoinTable(name="DBAssembly_groupInfoMap",catalog="lag",schema="public",
 	    joinColumns=@JoinColumn(name="DBAssembly"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
 	@MapKeyJoinColumn(name="DBGroup")
 	private Map<DBGroup, DBGroupInfo> groupInfoMap;
 	
-	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY )
-	@JoinTable(name="DBAssembly_groupResultsMap",
+	@OneToMany(fetch=FetchType.LAZY )
+	@JoinTable(name="DBAssembly_groupResultsMap",catalog="lag",schema="public",
 	    joinColumns=@JoinColumn(name="DBAssembly"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))
 	@MapKeyJoinColumn(name="DBGroup")
