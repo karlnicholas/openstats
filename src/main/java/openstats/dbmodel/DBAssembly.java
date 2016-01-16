@@ -17,7 +17,7 @@ import openstats.model.District.CHAMBER;
 	@NamedQuery(name = DBAssembly.assemblyGroup, query = "select a from DBAssembly a join fetch a.groupInfoMap agim where a.state = ?1 and a.session = ?2 and key(agim) in (?3)" ), 
 	@NamedQuery(name = DBAssembly.assemblyBase, query = "select a from DBAssembly a join fetch a.groupInfoMap agim where a.state = ?1 and a.session = ?2 and key(agim) in (?3)" ), 
 	@NamedQuery(name = DBAssembly.assemblyDistrictList, query = "select a from DBAssembly a join fetch a.districtList where a = ?1 " ), 
-	@NamedQuery(name = DBAssembly.assemblyResults, query = "select a from DBAssembly a join fetch a.groupResultsMap agrm where a = ?1 and key(agrm) in (?2)" )
+	@NamedQuery(name = DBAssembly.assemblyResults, query = "select distinct a from DBAssembly a join fetch a.groupResultsMap agrm where a = ?1 and key(agrm) in (?2)" )	
 })
 @Entity(name="DBAssembly")
 @Table(name="DBAssembly",catalog="lag",schema="public")
@@ -32,19 +32,19 @@ public class DBAssembly implements Comparable<DBAssembly>, Serializable {
 	private String state;
 	private String session;
 	
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="DBAssembly_districtList",catalog="lag",schema="public",
 		joinColumns=@JoinColumn(name="DBAssembly"))
 	private List<DBDistrict> districtList;
 		
-	@OneToMany(fetch=FetchType.LAZY )
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY )
 	@JoinTable(name="DBAssembly_groupInfoMap",catalog="lag",schema="public",
 	    joinColumns=@JoinColumn(name="DBAssembly"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupInfo"))
 	@MapKeyJoinColumn(name="DBGroup")
 	private Map<DBGroup, DBGroupInfo> groupInfoMap;
 	
-	@OneToMany(fetch=FetchType.LAZY )
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY )
 	@JoinTable(name="DBAssembly_groupResultsMap",catalog="lag",schema="public",
 	    joinColumns=@JoinColumn(name="DBAssembly"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))

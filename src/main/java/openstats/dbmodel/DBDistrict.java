@@ -29,12 +29,12 @@ public class DBDistrict implements Comparable<DBDistrict>, Serializable {
 	private CHAMBER chamber;
 	private String description;
 	
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="DBDistrict_legislators",catalog="lag",schema="public",
 		joinColumns=@JoinColumn(name="DBDistrict"))
 	private List<DBLegislator> legislators;
 	
-	@OneToMany(fetch=FetchType.LAZY)
+	@OneToMany(cascade={CascadeType.ALL}, fetch=FetchType.LAZY)
 	@JoinTable(name="DBDistrict_groupResultsMap",catalog="lag",schema="public",
 	    joinColumns=@JoinColumn(name="DBDistrict"),
 	    inverseJoinColumns=@JoinColumn(name="DBGroupResults"))
@@ -139,6 +139,9 @@ public class DBDistrict implements Comparable<DBDistrict>, Serializable {
 	public int compareTo(DBDistrict o) {
 		if ( !chamber.equals(o.chamber)) return chamber.compareTo(o.chamber);
 		return district.compareTo(o.district);
+	}
+	public void fillGroupResultsMap() {
+		groupResultsMap = new LinkedHashMap<DBGroup, DBGroupResults>();		
 	}
 
 }

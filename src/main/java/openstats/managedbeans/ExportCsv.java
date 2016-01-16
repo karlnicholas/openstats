@@ -114,7 +114,7 @@ public class ExportCsv implements Serializable {
 	    Writer writer = new OutputStreamWriter(ec.getResponseOutputStream());
 	    // Now you can write the InputStream of the file to the above OutputStream the usual way.
 	    // ...
-    	createCsv.writeCsv(writer, assembly );
+    	createCsv.writeCsv(assembly, writer );
 //		JAXBContext ctx = JAXBContext.newInstance(Assembly.class);
 //		ctx.createMarshaller().marshal(assembly, writer);
 //	    ObjectMapper mapper = new ObjectMapper();

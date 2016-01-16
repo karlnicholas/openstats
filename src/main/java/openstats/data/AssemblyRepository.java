@@ -133,6 +133,7 @@ public class AssemblyRepository {
 				dbDistrict.setGroupResultsMap(rDistrict.get(0).getGroupResultsMap());
 			} else {
 				dbDistrict.clearGroupResultsMap();				
+//				dbDistrict.fillGroupResultsMap();				
 			}
 			
 			dbDistrict.setLegislators( districtLegislators.setParameter(1, dbDistrict).getSingleResult().getLegislators() );

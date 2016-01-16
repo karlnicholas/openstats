@@ -13,7 +13,7 @@ import openstats.model.InfoItem;
 public class DBGroupInfo implements Serializable {
 	@Id @GeneratedValue(strategy=GenerationType.AUTO) private Long id;
 
-	@OneToMany(fetch=FetchType.EAGER)
+	@OneToMany(cascade=CascadeType.ALL, fetch=FetchType.EAGER)
 	@JoinTable(name="DBGroupInfo_GroupItems",catalog="lag",schema="public",
 			joinColumns=@JoinColumn(name="DBGroupInfo"))
 	@OrderColumn
